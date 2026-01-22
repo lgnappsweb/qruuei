@@ -1,4 +1,4 @@
-import { HeartPulse, Shield, Milestone, Hash, Car, Wrench, Siren, Building, AlertTriangle } from 'lucide-react';
+import { HeartPulse, Shield, Milestone, Hash, Car, Wrench, Flame, Building, AlertTriangle } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 export type Occurrence = {
@@ -14,7 +14,7 @@ export const occurrences: Occurrence[] = [
   { id: '3', title: 'TRAÇADO DE PISTA', icon: Milestone, color: 'bg-amber-500' },
   { id: '4', title: 'ACIDENTE DE TRÂNSITO', icon: Car, color: 'bg-indigo-500' },
   { id: '5', title: 'APOIO MECÂNICO', icon: Wrench, color: 'bg-slate-500' },
-  { id: '6', title: 'OCORRÊNCIA CLÍNICA', icon: Siren, color: 'bg-red-600' },
+  { id: '6', title: 'INCÊNDIO', icon: Flame, color: 'bg-red-600' },
   { id: '7', title: 'APOIO PREDIAL', icon: Building, color: 'bg-orange-500' },
   { id: '8', title: 'RISCO GERAL', icon: AlertTriangle, color: 'bg-yellow-500' },
   { id: '9', title: 'TO 01', icon: Hash, color: 'bg-emerald-500' },
