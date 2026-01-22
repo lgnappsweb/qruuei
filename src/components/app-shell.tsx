@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, FileCode, ShieldAlert, NotebookText, Settings, GanttChartSquare } from "lucide-react";
+import { Home, FileCode, ShieldAlert, NotebookText, Settings, GanttChartSquare, User as UserIcon } from "lucide-react";
 import {
   SidebarProvider,
   Sidebar,
@@ -15,6 +15,9 @@ import {
   SidebarFooter
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useUser } from "@/firebase";
+import { Skeleton } from "./ui/skeleton";
+import { Button } from "./ui/button";
 
 const navItems = [
   { href: "/", label: "Home", icon: Home },
@@ -44,8 +47,9 @@ function SidebarNavLink({ item }: { item: (typeof navItems)[0] }) {
   );
 }
 
-
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const { user, initialising } = useUser();
+
   return (
     <SidebarProvider>
       <Sidebar>
@@ -65,18 +69,40 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
-           {/* This is a placeholder for user authentication status in the future.
-               // It can be replaced with actual user data from Firebase Auth. */}
-          <div className="flex items-center gap-3 p-2">
-            <Avatar className="size-8">
-              <AvatarImage src="https://picsum.photos/seed/user/40/40" data-ai-hint="user avatar" />
-              <AvatarFallback>U</AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-                <span className="text-sm font-semibold text-foreground">Usuário</span>
-                <span className="text-xs text-muted-foreground">usuario@email.com</span>
+           {initialising ? (
+            <div className="flex items-center gap-3 p-2">
+              <Skeleton className="h-8 w-8 rounded-full" />
+              <div className="flex flex-col gap-1 group-data-[collapsible=icon]:hidden">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-3 w-28" />
+              </div>
             </div>
-          </div>
+          ) : user ? (
+            <div className="flex items-center gap-3 p-2">
+              <Avatar className="size-8">
+                <AvatarImage src={user.photoURL ?? `https://picsum.photos/seed/${user.uid}/40/40`} data-ai-hint="user avatar" />
+                <AvatarFallback>{user.email?.[0].toUpperCase() ?? 'U'}</AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col group-data-[collapsible=icon]:hidden overflow-hidden">
+                  <span className="text-sm font-semibold text-foreground truncate">{user.displayName ?? 'Usuário'}</span>
+                  <span className="text-xs text-muted-foreground truncate">{user.email}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3 p-2">
+              <Avatar className="size-8">
+                <AvatarFallback>
+                  <UserIcon className="size-5" />
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col group-data-[collapsible=icon]:hidden">
+                  <span className="text-sm font-semibold text-foreground">Anônimo</span>
+                  <Button asChild size="sm" variant="link" className="p-0 h-auto justify-start text-primary">
+                    <Link href="/login">Fazer Login</Link>
+                  </Button>
+              </div>
+            </div>
+          )}
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>

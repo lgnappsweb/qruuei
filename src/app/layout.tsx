@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import { AppShell } from '@/components/app-shell';
 import './globals.css';
+import { FirebaseClientProvider } from '@/firebase/client-provider';
+import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 
 export const metadata: Metadata = {
   title: 'QRU | PRIORIDADE',
@@ -21,9 +23,12 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        <AppShell>
-          {children}
-        </AppShell>
+        <FirebaseClientProvider>
+          <AppShell>
+            {children}
+          </AppShell>
+          <FirebaseErrorListener />
+        </FirebaseClientProvider>
         <Toaster />
       </body>
     </html>
