@@ -36,7 +36,7 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
         >
           <Icon className="h-7 w-7 sm:h-8 sm:w-8 text-white" />
         </div>
-        <p className="font-medium text-center text-sm sm:text-base text-card-foreground">
+        <p className="font-medium text-center text-base text-card-foreground">
           {occurrence.title}
         </p>
       </CardContent>
