@@ -13,9 +13,9 @@ export type Occurrence = {
 };
 
 export const occurrences: Occurrence[] = [
-  { id: '1', title: 'Ocorrência 1', icon: HeartPulse, color: 'bg-rose-500' },
-  { id: '2', title: 'Ocorrência 2', icon: Shield, color: 'bg-blue-500' },
-  { id: '3', title: 'Ocorrência 3', icon: Milestone, color: 'bg-green-500' },
+  { id: '1', title: 'QUD RESGATE', icon: HeartPulse, color: 'bg-rose-500' },
+  { id: '2', title: 'QUD OPERAÇÃO', icon: Shield, color: 'bg-blue-500' },
+  { id: '3', title: 'TRAÇADO DE PISTA', icon: Milestone, color: 'bg-green-500' },
   { id: '4', title: 'Ocorrência 4', icon: Car, color: 'bg-yellow-500' },
   { id: '5', title: 'Ocorrência 5', icon: Wrench, color: 'bg-indigo-500' },
   { id: '6', title: 'Ocorrência 6', icon: Flame, color: 'bg-purple-500' },
