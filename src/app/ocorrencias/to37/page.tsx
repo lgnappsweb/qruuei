@@ -56,6 +56,7 @@ const formSchema = z.object({
   localArea: z.string().min(1, 'Selecione o local/área.'),
   
   // Sinalização
+  tipoPlaca: z.string().min(1, "Selecione o tipo de placa."),
   acao: z.string().min(1, 'Selecione a ação.'),
   nomePlaca: z.string().min(1, 'O nome da placa é obrigatório.'),
   quantidade: z.string().min(1, 'A quantidade é obrigatória.'),
@@ -77,6 +78,7 @@ export default function OcorrenciaTO37Page() {
       qth: '',
       sentido: '',
       localArea: '',
+      tipoPlaca: '',
       acao: '',
       nomePlaca: '',
       quantidade: '1',
@@ -228,6 +230,32 @@ export default function OcorrenciaTO37Page() {
               <CardTitle>Sinalização</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6 pt-6">
+                <FormField
+                  control={form.control}
+                  name="tipoPlaca"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tipo de Placa</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o tipo da placa" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Regulamentação">Regulamentação</SelectItem>
+                          <SelectItem value="Advertência">Advertência</SelectItem>
+                          <SelectItem value="Indicação">Indicação</SelectItem>
+                          <SelectItem value="Obras">Obras</SelectItem>
+                          <SelectItem value="Educativas">Educativas</SelectItem>
+                          <SelectItem value="Orientação">Orientação</SelectItem>
+                          <SelectItem value="Atrativo Turístico">Atrativo Turístico</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="acao"
