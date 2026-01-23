@@ -253,28 +253,19 @@ export default function OcorrenciaTO01Page() {
                   control={form.control}
                   name="sentido"
                   render={({ field }) => (
-                    <FormItem className="space-y-3">
+                    <FormItem>
                       <FormLabel>Sentido</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex flex-row space-x-4"
-                        >
-                          <FormItem className="flex items-center space-x-2 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="Norte" />
-                            </FormControl>
-                            <FormLabel className="font-normal text-xl">Norte</FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-2 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="Sul" />
-                            </FormControl>
-                            <FormLabel className="font-normal text-xl">Sul</FormLabel>
-                          </FormItem>
-                        </RadioGroup>
-                      </FormControl>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o sentido" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Norte">Norte</SelectItem>
+                          <SelectItem value="Sul">Sul</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
