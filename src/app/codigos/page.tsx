@@ -362,18 +362,18 @@ function PontosDeApoioTable() {
       <TableHeader>
         <TableRow>
           <TableHead>Ponto de Apoio</TableHead>
-          <TableHead>Rodovia</TableHead>
-          <TableHead>KM</TableHead>
-          <TableHead>Sentido</TableHead>
+          <TableHead className="px-1">Rodovia</TableHead>
+          <TableHead className="px-1">KM</TableHead>
+          <TableHead className="px-1">Sentido</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {pontosDeApoioData.map((item, index) => (
           <TableRow key={index}>
             <TableCell className="font-medium">{item.ponto}</TableCell>
-            <TableCell>{item.rodovia}</TableCell>
-            <TableCell>{item.km}</TableCell>
-            <TableCell>{item.sentido}</TableCell>
+            <TableCell className="px-1">{item.rodovia}</TableCell>
+            <TableCell className="px-1">{item.km}</TableCell>
+            <TableCell className="px-1">{item.sentido}</TableCell>
           </TableRow>
         ))}
       </TableBody>
