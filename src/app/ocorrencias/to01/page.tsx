@@ -288,7 +288,7 @@ export default function OcorrenciaTO01Page() {
                           <SelectItem value="Faixa de Rolamento">Faixa de Rolamento</SelectItem>
                           <SelectItem value="Terceira Faixa">Terceira Faixa</SelectItem>
                           <SelectItem value="Acostamento">Acostamento</SelectItem>
-                          <SelectItem value="ÁREA de Domínio">ÁREA de Domínio</SelectItem>
+                          <SelectItem value="Área de Domínio">Área de Domínio</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
