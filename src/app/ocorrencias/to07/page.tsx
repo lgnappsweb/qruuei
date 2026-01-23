@@ -281,19 +281,21 @@ export default function OcorrenciaTO07Page() {
                     </FormItem>
                   )}
                 />
-                 <FormField
-                  control={form.control}
-                  name="qthDestinacao"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>QTH da Destinação {destinacaoObjetoValue ? `(${destinacaoObjetoValue})` : ''}</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Ex: KM 20+100" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {destinacaoObjetoValue === 'PR13' && (
+                  <FormField
+                    control={form.control}
+                    name="qthDestinacao"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>QTH da Destinação {destinacaoObjetoValue ? `(${destinacaoObjetoValue})` : ''}</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Ex: KM 20+100" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
                 <FormField
                     control={form.control}
                     name="vtrApoio"
