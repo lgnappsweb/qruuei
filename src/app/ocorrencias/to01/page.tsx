@@ -80,6 +80,7 @@ const formSchema = z.object({
   tipoCarga: z.string().optional(),
   qraCondutor: z.string().optional(),
   baixaFrequencia: z.boolean().default(false),
+  telefone: z.string().optional(),
   ocupantes: z.string().optional(),
   auxilios: z.array(z.string()).optional(),
   observacoes: z.string().optional(),
@@ -109,6 +110,7 @@ export default function OcorrenciaTO01Page() {
       tipoCarga: '',
       qraCondutor: '',
       baixaFrequencia: false,
+      telefone: '',
       ocupantes: '',
       auxilios: [],
       observacoes: '',
@@ -188,54 +190,54 @@ export default function OcorrenciaTO01Page() {
                 />
               </div>
 
-              <FormField
-                control={form.control}
-                name="tipoPanes"
-                render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Tipos de Pane</FormLabel>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <FormControl>
-                                    <Button variant="outline" className="w-full justify-start text-left font-normal h-14 text-xl px-4 py-2">
-                                        <div className="truncate">
-                                            {field.value?.length
-                                                ? tiposPane
-                                                    .filter(pane => field.value?.includes(pane.id))
-                                                    .map(pane => pane.label)
-                                                    .join(', ')
-                                                : "Selecione um ou mais tipos de pane (opcional)"}
-                                        </div>
-                                    </Button>
-                                </FormControl>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]">
-                                {tiposPane.map(item => (
-                                    <DropdownMenuCheckboxItem
-                                        key={item.id}
-                                        checked={field.value?.includes(item.id)}
-                                        onCheckedChange={checked => {
-                                            const newValue = checked
-                                                ? [...(field.value || []), item.id]
-                                                : field.value?.filter(value => value !== item.id);
-                                            field.onChange(newValue);
-                                        }}
-                                        onSelect={e => e.preventDefault()}
-                                        className="text-xl"
-                                    >
-                                        {item.label}
-                                    </DropdownMenuCheckboxItem>
-                                ))}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                        <FormDescription>
-                            Você pode selecionar múltiplos tipos de pane.
-                        </FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                )}
+               <FormField
+                  control={form.control}
+                  name="tipoPanes"
+                  render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Tipos de Pane</FormLabel>
+                          <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                  <FormControl>
+                                      <Button variant="outline" className="w-full justify-start text-left font-normal h-14 text-xl px-4 py-2">
+                                          <div className="truncate">
+                                              {field.value?.length
+                                                  ? tiposPane
+                                                      .filter(pane => field.value?.includes(pane.id))
+                                                      .map(pane => pane.label)
+                                                      .join(', ')
+                                                  : "Selecione um ou mais tipos de pane (opcional)"}
+                                          </div>
+                                      </Button>
+                                  </FormControl>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]">
+                                  {tiposPane.map(item => (
+                                      <DropdownMenuCheckboxItem
+                                          key={item.id}
+                                          checked={field.value?.includes(item.id)}
+                                          onCheckedChange={checked => {
+                                              const newValue = checked
+                                                  ? [...(field.value || []), item.id]
+                                                  : field.value?.filter(value => value !== item.id);
+                                              field.onChange(newValue);
+                                          }}
+                                          onSelect={e => e.preventDefault()}
+                                          className="text-xl"
+                                      >
+                                          {item.label}
+                                      </DropdownMenuCheckboxItem>
+                                  ))}
+                              </DropdownMenuContent>
+                          </DropdownMenu>
+                          <FormDescription>
+                              Você pode selecionar múltiplos tipos de pane.
+                          </FormDescription>
+                          <FormMessage />
+                      </FormItem>
+                  )}
               />
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
@@ -272,31 +274,30 @@ export default function OcorrenciaTO01Page() {
                   )}
                 />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <FormField
-                  control={form.control}
-                  name="localArea"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Local/Área</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione o local/área" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="Faixa de Rolamento">Faixa de Rolamento</SelectItem>
-                          <SelectItem value="Terceira Faixa">Terceira Faixa</SelectItem>
-                          <SelectItem value="Acostamento">Acostamento</SelectItem>
-                          <SelectItem value="Área de Domínio">Área de Domínio</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+              
+              <FormField
+                control={form.control}
+                name="localArea"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Local/Área</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o local/área" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Faixa de Rolamento">Faixa de Rolamento</SelectItem>
+                        <SelectItem value="Terceira Faixa">Terceira Faixa</SelectItem>
+                        <SelectItem value="Acostamento">Acostamento</SelectItem>
+                        <SelectItem value="Área de Domínio">Área de Domínio</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </CardContent>
           </Card>
 
@@ -382,6 +383,38 @@ export default function OcorrenciaTO01Page() {
                   </FormItem>
                 )}
               />
+              {form.watch('baixaFrequencia') && (
+                <FormField
+                  control={form.control}
+                  name="telefone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Telefone</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="(99) 99999-9999"
+                          {...field}
+                          onChange={(e) => {
+                            let value = e.target.value.replace(/\D/g, "");
+                            value = value.substring(0, 11);
+                            if (value.length > 10) {
+                              value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                            } else if (value.length > 6) {
+                              value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+                            } else if (value.length > 2) {
+                              value = value.replace(/(\d{2})(\d*)/, '($1) $2');
+                            } else if (value.length > 0) {
+                              value = `(${value}`;
+                            }
+                            field.onChange(value);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
               <FormField name="ocupantes" control={form.control} render={({ field }) => (<FormItem><FormLabel>Nº de Ocupantes</FormLabel><FormControl><Input placeholder="Ex: 0" type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
             </CardContent>
           </Card>
