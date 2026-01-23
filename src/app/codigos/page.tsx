@@ -47,6 +47,7 @@ const tiposDeOcorrenciaData = [
     { codigo: 'TO24', mensagem: 'Evasão De Pedágio', grupo: 'Outros' },
     { codigo: 'TO25', mensagem: 'Derramamento De Carga', grupo: 'Todos' },
     { codigo: 'TO30', mensagem: 'Comunicação Operacional', grupo: 'Incidentes' },
+    { codigo: 'TO32', mensagem: 'Roçada Manual / Mecanizada', grupo: 'Incidentes' },
     { codigo: 'TO33', mensagem: 'Veículo Atolado', grupo: 'Incidentes' },
     { codigo: 'TO34', mensagem: 'Buraco Na Rodovia', grupo: 'Avarias, Panes' },
     { codigo: 'TO35', mensagem: 'Óleo Sobre A Pista', grupo: 'Todos' },
