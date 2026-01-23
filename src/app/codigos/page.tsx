@@ -195,6 +195,46 @@ function TiposDePaneTable() {
   );
 }
 
+const outrasMensagensData = [
+  { codigo: '61', mensagem: 'Sintoma de embriaguez' },
+  { codigo: '62', mensagem: 'Sintomas de entorpecentes ou drogas ilícitas' },
+  {
+    codigo: '63',
+    mensagem: 'PMR - Informação de PMR realizando abordagem no trecho',
+  },
+  {
+    codigo: '64',
+    mensagem: 'AGEMS - informação dos agentes da AGEMS no trecho de concessão',
+  },
+  { codigo: '65', mensagem: 'BRINKS' },
+  { codigo: '67', mensagem: 'PMV inoperante' },
+  { codigo: '70', mensagem: 'Informações de assalto' },
+  { codigo: 'OP08', mensagem: 'Operação Policial' },
+  { codigo: 'OU01', mensagem: 'Ocorrência Fora Do Trecho' },
+  { codigo: 'OU02', mensagem: 'Outros' },
+];
+
+function OutrasMensagensTable() {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[100px]">Código</TableHead>
+          <TableHead>Mensagem</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {outrasMensagensData.map((item) => (
+          <TableRow key={item.codigo}>
+            <TableCell className="font-medium">{item.codigo}</TableCell>
+            <TableCell>{item.mensagem}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
+
 const codeSections = [
   {
     value: 'item-1',
@@ -214,7 +254,7 @@ const codeSections = [
   {
     value: 'item-4',
     title: 'Outras Mensagens',
-    content: 'Conteúdo para Outras Mensagens em breve.',
+    content: <OutrasMensagensTable />,
   },
   {
     value: 'item-5',
