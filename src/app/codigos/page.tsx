@@ -17,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const tiposDeOcorrenciaData = [
     { codigo: 'ACO1', mensagem: 'Acidente Com Vítima Fatal', grupo: 'Acidentes' },
@@ -381,6 +382,106 @@ function PontosDeApoioTable() {
   );
 }
 
+const relacionamentosData = [
+  {
+    title: 'Acidentes',
+    description: 'Envolve colisões, atropelamentos, etc. com ou sem vítimas. (Ocorrências: ACO1, AC02, ACO3)',
+    providencias: ['PR01', 'PR11', 'PR12', 'PR13', 'PR27', 'PR31', 'PR32', 'PR44', 'PR50', 'PR51', 'PR57', 'PR58', 'PR59', 'PR61'],
+    panes: [],
+    outras: ['61', '62'],
+  },
+  {
+    title: 'Panes e Avarias',
+    description: 'Problemas mecânicos, elétricos, pneus, falta de combustível, etc. (Ocorrências: TO06, TO33, TO34, TO50)',
+    providencias: ['PR01', 'PR12', 'PR13', 'PR24', 'PR25', 'PR27', 'PR45', 'PR53', 'PR54', 'PR55', 'PR63'],
+    panes: ['TP01', 'TP02', 'TP03', 'TP04', 'TP05', 'TP07'],
+    outras: [],
+  },
+  {
+    title: 'Incidentes na Via',
+    description: 'Eventos que afetam o fluxo ou a segurança, como animais, objetos, derramamentos ou incêndios. (Ocorrências: TO02, TO03, TO05, TO07, TO18, TO25, TO35)',
+    providencias: ['PR02', 'PR03', 'PR04', 'PR05', 'PR06', 'PR13', 'PR21', 'PR22', 'PR23', 'PR56'],
+    panes: [],
+    outras: [],
+  },
+  {
+    title: 'Obras e Manutenção',
+    description: 'Atividades de conservação, reparos na via ou sinalização. (Ocorrências: TO09, TO34, TO36, TO37, TO50)',
+    providencias: ['PR08', 'PR13', 'PR14', 'PR29', 'PR33', 'PR37', 'PR48', 'PR60', 'PR62'],
+    panes: [],
+    outras: [],
+  },
+  {
+    title: 'Atendimento ao Usuário',
+    description: 'Apoio clínico, a funcionários ou a andarilhos na rodovia. (Ocorrências: TO12, TO16, TO17)',
+    providencias: ['PR15', 'PR16', 'PR17', 'PR20', 'PR30', 'PR38', 'PR57', 'PR58', 'PR59'],
+    panes: [],
+    outras: [],
+  },
+  {
+    title: 'Ocorrências Policiais e Fiscais',
+    description: 'Danos ao patrimônio, evasão, ou outras situações que demandem acionamento policial. (Ocorrências: TO11, TO14, TO19, TO24)',
+    providencias: ['PR09', 'PR18', 'PR36', 'PR44', 'PR49'],
+    outras: ['70', 'OP08'],
+    panes: [],
+  },
+];
+
+function RelacionamentosContent() {
+
+  const findItem = (list: {codigo: string, mensagem: string}[], code: string) => {
+    return list.find(item => item.codigo === code);
+  }
+
+  return (
+    <div className="space-y-4">
+      {relacionamentosData.map(rel => (
+        <Card key={rel.title} className="bg-card/50 border-border">
+          <CardHeader>
+            <CardTitle className="text-xl">{rel.title}</CardTitle>
+            <CardDescription>{rel.description}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4 pt-0">
+            {rel.providencias && rel.providencias.length > 0 && (
+              <div>
+                <h4 className="font-semibold mb-2 text-base text-foreground/90">Ações/Providências Comuns</h4>
+                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                  {rel.providencias.map(code => {
+                    const item = findItem(tiposDeAcaoData, code);
+                    return item ? <li key={code}><strong>{code}:</strong> {item.mensagem}</li> : null;
+                  })}
+                </ul>
+              </div>
+            )}
+             {rel.panes && rel.panes.length > 0 && (
+              <div>
+                <h4 className="font-semibold mb-2 text-base text-foreground/90">Tipos de Pane Comuns</h4>
+                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                  {rel.panes.map(code => {
+                    const item = findItem(tiposDePaneData, code);
+                    return item ? <li key={code}><strong>{code}:</strong> {item.mensagem}</li> : null;
+                  })}
+                </ul>
+              </div>
+            )}
+             {rel.outras && rel.outras.length > 0 && (
+              <div>
+                <h4 className="font-semibold mb-2 text-base text-foreground/90">Outras Mensagens Comuns</h4>
+                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                  {rel.outras.map(code => {
+                    const item = findItem(outrasMensagensData, code);
+                    return item ? <li key={code}><strong>{code}:</strong> {item.mensagem}</li> : null;
+                  })}
+                </ul>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  )
+}
+
 
 const codeSections = [
   {
@@ -416,7 +517,7 @@ const codeSections = [
   {
     value: 'item-7',
     title: 'Relacionamentos',
-    content: 'Conteúdo para Relacionamentos em breve.',
+    content: <RelacionamentosContent />,
   },
   {
     value: 'item-8',
