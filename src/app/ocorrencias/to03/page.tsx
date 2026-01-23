@@ -44,7 +44,6 @@ const auxilios = [
   { id: 'PR04', label: 'PR04 - Retirada de animal morto da pista' },
   { id: 'PR05', label: 'PR05 - Afugentamento de animal' },
   { id: 'PR13', label: 'PR13 - Canalização/Sinalização' },
-  { id: 'PR44', label: 'PR44 - Acionamento de Polícia' },
   { id: 'PR51', label: 'PR51 - Efetuado Registro Fotográfico' },
   { id: 'PR56', label: 'PR56 - Enterro de Animal' },
   { id: 'PR33', label: 'PR33 - Reparo em cerca' },
