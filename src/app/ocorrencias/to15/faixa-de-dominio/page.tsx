@@ -238,8 +238,6 @@ export default function OcorrenciaTO15FaixaDeDominioPage() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Faixa de Rolamento">Faixa de Rolamento</SelectItem>
-                        <SelectItem value="Terceira Faixa">Terceira Faixa</SelectItem>
                         <SelectItem value="Acostamento">Acostamento</SelectItem>
                         <SelectItem value="Área de Domínio">Área de Domínio</SelectItem>
                       </SelectContent>
