@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, FileCode, ShieldAlert, Settings } from "lucide-react";
+import { Home, FileCode, ShieldAlert, Settings, NotebookText } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/", label: "Início", icon: Home },
   { href: "/codigos", label: "Códigos", icon: FileCode },
   { href: "/ocorrencias", label: "Ocorrências", icon: ShieldAlert },
+  { href: "/notas", label: "Notas", icon: NotebookText },
   { href: "/ajustes", label: "Ajustes", icon: Settings },
 ];
 
