@@ -149,50 +149,51 @@ const CheckboxGroup = ({
 
 // Helper component for radio groups
 const RadioGroupField = ({
+  label,
   name,
   control,
   items,
   otherFieldName,
   otherLabel = 'Outros',
 }: {
+  label: string;
   name: any;
   control: any;
   items: { value: string; label: string }[];
   otherFieldName?: any;
   otherLabel?: string;
 }) => {
-  const showOtherField = control.getValues(name) === 'Outros';
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
         <FormItem className="space-y-3">
+          <FormLabel>{label}</FormLabel>
           <FormControl>
             <RadioGroup
               onValueChange={field.onChange}
-              defaultValue={field.value}
+              value={field.value}
               className="space-y-2"
             >
               {items.map((item) => (
-                <div
-                  key={item.value}
-                  className="flex items-center space-x-3 space-y-0"
-                >
-                  <RadioGroupItem value={item.value} id={`${name}-${item.value}`} />
-                  <Label htmlFor={`${name}-${item.value}`} className="font-normal text-base">{item.label}</Label>
-                </div>
+                <FormItem key={item.value} className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                        <RadioGroupItem value={item.value} id={`${name}-${item.value}`} />
+                    </FormControl>
+                    <FormLabel htmlFor={`${name}-${item.value}`} className="font-normal text-base">{item.label}</FormLabel>
+                </FormItem>
               ))}
             </RadioGroup>
           </FormControl>
-          {otherFieldName && showOtherField && (
+          {otherFieldName && control.watch(name) === 'Outros' && (
             <FormField
               control={control}
               name={otherFieldName}
-              render={({ field }) => (
+              render={({ field: otherField }) => (
                 <FormItem className="pt-2">
                   <FormControl>
-                    <Input {...field} placeholder={otherLabel} />
+                    <Input {...otherField} placeholder={otherLabel} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -205,6 +206,7 @@ const RadioGroupField = ({
     />
   );
 };
+
 
 // Data for options
 const provavelCinematicaItems = [
@@ -368,38 +370,38 @@ export default function TracadoDePistaPage() {
           <Card>
             <CardHeader><CardTitle>CONDIÇÕES</CardTitle></CardHeader>
             <CardContent className="space-y-6 pt-6">
-              <FormItem><FormLabel>Condições meteorológicas</FormLabel><RadioGroupField name="condicoesMeteorologicas" control={form.control} items={[{value:"Não identificado", label:"Não identificado"}, {value:"Bom", label:"Bom"}, {value:"Chuva", label:"Chuva"}, {value:"Neblina", label:"Neblina"}, {value:"Garoa", label:"Garoa"}, {value:"Nublado", label:"Nublado"}, {value:"Chuva torrencial", label:"Chuva torrencial"}, {value:"Vento forte", label:"Vento forte"}, {value:"Chuva com ventania", label:"Chuva com ventania"}, {value:"Chuva com granizo", label:"Chuva com granizo"}]} /></FormItem>
-              <FormItem><FormLabel>Condição de visibilidade</FormLabel><RadioGroupField name="condicaoVisibilidade" control={form.control} items={[{value:"Boa", label:"Boa"}, {value:"Parcial", label:"Parcial"}, {value:"Ruim", label:"Ruim"}]} /></FormItem>
+              <RadioGroupField label="Condições meteorológicas" name="condicoesMeteorologicas" control={form.control} items={[{value:"Não identificado", label:"Não identificado"}, {value:"Bom", label:"Bom"}, {value:"Chuva", label:"Chuva"}, {value:"Neblina", label:"Neblina"}, {value:"Garoa", label:"Garoa"}, {value:"Nublado", label:"Nublado"}, {value:"Chuva torrencial", label:"Chuva torrencial"}, {value:"Vento forte", label:"Vento forte"}, {value:"Chuva com ventania", label:"Chuva com ventania"}, {value:"Chuva com granizo", label:"Chuva com granizo"}]} />
+              <RadioGroupField label="Condição de visibilidade" name="condicaoVisibilidade" control={form.control} items={[{value:"Boa", label:"Boa"}, {value:"Parcial", label:"Parcial"}, {value:"Ruim", label:"Ruim"}]} />
               <FormItem><FormLabel>Condições especiais</FormLabel><CheckboxGroup name="condicoesEspeciais" control={form.control} items={condicoesEspeciaisItems} otherFieldName="condicoesEspeciaisOutros" /></FormItem>
-              <FormItem><FormLabel>Condições de sinalização</FormLabel><RadioGroupField name="condicoesSinalizacao" control={form.control} items={[{value:"Existente e visível", label:"Existente e visível"}, {value:"Existente e encoberta", label:"Existente e encoberta"}, {value:"Inexistente", label:"Inexistente"}, {value:"Outros", label:"Outros"}]} otherFieldName="condicoesSinalizacaoOutros" /></FormItem>
+              <RadioGroupField label="Condições de sinalização" name="condicoesSinalizacao" control={form.control} items={[{value:"Existente e visível", label:"Existente e visível"}, {value:"Existente e encoberta", label:"Existente e encoberta"}, {value:"Inexistente", label:"Inexistente"}, {value:"Outros", label:"Outros"}]} otherFieldName="condicoesSinalizacaoOutros" />
             </CardContent>
           </Card>
           
           <Card>
             <CardHeader><CardTitle>PISTA</CardTitle></CardHeader>
             <CardContent className="space-y-6 pt-6">
-                <FormItem><FormLabel>Tipo de pista</FormLabel><RadioGroupField name="tipoPista" control={form.control} items={[{value:"Dupla", label:"Dupla"}, {value:"Simples", label:"Simples"}, {value:"Multivias", label:"Multivias"}]} /></FormItem>
-                <FormItem><FormLabel>Traçado de pista</FormLabel><RadioGroupField name="tracadoPista" control={form.control} items={[{value:"Reta", label:"Reta"}, {value:"Curva acentuada", label:"Curva acentuada"}, {value:"Curva suave", label:"Curva suave"}]} /></FormItem>
-                <FormItem><FormLabel>Perfil</FormLabel><RadioGroupField name="perfilPista" control={form.control} items={[{value:"Em nível", label:"Em nível"}, {value:"Aclive", label:"Aclive"}, {value:"Declive", label:"Declive"}]} /></FormItem>
-                <FormItem><FormLabel>Obras na pista</FormLabel><RadioGroupField name="obrasNaPista" control={form.control} items={[{value:"Não existe", label:"Não existe"}, {value:"Existe mal sinalizada", label:"Existe mal sinalizada"}, {value:"Existe bem sinalizada", label:"Existe bem sinalizada"}]} /></FormItem>
-                <FormItem><FormLabel>Condição de pista</FormLabel><RadioGroupField name="condicaoPista" control={form.control} items={[{value:"Molhada", label:"Molhada"}, {value:"Seca", label:"Seca"}, {value:"Contaminada", label:"Contaminada"}, {value:"Escorregadia", label:"Escorregadia"}]} /></FormItem>
+                <RadioGroupField label="Tipo de pista" name="tipoPista" control={form.control} items={[{value:"Dupla", label:"Dupla"}, {value:"Simples", label:"Simples"}, {value:"Multivias", label:"Multivias"}]} />
+                <RadioGroupField label="Traçado de pista" name="tracadoPista" control={form.control} items={[{value:"Reta", label:"Reta"}, {value:"Curva acentuada", label:"Curva acentuada"}, {value:"Curva suave", label:"Curva suave"}]} />
+                <RadioGroupField label="Perfil" name="perfilPista" control={form.control} items={[{value:"Em nível", label:"Em nível"}, {value:"Aclive", label:"Aclive"}, {value:"Declive", label:"Declive"}]} />
+                <RadioGroupField label="Obras na pista" name="obrasNaPista" control={form.control} items={[{value:"Não existe", label:"Não existe"}, {value:"Existe mal sinalizada", label:"Existe mal sinalizada"}, {value:"Existe bem sinalizada", label:"Existe bem sinalizada"}]} />
+                <RadioGroupField label="Condição de pista" name="condicaoPista" control={form.control} items={[{value:"Molhada", label:"Molhada"}, {value:"Seca", label:"Seca"}, {value:"Contaminada", label:"Contaminada"}, {value:"Escorregadia", label:"Escorregadia"}]} />
                 <FormItem><FormLabel>Obstáculo canteiro central</FormLabel><CheckboxGroup name="obstaculoCanteiroCentral" control={form.control} items={obstaculoItems} otherFieldName="obstaculoCanteiroCentralOutros" /></FormItem>
                 <FormItem><FormLabel>Obstáculo acostamento</FormLabel><CheckboxGroup name="obstaculoAcostamento" control={form.control} items={obstaculoItems} otherFieldName="obstaculoAcostamentoOutros" /></FormItem>
-                <FormItem><FormLabel>Obras no acostamento</FormLabel><RadioGroupField name="obrasNoAcostamento" control={form.control} items={[{value:"Não existe", label:"Não existe"}, {value:"Existe mal sinalizada", label:"Existe mal sinalizada"}, {value:"Existe bem sinalizada", label:"Existe bem sinalizada"}]} /></FormItem>
-                <FormItem><FormLabel>Estado de conservação</FormLabel><RadioGroupField name="estadoConservacao" control={form.control} items={[{value:"Bom", label:"Bom"}, {value:"Ruim", label:"Ruim"}]} /></FormItem>
-                <FormItem><FormLabel>Interseções na pista</FormLabel><RadioGroupField name="intersecoesNaPista" control={form.control} items={[{value:"Cruzamento/entroncamento", label:"Cruzamento/entroncamento"}, {value:"Trevo", label:"Trevo"}, {value:"Rotatória", label:"Rotatória"}, {value:"Não existe", label:"Não existe"}]} /></FormItem>
+                <RadioGroupField label="Obras no acostamento" name="obrasNoAcostamento" control={form.control} items={[{value:"Não existe", label:"Não existe"}, {value:"Existe mal sinalizada", label:"Existe mal sinalizada"}, {value:"Existe bem sinalizada", label:"Existe bem sinalizada"}]} />
+                <RadioGroupField label="Estado de conservação" name="estadoConservacao" control={form.control} items={[{value:"Bom", label:"Bom"}, {value:"Ruim", label:"Ruim"}]} />
+                <RadioGroupField label="Interseções na pista" name="intersecoesNaPista" control={form.control} items={[{value:"Cruzamento/entroncamento", label:"Cruzamento/entroncamento"}, {value:"Trevo", label:"Trevo"}, {value:"Rotatória", label:"Rotatória"}, {value:"Não existe", label:"Não existe"}]} />
                 <FormItem><FormLabel>Deficiência em obras</FormLabel><CheckboxGroup name="deficienciaEmObras" control={form.control} items={deficienciaEmObrasItems} otherFieldName="deficienciaEmObrasOutros" /></FormItem>
-                <FormItem><FormLabel>Obras de arte</FormLabel><RadioGroupField name="obrasDeArte" control={form.control} items={[{value:"Ponte", label:"Ponte"}, {value:"Túnel", label:"Túnel"}, {value:"Passagem superior", label:"Passagem superior"}, {value:"Passagem inferior", label:"Passagem inferior"}, {value:"Não existe", label:"Não existe"}]} /></FormItem>
-                <FormItem><FormLabel>Local</FormLabel><RadioGroupField name="local" control={form.control} items={[{value:"Canteiro central", label:"Canteiro central"}, {value:"Faixa de domínio", label:"Faixa de domínio"}, {value:"Acostamento norte", label:"Acostamento norte"}, {value:"Acostamento Sul", label:"Acostamento Sul"}, {value:"Faixa de rolamento", label:"Faixa de rolamento"}, {value:"Acostamento", label:"Acostamento"}]} /></FormItem>
+                <RadioGroupField label="Obras de arte" name="obrasDeArte" control={form.control} items={[{value:"Ponte", label:"Ponte"}, {value:"Túnel", label:"Túnel"}, {value:"Passagem superior", label:"Passagem superior"}, {value:"Passagem inferior", label:"Passagem inferior"}, {value:"Não existe", label:"Não existe"}]} />
+                <RadioGroupField label="Local" name="local" control={form.control} items={[{value:"Canteiro central", label:"Canteiro central"}, {value:"Faixa de domínio", label:"Faixa de domínio"}, {value:"Acostamento norte", label:"Acostamento norte"}, {value:"Acostamento Sul", label:"Acostamento Sul"}, {value:"Faixa de rolamento", label:"Faixa de rolamento"}, {value:"Acostamento", label:"Acostamento"}]} />
             </CardContent>
           </Card>
           
           <Card>
             <CardHeader><CardTitle>SINALIZAÇÃO</CardTitle></CardHeader>
             <CardContent className="space-y-6 pt-6">
-                <FormItem><FormLabel>Sinalização vertical (placas, banners, postes)</FormLabel><RadioGroupField name="sinalizacaoVertical" control={form.control} items={[{value:"Existe", label:"Existe"}, {value:"Não existe", label:"Não existe"}]} /></FormItem>
-                <FormItem><FormLabel>Sinalização horizontal (faixa de bordo, faixa segmentada, pintura de pista...)</FormLabel><RadioGroupField name="sinalizacaoHorizontal" control={form.control} items={[{value:"Existe", label:"Existe"}, {value:"Não existe", label:"Não existe"}]} /></FormItem>
-                <FormItem><FormLabel>Sinalização semáforo</FormLabel><RadioGroupField name="sinalizacaoSemaforo" control={form.control} items={[{value:"Funciona", label:"Funciona"}, {value:"Não funciona", label:"Não funciona"}, {value:"Funciona com defeito", label:"Funciona com defeito"}, {value:"Inexistente", label:"Inexistente"}]} /></FormItem>
+                <RadioGroupField label="Sinalização vertical (placas, banners, postes)" name="sinalizacaoVertical" control={form.control} items={[{value:"Existe", label:"Existe"}, {value:"Não existe", label:"Não existe"}]} />
+                <RadioGroupField label="Sinalização horizontal (faixa de bordo, faixa segmentada, pintura de pista...)" name="sinalizacaoHorizontal" control={form.control} items={[{value:"Existe", label:"Existe"}, {value:"Não existe", label:"Não existe"}]} />
+                <RadioGroupField label="Sinalização semáforo" name="sinalizacaoSemaforo" control={form.control} items={[{value:"Funciona", label:"Funciona"}, {value:"Não funciona", label:"Não funciona"}, {value:"Funciona com defeito", label:"Funciona com defeito"}, {value:"Inexistente", label:"Inexistente"}]} />
             </CardContent>
           </Card>
 
