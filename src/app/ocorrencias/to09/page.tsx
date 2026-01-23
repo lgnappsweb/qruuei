@@ -76,7 +76,6 @@ const formSchema = z.object({
   // OUTRAS INFORMAÇÕES
   auxilios: z.string().optional(),
   observacoes: z.string().optional(),
-  numeroOcorrencia: z.string().optional(),
 });
 
 export default function OcorrenciaTO09Page() {
@@ -98,7 +97,6 @@ export default function OcorrenciaTO09Page() {
       qthTermino: '',
       auxilios: '',
       observacoes: '',
-      numeroOcorrencia: '',
     },
   });
 
@@ -400,19 +398,6 @@ export default function OcorrenciaTO09Page() {
                           className="resize-none"
                           {...field}
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="numeroOcorrencia"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Número da Ocorrência</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Se houver, insira o número" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
