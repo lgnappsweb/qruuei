@@ -16,7 +16,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
@@ -26,12 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-  } from '@/components/ui/dropdown-menu';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Card,
@@ -66,7 +59,7 @@ const formSchema = z.object({
   vtrApoio: z.boolean().default(false),
   vtrApoioDescricao: z.string().optional(),
   observacoes: z.string().optional(),
-  auxilios: z.array(z.string()).optional(),
+  auxilios: z.string().optional(),
 });
 
 export default function OcorrenciaTO02Page() {
@@ -86,7 +79,7 @@ export default function OcorrenciaTO02Page() {
       vtrApoio: false,
       vtrApoioDescricao: '',
       observacoes: '',
-      auxilios: [],
+      auxilios: '',
     },
   });
 
@@ -110,7 +103,7 @@ export default function OcorrenciaTO02Page() {
     } else {
       form.setValue('areaTotal', '');
     }
-  }, [proporcaoMetrosValue, form.setValue]);
+  }, [proporcaoMetrosValue, form]);
 
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -360,51 +353,31 @@ export default function OcorrenciaTO02Page() {
                   )}
                 />
                 <FormField
-                    control={form.control}
-                    name="auxilios"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Auxílios/PR</FormLabel>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <FormControl>
-                                        <Button variant="outline" className="w-full justify-start text-left font-normal h-14 text-xl px-4 py-2">
-                                            <div className="truncate">
-                                                {field.value?.length
-                                                    ? auxilios
-                                                        .filter(aux => field.value?.includes(aux.id))
-                                                        .map(aux => aux.id)
-                                                        .join(', ')
-                                                    : "Selecione um ou mais auxílios"}
-                                            </div>
-                                        </Button>
-                                    </FormControl>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]">
-                                    {auxilios.map(item => (
-                                        <DropdownMenuCheckboxItem
-                                            key={item.id}
-                                            checked={field.value?.includes(item.id)}
-                                            onCheckedChange={checked => {
-                                                const newValue = checked
-                                                    ? [...(field.value || []), item.id]
-                                                    : field.value?.filter(value => value !== item.id);
-                                                field.onChange(newValue);
-                                            }}
-                                            onSelect={e => e.preventDefault()}
-                                            className="text-xl"
-                                        >
-                                            {item.label}
-                                        </DropdownMenuCheckboxItem>
-                                    ))}
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                            <FormDescription>
-                               Selecione os auxílios prestados.
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
+                  control={form.control}
+                  name="auxilios"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Auxílios/PR</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Descreva os auxílios prestados. Ex: PR02, PR13"
+                          className="resize-none"
+                          {...field}
+                        />
+                      </FormControl>
+                      <div className="space-y-2 pt-2">
+                        <p className="text-sm font-medium text-foreground">
+                          Códigos de referência:
+                        </p>
+                        <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+                          {auxilios.map((item) => (
+                            <li key={item.id}>{item.label}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
             </CardContent>
           </Card>
