@@ -17,7 +17,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-24 lg:pb-32">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-24 lg:pb-48">
         {children}
       </main>
       <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-10">
