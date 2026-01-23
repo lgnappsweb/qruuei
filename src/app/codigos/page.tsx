@@ -32,6 +32,8 @@ const tiposDeOcorrenciaData = [
     { codigo: 'TO09', mensagem: 'Obras Na Rodovia / Conservação De Rotina', grupo: 'Incidentes' },
     { codigo: 'TO11', mensagem: 'Danos Ao Patrimônio', grupo: 'Incidentes' },
     { codigo: 'TO12', mensagem: 'Atendimento Clinico', grupo: 'Incidentes' },
+    { codigo: 'TO13', mensagem: 'Congestionamento', grupo: 'Incidentes' },
+    { codigo: 'TO14', mensagem: 'Ocorrência Policial', grupo: 'Incidentes' },
     { codigo: 'TO15', mensagem: 'Verificação Faixa De Domínio', grupo: 'Incidentes' },
     { codigo: 'TO16', mensagem: 'Atendimento A Funcionário', grupo: 'Todos' },
     { codigo: 'TO17', mensagem: 'Andarilho Na Rodovia', grupo: 'Incidentes' },
@@ -163,6 +165,36 @@ function TiposDeAcaoTable() {
   );
 }
 
+const tiposDePaneData = [
+  { codigo: 'TP01', mensagem: 'Pane Mecânica' },
+  { codigo: 'TP02', mensagem: 'Pane Elétrica' },
+  { codigo: 'TP03', mensagem: 'Pane Pneu' },
+  { codigo: 'TP04', mensagem: 'Pane Seca' },
+  { codigo: 'TP05', mensagem: 'Super Aquecimento De Motor' },
+  { codigo: 'TP07', mensagem: 'Bloqueio De Veículos Por Rastreador' },
+];
+
+function TiposDePaneTable() {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[100px]">Código</TableHead>
+          <TableHead>Mensagem</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {tiposDePaneData.map((item) => (
+          <TableRow key={item.codigo}>
+            <TableCell className="font-medium">{item.codigo}</TableCell>
+            <TableCell>{item.mensagem}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
+
 const codeSections = [
   {
     value: 'item-1',
@@ -177,7 +209,7 @@ const codeSections = [
   {
     value: 'item-3',
     title: 'Tipos de Pane',
-    content: 'Conteúdo para Tipos de Pane em breve.',
+    content: <TiposDePaneTable />,
   },
   {
     value: 'item-4',
