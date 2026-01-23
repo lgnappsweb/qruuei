@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from 'next/navigation';
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -11,14 +12,22 @@ type OccurrenceCardProps = {
 
 export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
   const { toast } = useToast();
+  const router = useRouter();
   const Icon = occurrence.icon;
 
+  const slug = occurrence.title.toLowerCase().replace(/\s/g, '');
+
   const handleClick = () => {
+    if (slug === 'to15') {
+      router.push('/ocorrencias/to15');
+      return;
+    }
+    
     // TODO: Futuramente, este clique poderá buscar e exibir
     // um relatório detalhado do Firestore e salvar a ocorrência.
     toast({
-      title: "Ocorrência Selecionada",
-      description: `Você selecionou: ${occurrence.title}`,
+      title: "Página em construção",
+      description: `A página para ${occurrence.title} ainda está em desenvolvimento.`,
     });
   };
 
