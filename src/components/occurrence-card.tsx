@@ -22,6 +22,8 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
       router.push('/ocorrencias/to02');
     } else if (occurrence.id === '6') { // This is TO 03
       router.push('/ocorrencias/to03');
+    } else if (occurrence.id === '7') { // This is TO 04
+      router.push('/ocorrencias/to04');
     } else {
       // TODO: Futuramente, este clique poderá buscar e exibir
       // um relatório detalhado do Firestore e salvar a ocorrência.
