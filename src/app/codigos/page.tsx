@@ -59,7 +59,7 @@ export default function CodigosPage() {
       </Button>
 
       <div className="space-y-2 text-center">
-        <h1 className="text-3xl font-bold tracking-tight">
+        <h1 className="font-condensed text-3xl font-bold tracking-tight">
           CÓDIGOS E ABREVIATURAS
         </h1>
         <p className="text-muted-foreground">
