@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -88,6 +89,29 @@ export default function OcorrenciaTO02Page() {
       auxilios: [],
     },
   });
+
+  const proporcaoMetrosValue = form.watch('proporcaoMetros');
+
+  React.useEffect(() => {
+    if (proporcaoMetrosValue) {
+      const parts = proporcaoMetrosValue.toLowerCase().split('x');
+      if (parts.length === 2) {
+        const width = parseFloat(parts[0]);
+        const height = parseFloat(parts[1]);
+        if (!isNaN(width) && !isNaN(height)) {
+          const area = width * height;
+          form.setValue('areaTotal', String(area));
+        } else {
+          form.setValue('areaTotal', '');
+        }
+      } else {
+        form.setValue('areaTotal', '');
+      }
+    } else {
+      form.setValue('areaTotal', '');
+    }
+  }, [proporcaoMetrosValue, form.setValue]);
+
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
@@ -268,7 +292,7 @@ export default function OcorrenciaTO02Page() {
                     <FormItem>
                       <FormLabel>Área Total (m²)</FormLabel>
                       <FormControl>
-                        <Input placeholder="Área total em metros quadrados" {...field} />
+                        <Input placeholder="Área total calculada" {...field} readOnly className="bg-muted" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
