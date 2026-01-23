@@ -45,7 +45,10 @@ const auxilios = [
     { id: 'PR15', label: 'PR15 - Orientação a andarilho' },
     { id: 'PR16', label: 'PR16 - Remoção de andarilho' },
     { id: 'PR17', label: 'PR17 - Orientação/Informação ao usuário' },
+    { id: 'PR18', label: 'PR18 - Recusa de dados' },
     { id: 'PR30', label: 'PR30 - Auxílio no transporte do usuário' },
+    { id: 'PR44', label: 'PR44 - Acionamento de Polícia' },
+    { id: 'PR49', label: 'PR49 - Evento acompanhamento pelo CFTV' },
     { id: 'PR51', label: 'PR51 - Efetuado Registro Fotográfico' },
 ] as const;
 
@@ -288,7 +291,7 @@ export default function OcorrenciaTO17Page() {
                       </FormControl>
                       <Accordion type="single" collapsible className="w-full pt-2">
                         <AccordionItem value="item-1" className="border-b-0">
-                          <AccordionTrigger className="py-0 text-sm font-normal text-muted-foreground hover:no-underline hover:text-primary [&[data-state=open]>svg]:text-primary">
+                          <AccordionTrigger className="py-2 text-sm font-normal text-muted-foreground hover:no-underline hover:text-primary [&[data-state=open]>svg]:text-primary">
                             Códigos de referência
                           </AccordionTrigger>
                           <AccordionContent>
