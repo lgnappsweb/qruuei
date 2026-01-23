@@ -407,9 +407,10 @@ export default function OcorrenciaTO03Page() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Simples">Simples</SelectItem>
-                        <SelectItem value="Dupla">Dupla</SelectItem>
-                        <SelectItem value="Múltipla">Múltipla</SelectItem>
+                        <SelectItem value="Pista Simples">Pista Simples</SelectItem>
+                        <SelectItem value="Pista Simples com Faixa Adicional">Pista Simples com Faixa Adicional</SelectItem>
+                        <SelectItem value="Pista Dupla">Pista Dupla</SelectItem>
+                        <SelectItem value="Pista Múltipla">Pista Múltipla</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
