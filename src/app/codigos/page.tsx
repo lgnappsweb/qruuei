@@ -280,6 +280,58 @@ function CodigosDeMensagemTable() {
   );
 }
 
+const alfabetoFoneticoData = [
+    { letra: 'A', palavra: 'Alpha', pronuncia: 'AL - FA' },
+    { letra: 'B', palavra: 'Bravo', pronuncia: 'BRA - VO' },
+    { letra: 'C', palavra: 'Charlie', pronuncia: 'CHAR -LIE' },
+    { letra: 'D', palavra: 'Delta', pronuncia: 'DEL -TA' },
+    { letra: 'E', palavra: 'Echo', pronuncia: 'E - CO' },
+    { letra: 'F', palavra: 'Fox', pronuncia: 'FOX - TROT' },
+    { letra: 'G', palavra: 'Golf', pronuncia: 'GOL - FE' },
+    { letra: 'H', palavra: 'Hotel', pronuncia: 'HO -TEL' },
+    { letra: 'I', palavra: 'India', pronuncia: 'IN - DI -A' },
+    { letra: 'J', palavra: 'Juliet', pronuncia: 'JU - LI -ETE' },
+    { letra: 'K', palavra: 'Kilo', pronuncia: 'KI-LO' },
+    { letra: 'L', palavra: 'Lima', pronuncia: 'LI - MA' },
+    { letra: 'M', palavra: 'Mike', pronuncia: 'MAI - QUE' },
+    { letra: 'N', palavra: 'November', pronuncia: 'NO - VEM - BER' },
+    { letra: 'O', palavra: 'Oscar', pronuncia: 'OS - CAR' },
+    { letra: 'P', palavra: 'Papa', pronuncia: 'PA - PA' },
+    { letra: 'Q', palavra: 'Quebec', pronuncia: 'QUE - BE - QUE' },
+    { letra: 'R', palavra: 'Romeo', pronuncia: 'RO - MEU' },
+    { letra: 'S', palavra: 'Sierra', pronuncia: 'SI - E - RRA' },
+    { letra: 'T', palavra: 'Tango', pronuncia: 'TAN - GO' },
+    { letra: 'U', palavra: 'Uniform', pronuncia: 'U - NI- FOR - ME' },
+    { letra: 'V', palavra: 'Victor', pronuncia: 'VIC - TOR' },
+    { letra: 'W', palavra: 'Whiskey', pronuncia: 'WHIS - KEY' },
+    { letra: 'X', palavra: 'X Ray', pronuncia: 'EX - REY' },
+    { letra: 'Y', palavra: 'Yankee', pronuncia: 'IAN - QUI' },
+    { letra: 'Z', palavra: 'Zulu', pronuncia: 'ZU - LU' },
+];
+
+function AlfabetoFoneticoTable() {
+    return (
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHead className="w-[80px]">Letra</TableHead>
+                    <TableHead>Palavra</TableHead>
+                    <TableHead>Pronúncia</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {alfabetoFoneticoData.map((item) => (
+                    <TableRow key={item.letra}>
+                        <TableCell className="font-medium">{item.letra}</TableCell>
+                        <TableCell>{item.palavra}</TableCell>
+                        <TableCell>{item.pronuncia}</TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    );
+}
+
 
 const codeSections = [
   {
@@ -310,7 +362,7 @@ const codeSections = [
   {
     value: 'item-6',
     title: 'Código Q (Alfabeto Fonético)',
-    content: 'Conteúdo para Código Q (Alfabeto Fonético) em breve.',
+    content: <AlfabetoFoneticoTable />,
   },
   {
     value: 'item-7',
