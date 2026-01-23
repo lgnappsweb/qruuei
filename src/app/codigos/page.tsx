@@ -400,15 +400,15 @@ const relacionamentosData = [
   },
   {
     title: 'Incidentes na Via',
-    description: 'Eventos que afetam o fluxo ou a segurança, como animais, objetos, derramamentos ou incêndios. (Ocorrências: TO02, TO03, TO05, TO07, TO18, TO25, TO35)',
-    providencias: ['PR02', 'PR03', 'PR04', 'PR05', 'PR06', 'PR13', 'PR21', 'PR22', 'PR23', 'PR56'],
+    description: 'Eventos que afetam o fluxo ou a segurança, como veículo abandonado, animais, objetos na pista, incêndios, congestionamento, manifestações ou derramamentos. (Ocorrências: TO01, TO02, TO03, TO04, TO05, TO07, TO13, TO18, TO25, TO35, TO39, TO40)',
+    providencias: ['PR02', 'PR03', 'PR04', 'PR05', 'PR06', 'PR12', 'PR13', 'PR19', 'PR21', 'PR22', 'PR23', 'PR27', 'PR32', 'PR44', 'PR56'],
     panes: [],
     outras: [],
   },
   {
     title: 'Obras e Manutenção',
-    description: 'Atividades de conservação, reparos na via ou sinalização. (Ocorrências: TO09, TO34, TO36, TO37, TO50)',
-    providencias: ['PR08', 'PR13', 'PR14', 'PR29', 'PR33', 'PR37', 'PR48', 'PR60', 'PR62'],
+    description: 'Atividades de conservação, reparos na via, sinalização e fiscalização da faixa de domínio. (Ocorrências: TO09, TO15, TO21, TO34, TO36, TO37, TO38, TO50)',
+    providencias: ['PR08', 'PR13', 'PR14', 'PR29', 'PR33', 'PR34', 'PR35', 'PR36', 'PR37', 'PR39', 'PR40', 'PR41', 'PR48', 'PR60', 'PR62'],
     panes: [],
     outras: [],
   },
@@ -421,12 +421,20 @@ const relacionamentosData = [
   },
   {
     title: 'Ocorrências Policiais e Fiscais',
-    description: 'Danos ao patrimônio, evasão, ou outras situações que demandem acionamento policial. (Ocorrências: TO11, TO14, TO19, TO24)',
-    providencias: ['PR09', 'PR18', 'PR36', 'PR44', 'PR49'],
-    outras: ['70', 'OP08'],
+    description: 'Danos ao patrimônio, evasão, carga excedente ou outras situações que demandem acionamento policial. (Ocorrências: TO11, TO14, TO19, TO20, TO24)',
+    providencias: ['PR07', 'PR09', 'PR18', 'PR44', 'PR49'],
     panes: [],
+    outras: ['70', 'OP08'],
+  },
+   {
+    title: 'Comunicação',
+    description: 'Registros de comunicação operacional e informações recebidas de usuários. (Ocorrências: TO23, TO30)',
+    providencias: ['PR17', 'PR42', 'PR43', 'PR46', 'PR47'],
+    panes: [],
+    outras: [],
   },
 ];
+
 
 function RelacionamentosContent({ setOpenAccordion }: { setOpenAccordion: (value: string | undefined) => void }) {
 
