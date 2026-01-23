@@ -461,7 +461,7 @@ export default function OcorrenciaTO01Page() {
             </CardContent>
           </Card>
           
-          <Button type="submit" size="lg">Salvar Ocorrência</Button>
+          <Button type="submit" size="lg" className="w-full">Gerar Relatório</Button>
         </form>
       </Form>
     </div>
