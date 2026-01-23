@@ -343,16 +343,20 @@ export default function OcorrenciaTO01Page() {
                 control={form.control}
                 name="estadoPneu"
                 render={({ field }) => (
-                  <FormItem className="space-y-3">
+                  <FormItem>
                     <FormLabel>Estado do Pneu</FormLabel>
-                    <FormControl>
-                      <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-row space-x-4">
-                        <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Bom" /></FormControl><FormLabel className="font-normal text-xl">Bom</FormLabel></FormItem>
-                        <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Razoável" /></FormControl><FormLabel className="font-normal text-xl">Razoável</FormLabel></FormItem>
-                        <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Ruim" /></FormControl><FormLabel className="font-normal text-xl">Ruim</FormLabel></FormItem>
-                        <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Não se aplica" /></FormControl><FormLabel className="font-normal text-xl">N/A</FormLabel></FormItem>
-                      </RadioGroup>
-                    </FormControl>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o estado do pneu" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Bom">Bom</SelectItem>
+                        <SelectItem value="Regular">Regular</SelectItem>
+                        <SelectItem value="Ruim">Ruim</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
