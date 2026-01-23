@@ -27,7 +27,7 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
       onClick={handleClick}
       className="bg-card hover:bg-accent/50 transition-colors duration-200 cursor-pointer group shadow-lg"
     >
-      <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6 gap-3 h-36">
+      <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6 gap-3 h-32">
         <div
           className={cn(
             "rounded-full p-4 transition-transform group-hover:scale-110",
@@ -36,7 +36,12 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
         >
           <Icon className="h-7 w-7 sm:h-8 sm:w-8 text-white" />
         </div>
-        <p className="font-condensed font-bold text-center text-xl text-card-foreground">
+        <p
+          className={cn(
+            "font-condensed font-bold text-center text-card-foreground",
+            occurrence.title.startsWith("TO") ? "text-2xl" : "text-xl"
+          )}
+        >
           {occurrence.title}
         </p>
       </CardContent>
