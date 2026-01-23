@@ -431,9 +431,10 @@ export default function OcorrenciaTO03Page() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Pavimentado">Pavimentado</SelectItem>
-                        <SelectItem value="Não Pavimentado">Não Pavimentado</SelectItem>
-                        <SelectItem value="Inexistente">Inexistente</SelectItem>
+                        <SelectItem value="Com Acostamento Norte/Sul">Com Acostamento Norte/Sul</SelectItem>
+                        <SelectItem value="Com Acostamento Norte sem Sul">Com Acostamento Norte sem Sul</SelectItem>
+                        <SelectItem value="Com Acostamento Sul sem Norte">Com Acostamento Sul sem Norte</SelectItem>
+                        <SelectItem value="Sem Acostamento Norte/Sul">Sem Acostamento Norte/Sul</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
