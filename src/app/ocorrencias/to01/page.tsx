@@ -171,7 +171,32 @@ export default function OcorrenciaTO01Page() {
                   )}
                 />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                    control={form.control}
+                    name="tipoPane"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Tipo de Pane</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Selecione o tipo de pane (opcional)" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                <SelectItem value="TP01">TP01 - Pane Mecânica</SelectItem>
+                                <SelectItem value="TP02">TP02 - Pane Elétrica</SelectItem>
+                                <SelectItem value="TP03">TP03 - Pane Pneu</SelectItem>
+                                <SelectItem value="TP04">TP04 - Pane Seca</SelectItem>
+                                <SelectItem value="TP05">TP05 - Super Aquecimento</SelectItem>
+                                <SelectItem value="TP07">TP07 - Bloqueio por Rastreador</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
                 <FormField
                   control={form.control}
                   name="qth"
@@ -185,6 +210,8 @@ export default function OcorrenciaTO01Page() {
                     </FormItem>
                   )}
                 />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <FormField
                   control={form.control}
                   name="sentido"
@@ -215,8 +242,6 @@ export default function OcorrenciaTO01Page() {
                     </FormItem>
                   )}
                 />
-              </div>
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="localArea"
@@ -252,31 +277,6 @@ export default function OcorrenciaTO01Page() {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
-                <FormField
-                    control={form.control}
-                    name="tipoPane"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Tipo de Pane</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Selecione o tipo de pane (opcional)" />
-                            </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                                <SelectItem value="TP01">TP01 - Pane Mecânica</SelectItem>
-                                <SelectItem value="TP02">TP02 - Pane Elétrica</SelectItem>
-                                <SelectItem value="TP03">TP03 - Pane Pneu</SelectItem>
-                                <SelectItem value="TP04">TP04 - Pane Seca</SelectItem>
-                                <SelectItem value="TP05">TP05 - Super Aquecimento</SelectItem>
-                                <SelectItem value="TP07">TP07 - Bloqueio por Rastreador</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                        </FormItem>
-                    )}
                 />
               </div>
             </CardContent>
