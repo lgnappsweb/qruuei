@@ -325,12 +325,14 @@ export default function OcorrenciaTO01Page() {
                           </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                              <SelectItem value="moto">Moto</SelectItem>
-                              <SelectItem value="carro">Carro</SelectItem>
-                              <SelectItem value="caminhonete">Caminhonete</SelectItem>
-                              <SelectItem value="caminhao">Caminhão</SelectItem>
-                              <SelectItem value="onibus">Ônibus</SelectItem>
-                              <SelectItem value="outro">Outro</SelectItem>
+                              <SelectItem value="mo">MO</SelectItem>
+                              <SelectItem value="ap">AP</SelectItem>
+                              <SelectItem value="ca">CA</SelectItem>
+                              <SelectItem value="on">ON</SelectItem>
+                              <SelectItem value="car">CAR</SelectItem>
+                              <SelectItem value="utilitaria">UTILITÁRIA</SelectItem>
+                              <SelectItem value="romel_e_julieta">ROMEL E JULIETA</SelectItem>
+                              <SelectItem value="carretinha_reboque">CARRETINHA / REBOQUE</SelectItem>
                           </SelectContent>
                       </Select>
                       <FormMessage />
