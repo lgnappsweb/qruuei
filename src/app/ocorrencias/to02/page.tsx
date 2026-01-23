@@ -212,6 +212,7 @@ export default function OcorrenciaTO02Page() {
                       <SelectContent>
                         <SelectItem value="Área de Domínio">Área de Domínio</SelectItem>
                         <SelectItem value="Área Lindeira">Área Lindeira</SelectItem>
+                        <SelectItem value="Área de Domínio / Área Lindeira">Área de Domínio / Área Lindeira</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
