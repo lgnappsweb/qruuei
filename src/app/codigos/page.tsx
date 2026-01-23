@@ -235,6 +235,52 @@ function OutrasMensagensTable() {
   );
 }
 
+const codigosDeMensagemData = [
+  { codigo: 'QAP', mensagem: 'Na Escuta' },
+  { codigo: 'QAR', mensagem: 'Autorização para abandonar a escuta' },
+  { codigo: 'QBU', mensagem: 'Agitado, confusão mental, Alucinações' },
+  { codigo: 'QRA', mensagem: 'Prefixo da estação / Operador' },
+  { codigo: 'QRM', mensagem: 'Interferência de outra estação' },
+  { codigo: 'QRV', mensagem: 'Pronto para receber. À disposição' },
+  { codigo: 'QRX', mensagem: 'Espere, aguarde' },
+  { codigo: 'QRU', mensagem: 'Ocorrência. Evento' },
+  { codigo: 'QSA', mensagem: 'Intensidade do Sinal' },
+  { codigo: 'QSJ', mensagem: 'Dinheiro, Pagamento, valor' },
+  { codigo: 'QSL', mensagem: 'Confirmado, compreendido, Afirmativo' },
+  { codigo: 'QSM', mensagem: 'Repetir o último câmbio' },
+  { codigo: 'QSO', mensagem: 'Contato entre duas estações, pessoas' },
+  { codigo: 'QTA', mensagem: 'Cancelar' },
+  { codigo: 'QTC', mensagem: 'Mensagem. Comunicado' },
+  { codigo: 'QTH', mensagem: 'Endereço. Localização' },
+  { codigo: 'QTI', mensagem: 'A caminho. Destino' },
+  { codigo: 'QTO', mensagem: 'Banheiro' },
+  { codigo: 'QTR', mensagem: 'HORA CERTA / EXATA' },
+  { codigo: 'QUD', mensagem: 'Prioridade na rede' },
+  { codigo: 'TKS', mensagem: 'Grato. Obrigado, agradeço' },
+];
+
+function CodigosDeMensagemTable() {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[100px]">Código</TableHead>
+          <TableHead>Mensagem</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {codigosDeMensagemData.map((item) => (
+          <TableRow key={item.codigo}>
+            <TableCell className="font-medium">{item.codigo}</TableCell>
+            <TableCell>{item.mensagem}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
+
+
 const codeSections = [
   {
     value: 'item-1',
@@ -259,7 +305,7 @@ const codeSections = [
   {
     value: 'item-5',
     title: 'Códigos de Mensagem',
-    content: 'Conteúdo para Códigos de Mensagem em breve.',
+    content: <CodigosDeMensagemTable />,
   },
   {
     value: 'item-6',
