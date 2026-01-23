@@ -15,10 +15,10 @@ const navItems = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [isClient, setIsClient] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
+    setIsMounted(true);
   }, []);
 
   return (
@@ -27,7 +27,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-10">
         <div className="flex justify-around items-center h-16 max-w-lg mx-auto">
           {navItems.map((item) => {
-            const isActive = isClient ? pathname === item.href : false;
+            const isActive = isMounted && pathname === item.href;
             return (
               <Link
                 key={item.href}
