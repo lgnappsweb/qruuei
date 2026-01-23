@@ -412,7 +412,7 @@ export default function OcorrenciaTO04Page() {
               type="button"
               size="lg"
               className="w-full"
-              onClick={() => append({ marca: 'Vw', modelo: 'Gol', ano: '', cor: '', placa: '', cidadeEmplacamento: '', eixos: '', tipoVeiculo: '', estadoPneu: '', tipoCarga: '', qraCondutor: '', baixaFrequencia: '', ocupantes: '' })}
+              onClick={() => append({ marca: '', modelo: '', ano: '', cor: '', placa: '', cidadeEmplacamento: '', eixos: '', tipoVeiculo: '', estadoPneu: '', tipoCarga: '', qraCondutor: '', baixaFrequencia: '', ocupantes: '' })}
             >
               <PlusCircle className="mr-2 h-5 w-5" />
               {fields.length === 0 ? 'Adicionar Veículo' : 'Adicionar Outro Veículo'}
