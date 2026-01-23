@@ -87,8 +87,6 @@ const formSchema = z.object({
   qthDestinacao: z.string().optional(),
   vtrApoio: z.boolean().default(false),
   vtrApoioDescricao: z.string().optional(),
-  danoPatrimonio: z.boolean().default(false),
-  danoPatrimonioDescricao: z.string().optional(),
   observacoes: z.string().optional(),
   auxilios: z.string().optional(),
 });
@@ -118,8 +116,6 @@ export default function OcorrenciaTO03Page() {
       qthDestinacao: '',
       vtrApoio: false,
       vtrApoioDescricao: '',
-      danoPatrimonio: false,
-      danoPatrimonioDescricao: '',
       observacoes: '',
       auxilios: '',
     },
@@ -592,43 +588,6 @@ export default function OcorrenciaTO03Page() {
                         <FormControl>
                             <Textarea
                             placeholder="Ex: VTR-01, Polícia Militar Ambiental..."
-                            {...field}
-                            />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                )}
-                <FormField
-                    control={form.control}
-                    name="danoPatrimonio"
-                    render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                        <div className="space-y-0.5">
-                        <FormLabel className="text-base">
-                            Houve dano ao Patrimônio?
-                        </FormLabel>
-                        </div>
-                        <FormControl>
-                        <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                        />
-                        </FormControl>
-                    </FormItem>
-                    )}
-                />
-                {form.watch('danoPatrimonio') && (
-                    <FormField
-                    control={form.control}
-                    name="danoPatrimonioDescricao"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Descreva o dano ao patrimônio</FormLabel>
-                        <FormControl>
-                            <Textarea
-                            placeholder="Ex: Defensas metálicas danificadas..."
                             {...field}
                             />
                         </FormControl>
