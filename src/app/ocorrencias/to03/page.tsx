@@ -54,6 +54,7 @@ const auxilios = [
 
 const destinacaoPrOptions = [
   { id: 'PR04', label: 'PR04 - Retirada de animal morto da pista' },
+  { id: 'PR05', label: 'PR05 - Afugentamento de animal' },
   { id: 'PR13', label: 'PR13 - Canalização/Sinalização' },
   { id: 'PR56', label: 'PR56 - Enterro de Animal' },
 ];
@@ -689,5 +690,3 @@ export default function OcorrenciaTO03Page() {
     </div>
   );
 }
-
-    
