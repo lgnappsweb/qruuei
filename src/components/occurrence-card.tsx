@@ -16,7 +16,9 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
   const Icon = occurrence.icon;
 
   const handleClick = () => {
-    if (occurrence.id === '4') { // This is TO 01
+    if (occurrence.id === '3') { // This is TRAÇADO DE PISTA
+      router.push('/ocorrencias/tracado-de-pista');
+    } else if (occurrence.id === '4') { // This is TO 01
       router.push('/ocorrencias/to01');
     } else if (occurrence.id === '5') { // This is TO 02
       router.push('/ocorrencias/to02');
@@ -86,7 +88,7 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
         <p
           className={cn(
             "font-condensed font-bold text-center text-card-foreground",
-            occurrence.title.startsWith("TO") ? "text-2xl" : "text-xl"
+            occurrence.title.startsWith("TO") || occurrence.title.startsWith("QUD") ? "text-2xl" : "text-xl"
           )}
         >
           {occurrence.title}
