@@ -55,7 +55,7 @@ const codeSections = [
 
 export default function CodigosPage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-24">
       <Button asChild variant="ghost" className="pl-0">
         <Link href="/">
           <ArrowLeft className="mr-2 h-4 w-4" />
