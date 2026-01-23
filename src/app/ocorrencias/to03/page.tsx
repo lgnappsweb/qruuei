@@ -34,7 +34,6 @@ import {
 import { Switch } from '@/components/ui/switch';
 
 const auxilios = [
-  { id: 'PR01', label: 'PR01 - Atendimento inicial' },
   { id: 'PR03', label: 'PR03 - Animal apreendido' },
   { id: 'PR04', label: 'PR04 - Retirada de animal morto da pista' },
   { id: 'PR05', label: 'PR05 - Afugentamento de animal' },
@@ -42,6 +41,8 @@ const auxilios = [
   { id: 'PR44', label: 'PR44 - Acionamento de Polícia' },
   { id: 'PR51', label: 'PR51 - Efetuado Registro Fotográfico' },
   { id: 'PR56', label: 'PR56 - Enterro de Animal' },
+  { id: 'PR33', label: 'PR33 - Reparo em cerca' },
+  { id: 'PR62', label: 'PR62 - Acionamento da Conservação' },
   { id: 'PR09', label: 'PR09 - Outros' },
 ] as const;
 
