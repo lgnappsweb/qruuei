@@ -26,8 +26,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-24">{children}</main>
       <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-10">
         <div className="flex justify-around items-center h-16 max-w-lg mx-auto">
-          {navItems.map((item) => {
-            const isActive = isClient && pathname === item.href;
+          {isClient && navItems.map((item) => {
+            const isActive = pathname === item.href;
             return (
               <Link
                 key={item.href}
