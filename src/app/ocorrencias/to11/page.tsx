@@ -296,6 +296,8 @@ export default function OcorrenciaTO11Page() {
                         <SelectItem value="Terceira Faixa">Terceira Faixa</SelectItem>
                         <SelectItem value="Acostamento">Acostamento</SelectItem>
                         <SelectItem value="Área de Domínio">Área de Domínio</SelectItem>
+                        <SelectItem value="Praça de Pedágio">Praça de Pedágio</SelectItem>
+                        <SelectItem value="BSO">BSO</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
