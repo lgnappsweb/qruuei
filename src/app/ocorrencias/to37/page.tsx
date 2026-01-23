@@ -233,18 +233,18 @@ export default function OcorrenciaTO37Page() {
                   name="acao"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Ação</FormLabel>
+                      <FormLabel>Ação Solicitada</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Selecione a ação realizada" />
+                            <SelectValue placeholder="Selecione a ação a ser executada" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Implantada">Implantada</SelectItem>
-                          <SelectItem value="Retirada">Retirada</SelectItem>
-                          <SelectItem value="Regularizada">Regularizada</SelectItem>
-                          <SelectItem value="Danificada">Danificada</SelectItem>
+                          <SelectItem value="Implantar">Implantar</SelectItem>
+                          <SelectItem value="Retirar">Retirar</SelectItem>
+                          <SelectItem value="Regularizar">Regularizar</SelectItem>
+                          <SelectItem value="Substituir">Substituir</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
