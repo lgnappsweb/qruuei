@@ -620,7 +620,7 @@ export default function OcorrenciaTO03Page() {
                       <FormLabel>Auxílios/PR</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Descreva os auxílios prestados. Ex: PR01, PR03"
+                          placeholder="Descreva os auxílios prestados. Ex: PR03, PR04"
                           className="resize-none"
                           {...field}
                         />
