@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <div className="space-y-8 md:pb-24">
       <div className="text-center">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
+        <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-foreground">
           QRU UEI
         </h1>
         <p className="text-muted-foreground mt-2">
