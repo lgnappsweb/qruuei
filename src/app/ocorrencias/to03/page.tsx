@@ -203,6 +203,8 @@ export default function OcorrenciaTO03Page() {
                         <SelectContent>
                           <SelectItem value="Norte">Norte</SelectItem>
                           <SelectItem value="Sul">Sul</SelectItem>
+                          <SelectItem value="Norte / Sul">Norte / Sul</SelectItem>
+                          <SelectItem value="Eixo Central">Eixo Central</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
