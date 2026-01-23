@@ -77,6 +77,92 @@ function TiposDeOcorrenciaTable() {
   );
 }
 
+const tiposDeAcaoData = [
+  { codigo: 'PR01', mensagem: 'Atendimento inicial' },
+  { codigo: 'PR02', mensagem: 'Auxílio no combate a incêndio' },
+  { codigo: 'PR03', mensagem: 'Animal apreendido' },
+  { codigo: 'PR04', mensagem: 'Retirada de animal morto da pista' },
+  { codigo: 'PR05', mensagem: 'Afugentamento de animal' },
+  { codigo: 'PR06', mensagem: 'Retirada de material da pista' },
+  { codigo: 'PR07', mensagem: 'Escolta' },
+  { codigo: 'PR08', mensagem: 'Verificação da sinalização de obras' },
+  { codigo: 'PR09', mensagem: 'Outros' },
+  { codigo: 'PR10', mensagem: 'Embargo de obra' },
+  { codigo: 'PR11', mensagem: 'Remoção de vítima para hospital' },
+  { codigo: 'PR12', mensagem: 'Sinalização final de fila' },
+  { codigo: 'PR13', mensagem: 'Canalização/Sinalização' },
+  { codigo: 'PR14', mensagem: 'Tapa buraco' },
+  { codigo: 'PR15', mensagem: 'Orientação a andarilho' },
+  { codigo: 'PR16', mensagem: 'Remoção de andarilho' },
+  { codigo: 'PR17', mensagem: 'Orientação/Informação ao usuário' },
+  { codigo: 'PR18', mensagem: 'Recusa de dados' },
+  { codigo: 'PR19', mensagem: 'Operação comboio' },
+  { codigo: 'PR20', mensagem: 'Atendimento a funcionário' },
+  { codigo: 'PR21', mensagem: 'Remoção de carga derramada' },
+  { codigo: 'PR22', mensagem: 'Limpeza de pista' },
+  { codigo: 'PR23', mensagem: 'Remoção de óleo/outros com serragem' },
+  { codigo: 'PR24', mensagem: 'Troca de pneu' },
+  { codigo: 'PR25', mensagem: 'Pane solucionada' },
+  { codigo: 'PR26', mensagem: 'Transferência de carga' },
+  { codigo: 'PR27', mensagem: 'Remoção de veículo' },
+  { codigo: 'PR28', mensagem: 'Limpeza na praça' },
+  { codigo: 'PR29', mensagem: 'Regularização de Sinalização' },
+  { codigo: 'PR30', mensagem: 'Auxílio no transporte do usuário' },
+  { codigo: 'PR31', mensagem: 'Remoção de vítima das ferragens' },
+  { codigo: 'PR32', mensagem: 'Destombamento de veículo' },
+  { codigo: 'PR33', mensagem: 'Reparo em cerca' },
+  { codigo: 'PR34', mensagem: 'Remoção de placas / publicidade da faixa' },
+  { codigo: 'PR35', mensagem: 'Orientação a lindeiros da faixa de domínio' },
+  { codigo: 'PR36', mensagem: 'Notificação a lindeiros da faixa de domínio' },
+  { codigo: 'PR37', mensagem: 'Implantação de Pare e Siga/ Interdição total' },
+  { codigo: 'PR38', mensagem: 'Transporte de colaborador' },
+  { codigo: 'PR39', mensagem: 'Alocação de PMV móvel' },
+  { codigo: 'PR40', mensagem: 'Definição de mensagem no PMV móvel' },
+  { codigo: 'PR41', mensagem: 'Definição de mensagem no PMV fixo' },
+  { codigo: 'PR42', mensagem: 'Envio de SMS/ Aplicativo' },
+  { codigo: 'PR43', mensagem: 'Envio de Email' },
+  { codigo: 'PR44', mensagem: 'Acionamento de Polícia' },
+  { codigo: 'PR45', mensagem: 'Auxílio a usuário p/comprar combustível' },
+  { codigo: 'PR46', mensagem: 'Não localizado' },
+  { codigo: 'PR47', mensagem: 'Ocorrência não localizada' },
+  { codigo: 'PR48', mensagem: 'Orientação/Acompanhamento de Obra' },
+  { codigo: 'PR49', mensagem: 'Evento acompanhamento pelo CFTV' },
+  { codigo: 'PR50', mensagem: 'Remoção de vítima para P.S' },
+  { codigo: 'PR51', mensagem: 'Efetuado Registro Fotográfico' },
+  { codigo: 'PR53', mensagem: 'Meios próprios' },
+  { codigo: 'PR54', mensagem: 'Aux. com ferram./ Empréstimo ferram.' },
+  { codigo: 'PR55', mensagem: 'Desbloqueio de veículo' },
+  { codigo: 'PR56', mensagem: 'Enterro de Animal' },
+  { codigo: 'PR57', mensagem: 'Atendimento Clínico' },
+  { codigo: 'PR58', mensagem: 'Avaliação da Vítima' },
+  { codigo: 'PR59', mensagem: 'Aferição de pressão arterial' },
+  { codigo: 'PR60', mensagem: 'Subst. de Cancela Praça de Pedágio' },
+  { codigo: 'PR61', mensagem: 'Abordagem de vítima' },
+  { codigo: 'PR62', mensagem: 'Acionamento da Conservação' },
+  { codigo: 'PR63', mensagem: 'Desatolamento de Veículos' },
+];
+
+function TiposDeAcaoTable() {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[100px]">Código</TableHead>
+          <TableHead>Mensagem</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {tiposDeAcaoData.map((item) => (
+          <TableRow key={item.codigo}>
+            <TableCell className="font-medium">{item.codigo}</TableCell>
+            <TableCell>{item.mensagem}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
+
 const codeSections = [
   {
     value: 'item-1',
@@ -86,7 +172,7 @@ const codeSections = [
   {
     value: 'item-2',
     title: 'Tipos de Ação/Providência',
-    content: 'Conteúdo para Tipos de Ação/Providência em breve.',
+    content: <TiposDeAcaoTable />,
   },
   {
     value: 'item-3',
