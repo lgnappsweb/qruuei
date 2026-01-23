@@ -1,10 +1,10 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import * as z from 'zod';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, PlusCircle, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 import { Button } from '@/components/ui/button';
@@ -18,7 +18,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
@@ -61,13 +60,7 @@ const tiposPane = [
   { id: 'NILL', label: 'NILL' },
 ] as const;
 
-const formSchema = z.object({
-  rodovia: z.string().min(1, 'Selecione a rodovia.'),
-  ocorrencia: z.string(),
-  tipoPanes: z.array(z.string()).optional(),
-  qth: z.string().min(1, 'O QTH é obrigatório.'),
-  sentido: z.string().min(1, 'Selecione o sentido.'),
-  localArea: z.string().min(1, 'Selecione o local/área.'),
+const vehicleSchema = z.object({
   marca: z.string().optional(),
   modelo: z.string().optional(),
   ano: z.string().optional(),
@@ -81,6 +74,16 @@ const formSchema = z.object({
   qraCondutor: z.string().optional(),
   baixaFrequencia: z.string().optional(),
   ocupantes: z.string().optional(),
+});
+
+const formSchema = z.object({
+  rodovia: z.string().min(1, 'Selecione a rodovia.'),
+  ocorrencia: z.string(),
+  tipoPanes: z.array(z.string()).optional(),
+  qth: z.string().min(1, 'O QTH é obrigatório.'),
+  sentido: z.string().min(1, 'Selecione o sentido.'),
+  localArea: z.string().min(1, 'Selecione o local/área.'),
+  vehicles: z.array(vehicleSchema).optional(),
   auxilios: z.array(z.string()).optional(),
   observacoes: z.string().optional(),
   numeroOcorrencia: z.string().optional(),
@@ -97,23 +100,16 @@ export default function OcorrenciaTO01Page() {
       qth: '',
       sentido: '',
       localArea: '',
-      marca: '',
-      modelo: '',
-      ano: '',
-      cor: '',
-      placa: '',
-      cidadeEmplacamento: '',
-      eixos: '',
-      tipoVeiculo: '',
-      estadoPneu: '',
-      tipoCarga: '',
-      qraCondutor: '',
-      baixaFrequencia: '',
-      ocupantes: '',
+      vehicles: [],
       auxilios: [],
       observacoes: '',
       numeroOcorrencia: '',
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "vehicles",
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -296,107 +292,126 @@ export default function OcorrenciaTO01Page() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Dados do Veículo</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6 pt-6">
-              <FormField name="marca" control={form.control} render={({ field }) => (<FormItem><FormLabel>Marca</FormLabel><FormControl><Input placeholder="Ex: Ford" {...field} /></FormControl><FormMessage /></FormItem>)} />
-              <FormField name="modelo" control={form.control} render={({ field }) => (<FormItem><FormLabel>Modelo</FormLabel><FormControl><Input placeholder="Ex: Ka" {...field} /></FormControl><FormMessage /></FormItem>)} />
-              <FormField name="ano" control={form.control} render={({ field }) => (<FormItem><FormLabel>Ano</FormLabel><FormControl><Input placeholder="Ex: 2020" {...field} /></FormControl><FormMessage /></FormItem>)} />
-              <FormField name="cor" control={form.control} render={({ field }) => (<FormItem><FormLabel>Cor</FormLabel><FormControl><Input placeholder="Ex: Preto" {...field} /></FormControl><FormMessage /></FormItem>)} />
-              <FormField name="placa" control={form.control} render={({ field }) => (<FormItem><FormLabel>Placa</FormLabel><FormControl><Input placeholder="Ex: ABC-1234" {...field} /></FormControl><FormMessage /></FormItem>)} />
-              <FormField name="cidadeEmplacamento" control={form.control} render={({ field }) => (<FormItem><FormLabel>Cidade Emplacamento</FormLabel><FormControl><Input placeholder="Ex: Campo Grande" {...field} /></FormControl><FormMessage /></FormItem>)} />
-              <FormField name="eixos" control={form.control} render={({ field }) => (<FormItem><FormLabel>Quantidade de Eixos</FormLabel><FormControl><Input placeholder="Ex: 2" type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-              <FormField
-                  control={form.control}
-                  name="tipoVeiculo"
-                  render={({ field }) => (
-                      <FormItem>
-                      <FormLabel>Tipo de Veículo</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <div className="space-y-4">
+            {fields.map((item, index) => (
+              <Card key={item.id}>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle>Dados do Veículo {index + 1}</CardTitle>
+                  <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)}>
+                    <Trash2 className="h-5 w-5" />
+                    <span className="sr-only">Remover Veículo</span>
+                  </Button>
+                </CardHeader>
+                <CardContent className="space-y-6 pt-6">
+                    <FormField name={`vehicles.${index}.marca`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Marca</FormLabel><FormControl><Input placeholder="Ex: Ford" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField name={`vehicles.${index}.modelo`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Modelo</FormLabel><FormControl><Input placeholder="Ex: Ka" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField name={`vehicles.${index}.ano`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Ano</FormLabel><FormControl><Input placeholder="Ex: 2020" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField name={`vehicles.${index}.cor`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Cor</FormLabel><FormControl><Input placeholder="Ex: Preto" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField name={`vehicles.${index}.placa`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Placa</FormLabel><FormControl><Input placeholder="Ex: ABC-1234" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField name={`vehicles.${index}.cidadeEmplacamento`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Cidade Emplacamento</FormLabel><FormControl><Input placeholder="Ex: Campo Grande" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField name={`vehicles.${index}.eixos`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Quantidade de Eixos</FormLabel><FormControl><Input placeholder="Ex: 2" type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField
+                        control={form.control}
+                        name={`vehicles.${index}.tipoVeiculo`}
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Tipo de Veículo</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Selecione o tipo" />
+                                </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    <SelectItem value="mo">MO</SelectItem>
+                                    <SelectItem value="ap">AP</SelectItem>
+                                    <SelectItem value="ca">CA</SelectItem>
+                                    <SelectItem value="on">ON</SelectItem>
+                                    <SelectItem value="car">CAR</SelectItem>
+                                    <SelectItem value="utilitaria">UTILITÁRIA</SelectItem>
+                                    <SelectItem value="romel_e_julieta">ROMEL E JULIETA</SelectItem>
+                                    <SelectItem value="carretinha_reboque">CARRETINHA / REBOQUE</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`vehicles.${index}.estadoPneu`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Estado do Pneu</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione o estado do pneu" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Bom">Bom</SelectItem>
+                              <SelectItem value="Regular">Regular</SelectItem>
+                              <SelectItem value="Ruim">Ruim</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField name={`vehicles.${index}.tipoCarga`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Tipo de Carga</FormLabel><FormControl><Input placeholder="Ex: Soja, vazia, etc." {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField name={`vehicles.${index}.qraCondutor`} control={form.control} render={({ field }) => (<FormItem><FormLabel>QRA do Condutor(a)</FormLabel><FormControl><Input placeholder="Nome do condutor (se presente)" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    
+                    <FormField
+                      control={form.control}
+                      name={`vehicles.${index}.baixaFrequencia`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Baixa Frequência</FormLabel>
                           <FormControl>
-                          <SelectTrigger>
-                              <SelectValue placeholder="Selecione o tipo" />
-                          </SelectTrigger>
+                            <Input
+                              placeholder="(99) 99999-9999"
+                              {...field}
+                              onChange={(e) => {
+                                let value = e.target.value.replace(/\D/g, "");
+                                value = value.substring(0, 11);
+                                if (value.length > 10) {
+                                  value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                                } else if (value.length > 6) {
+                                  value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+                                } else if (value.length > 2) {
+                                  value = value.replace(/(\d{2})(\d*)/, '($1) $2');
+                                } else if (value.length > 0) {
+                                  value = `(${value}`;
+                                }
+                                field.onChange(value);
+                              }}
+                            />
                           </FormControl>
-                          <SelectContent>
-                              <SelectItem value="mo">MO</SelectItem>
-                              <SelectItem value="ap">AP</SelectItem>
-                              <SelectItem value="ca">CA</SelectItem>
-                              <SelectItem value="on">ON</SelectItem>
-                              <SelectItem value="car">CAR</SelectItem>
-                              <SelectItem value="utilitaria">UTILITÁRIA</SelectItem>
-                              <SelectItem value="romel_e_julieta">ROMEL E JULIETA</SelectItem>
-                              <SelectItem value="carretinha_reboque">CARRETINHA / REBOQUE</SelectItem>
-                          </SelectContent>
-                      </Select>
-                      <FormMessage />
-                      </FormItem>
-                  )}
-              />
-              <FormField
-                control={form.control}
-                name="estadoPneu"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Estado do Pneu</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione o estado do pneu" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Bom">Bom</SelectItem>
-                        <SelectItem value="Regular">Regular</SelectItem>
-                        <SelectItem value="Ruim">Ruim</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField name="tipoCarga" control={form.control} render={({ field }) => (<FormItem><FormLabel>Tipo de Carga</FormLabel><FormControl><Input placeholder="Ex: Soja, vazia, etc." {...field} /></FormControl><FormMessage /></FormItem>)} />
-              <FormField name="qraCondutor" control={form.control} render={({ field }) => (<FormItem><FormLabel>QRA do Condutor(a)</FormLabel><FormControl><Input placeholder="Nome do condutor (se presente)" {...field} /></FormControl><FormMessage /></FormItem>)} />
-              
-              <FormField
-                control={form.control}
-                name="baixaFrequencia"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Baixa Frequência</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="(99) 99999-9999"
-                        {...field}
-                        onChange={(e) => {
-                          let value = e.target.value.replace(/\D/g, "");
-                          value = value.substring(0, 11);
-                          if (value.length > 10) {
-                            value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-                          } else if (value.length > 6) {
-                            value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-                          } else if (value.length > 2) {
-                            value = value.replace(/(\d{2})(\d*)/, '($1) $2');
-                          } else if (value.length > 0) {
-                            value = `(${value}`;
-                          }
-                          field.onChange(value);
-                        }}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Preencha com o número de telefone para contato.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                          <FormDescription>
+                            Preencha com o número de telefone para contato.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-              <FormField name="ocupantes" control={form.control} render={({ field }) => (<FormItem><FormLabel>Nº de Ocupantes</FormLabel><FormControl><Input placeholder="Ex: 0" type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-            </CardContent>
-          </Card>
+                    <FormField name={`vehicles.${index}.ocupantes`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Nº de Ocupantes</FormLabel><FormControl><Input placeholder="Ex: 0" type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                </CardContent>
+              </Card>
+            ))}
+
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="w-full"
+              onClick={() => append({ marca: '', modelo: '', ano: '', cor: '', placa: '', cidadeEmplacamento: '', eixos: '', tipoVeiculo: '', estadoPneu: '', tipoCarga: '', qraCondutor: '', baixaFrequencia: '', ocupantes: '' })}
+            >
+              <PlusCircle className="mr-2 h-5 w-5" />
+              {fields.length === 0 ? 'Adicionar Veículo' : 'Adicionar Outro Veículo'}
+            </Button>
+          </div>
           
           <Card>
             <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
