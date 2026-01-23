@@ -266,6 +266,7 @@ export default function OcorrenciaTO04Page() {
                         <SelectContent>
                           <SelectItem value="Norte">Norte</SelectItem>
                           <SelectItem value="Sul">Sul</SelectItem>
+                          <SelectItem value="Norte / Sul">Norte / Sul</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
