@@ -276,34 +276,21 @@ export default function OcorrenciaTO01Page() {
                   control={form.control}
                   name="localArea"
                   render={({ field }) => (
-                    <FormItem className="space-y-3">
+                    <FormItem>
                       <FormLabel>Local/Área</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex flex-row flex-wrap gap-4"
-                        >
-                          <FormItem className="flex items-center space-x-2 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="Acostamento" />
-                            </FormControl>
-                            <FormLabel className="font-normal text-xl">Acostamento</FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-2 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="Faixa de Domínio" />
-                            </FormControl>
-                            <FormLabel className="font-normal text-xl">Faixa de Domínio</FormLabel>
-                          </FormItem>
-                           <FormItem className="flex items-center space-x-2 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="Pista" />
-                            </FormControl>
-                            <FormLabel className="font-normal text-xl">Pista</FormLabel>
-                          </FormItem>
-                        </RadioGroup>
-                      </FormControl>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o local/área" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Faixa de Rolamento">Faixa de Rolamento</SelectItem>
+                          <SelectItem value="Terceira Faixa">Terceira Faixa</SelectItem>
+                          <SelectItem value="Acostamento">Acostamento</SelectItem>
+                          <SelectItem value="ÁREA de Domínio">ÁREA de Domínio</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
