@@ -221,11 +221,11 @@ export default function OcorrenciaTO32Page() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Faixa de Rolamento">Faixa de Rolamento</SelectItem>
-                        <SelectItem value="Terceira Faixa">Terceira Faixa</SelectItem>
-                        <SelectItem value="Acostamento">Acostamento</SelectItem>
-                        <SelectItem value="Faixa de Bordo">Faixa de Bordo</SelectItem>
                         <SelectItem value="Área de Domínio">Área de Domínio</SelectItem>
+                        <SelectItem value="Trevo">Trevo</SelectItem>
+                        <SelectItem value="Rotatória">Rotatória</SelectItem>
+                        <SelectItem value="Praça de Pedágio">Praça de Pedágio</SelectItem>
+                        <SelectItem value="BSO">BSO</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
