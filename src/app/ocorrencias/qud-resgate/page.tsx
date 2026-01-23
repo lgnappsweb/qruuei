@@ -369,20 +369,103 @@ export default function QudResgatePage() {
                  <AccordionItem value="item-2">
                     <AccordionTrigger className="text-xl font-bold">DADOS CADASTRAIS DO USUÁRIO</AccordionTrigger>
                     <AccordionContent className="space-y-6 pt-4">
-                        <FormField control={form.control} name="nomeUsuario" render={({ field }) => (<FormItem><FormLabel>Nome</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        <FormField control={form.control} name="nomeUsuario" render={({ field }) => (<FormItem><FormLabel>Nome</FormLabel><FormControl><Input placeholder="Nome completo do usuário" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <FormField control={form.control} name="idade" render={({ field }) => (<FormItem><FormLabel>Idade</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                            <FormField control={form.control} name="idade" render={({ field }) => (<FormItem><FormLabel>Idade</FormLabel><FormControl><Input type="number" placeholder="Ex: 35" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                             <FormField control={form.control} name="dn" render={({ field }) => (<FormItem><FormLabel>Data Nasc.</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                             <RadioGroupField control={form.control} name="sexo" label="Sexo" options={[{value: 'M', label: 'M'}, {value: 'F', label: 'F'}]} orientation="horizontal" />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <FormField control={form.control} name="cpf" render={({ field }) => (<FormItem><FormLabel>CPF</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                            <FormField control={form.control} name="rg" render={({ field }) => (<FormItem><FormLabel>RG</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                            <FormField
+                              name="cpf"
+                              control={form.control}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>CPF</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="000.000.000-00"
+                                      {...field}
+                                      onChange={(e) => {
+                                        const rawValue = e.target.value.replace(/\D/g, '');
+                                        let maskedValue = rawValue.substring(0, 11);
+                                        if (rawValue.length > 9) {
+                                          maskedValue = maskedValue.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                                        } else if (rawValue.length > 6) {
+                                          maskedValue = maskedValue.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+                                        } else if (rawValue.length > 3) {
+                                          maskedValue = maskedValue.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+                                        }
+                                        field.onChange(maskedValue);
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              name="rg"
+                              control={form.control}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>RG</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="00.000.000-0"
+                                      {...field}
+                                      onChange={(e) => {
+                                        const rawValue = e.target.value.replace(/\D/g, '');
+                                        let maskedValue = rawValue.substring(0, 9);
+                                        if (rawValue.length > 8) {
+                                          maskedValue = maskedValue.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/, '$1.$2.$3-$4');
+                                        } else if (rawValue.length > 5) {
+                                          maskedValue = maskedValue.replace(/(\d{2})(\d{3})(\d{1,3})/, '$1.$2.$3');
+                                        } else if (rawValue.length > 2) {
+                                          maskedValue = maskedValue.replace(/(\d{2})(\d{1,3})/, '$1.$2');
+                                        }
+                                        field.onChange(maskedValue);
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
                         </div>
-                        <FormField control={form.control} name="tel" render={({ field }) => (<FormItem><FormLabel>Telefone</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                        <FormField control={form.control} name="endereco" render={({ field }) => (<FormItem><FormLabel>Endereço</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                        <FormField control={form.control} name="acompanhante" render={({ field }) => (<FormItem><FormLabel>Acompanhante</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                        <FormField control={form.control} name="posicaoVeiculo" render={({ field }) => (<FormItem><FormLabel>Posição no Veículo</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                         <FormField
+                          control={form.control}
+                          name="tel"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Telefone</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="(99) 99999-9999"
+                                  {...field}
+                                  onChange={(e) => {
+                                    let value = e.target.value.replace(/\D/g, "");
+                                    value = value.substring(0, 11);
+                                    if (value.length > 10) {
+                                      value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                                    } else if (value.length > 6) {
+                                      value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+                                    } else if (value.length > 2) {
+                                      value = value.replace(/(\d{2})(\d*)/, '($1) $2');
+                                    } else if (value.length > 0) {
+                                      value = `(${value}`;
+                                    }
+                                    field.onChange(value);
+                                  }}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField control={form.control} name="endereco" render={({ field }) => (<FormItem><FormLabel>Endereço</FormLabel><FormControl><Input placeholder="Rua, Av, etc." {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        <FormField control={form.control} name="acompanhante" render={({ field }) => (<FormItem><FormLabel>Acompanhante</FormLabel><FormControl><Input placeholder="Nome do acompanhante" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        <FormField control={form.control} name="posicaoVeiculo" render={({ field }) => (<FormItem><FormLabel>Posição no Veículo</FormLabel><FormControl><Input placeholder="Ex: Condutor, Passageiro" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                     </AccordionContent>
                 </AccordionItem>
 
