@@ -43,11 +43,13 @@ import { Switch } from '@/components/ui/switch';
 
 const auxilios = [
   { id: 'PR01', label: 'PR01 - Atendimento inicial' },
+  { id: 'PR02', label: 'PR02 - Auxílio no combate a incêndio' },
   { id: 'PR13', label: 'PR13 - Canalização/Sinalização' },
+  { id: 'PR22', label: 'PR22 - Limpeza de pista' },
   { id: 'PR27', label: 'PR27 - Remoção de veículo' },
+  { id: 'PR37', label: 'PR37 - Implantação de Pare e Siga/ Interdição total' },
   { id: 'PR44', label: 'PR44 - Acionamento de Polícia' },
   { id: 'PR51', label: 'PR51 - Efetuado Registro Fotográfico' },
-  { id: 'PR46', label: 'PR46 - Não localizado' },
   { id: 'PR09', label: 'PR09 - Outros' },
 ] as const;
 
@@ -93,13 +95,13 @@ const formSchema = z.object({
   auxilios: z.string().optional(),
 });
 
-export default function OcorrenciaTO04Page() {
+export default function OcorrenciaTO05Page() {
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       rodovia: '',
-      ocorrencia: 'Remoção (TO04)',
+      ocorrencia: 'Incêndio Em Veículos (TO05)',
       tipoPanes: [],
       qth: '',
       sentido: '',
@@ -123,7 +125,7 @@ export default function OcorrenciaTO04Page() {
     console.log(values);
     toast({
       title: 'Formulário Enviado',
-      description: 'Ocorrência TO04 registrada com sucesso!',
+      description: 'Ocorrência TO05 registrada com sucesso!',
     });
   }
 
@@ -138,7 +140,7 @@ export default function OcorrenciaTO04Page() {
 
       <div className="space-y-2 text-center">
         <h1 className="font-condensed text-3xl font-bold tracking-tight">
-          REMOÇÃO
+          INCÊNDIO EM VEÍCULOS
         </h1>
         <p className="text-muted-foreground">
           Preencha os campos abaixo para registrar a ocorrência.
