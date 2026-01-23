@@ -15,14 +15,7 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
   const router = useRouter();
   const Icon = occurrence.icon;
 
-  const slug = occurrence.title.toLowerCase().replace(/\s/g, '');
-
   const handleClick = () => {
-    if (slug === 'to15') {
-      router.push('/ocorrencias/to15');
-      return;
-    }
-    
     // TODO: Futuramente, este clique poderá buscar e exibir
     // um relatório detalhado do Firestore e salvar a ocorrência.
     toast({
