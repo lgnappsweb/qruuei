@@ -46,10 +46,19 @@ const auxilios = [
   { id: 'PR09', label: 'PR09 - Outros' },
 ] as const;
 
+const tiposPane = [
+  { id: 'TP01', label: 'TP01 - Pane Mecânica' },
+  { id: 'TP02', label: 'TP02 - Pane Elétrica' },
+  { id: 'TP03', label: 'TP03 - Pane Pneu' },
+  { id: 'TP04', label: 'TP04 - Pane Seca' },
+  { id: 'TP05', label: 'TP05 - Super Aquecimento' },
+  { id: 'TP07', label: 'TP07 - Bloqueio por Rastreador' },
+] as const;
+
 const formSchema = z.object({
   rodovia: z.string().min(1, 'Selecione a rodovia.'),
   ocorrencia: z.string(),
-  tipoPane: z.string().optional(),
+  tipoPanes: z.array(z.string()).optional(),
   qth: z.string().min(1, 'O QTH é obrigatório.'),
   sentido: z.string().min(1, 'Selecione o sentido.'),
   localArea: z.string().min(1, 'Selecione o local/área.'),
@@ -78,6 +87,7 @@ export default function OcorrenciaTO01Page() {
     defaultValues: {
       rodovia: '',
       ocorrencia: 'Veículo Abandonado (TO01)',
+      tipoPanes: [],
       qth: '',
       sentido: '',
       localArea: '',
@@ -171,32 +181,57 @@ export default function OcorrenciaTO01Page() {
                   )}
                 />
               </div>
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                    control={form.control}
-                    name="tipoPane"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Tipo de Pane</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Selecione o tipo de pane (opcional)" />
-                            </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                                <SelectItem value="TP01">TP01 - Pane Mecânica</SelectItem>
-                                <SelectItem value="TP02">TP02 - Pane Elétrica</SelectItem>
-                                <SelectItem value="TP03">TP03 - Pane Pneu</SelectItem>
-                                <SelectItem value="TP04">TP04 - Pane Seca</SelectItem>
-                                <SelectItem value="TP05">TP05 - Super Aquecimento</SelectItem>
-                                <SelectItem value="TP07">TP07 - Bloqueio por Rastreador</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                        </FormItem>
-                    )}
+
+              <FormField
+                  control={form.control}
+                  name="tipoPanes"
+                  render={() => (
+                    <FormItem>
+                      <div className="mb-4">
+                        <FormLabel>Tipos de Pane</FormLabel>
+                        <FormDescription>
+                          Selecione um ou mais tipos de pane (opcional).
+                        </FormDescription>
+                      </div>
+                      {tiposPane.map((item) => (
+                        <FormField
+                          key={item.id}
+                          control={form.control}
+                          name="tipoPanes"
+                          render={({ field }) => {
+                            return (
+                              <FormItem
+                                key={item.id}
+                                className="flex flex-row items-start space-x-3 space-y-0"
+                              >
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value?.includes(item.id)}
+                                    onCheckedChange={(checked) => {
+                                      return checked
+                                        ? field.onChange([...(field.value || []), item.id])
+                                        : field.onChange(
+                                            field.value?.filter(
+                                              (value) => value !== item.id
+                                            )
+                                          )
+                                    }}
+                                  />
+                                </FormControl>
+                                <FormLabel className="font-normal">
+                                  {item.label}
+                                </FormLabel>
+                              </FormItem>
+                            )
+                          }}
+                        />
+                      ))}
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="qth"
@@ -210,9 +245,7 @@ export default function OcorrenciaTO01Page() {
                     </FormItem>
                   )}
                 />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <FormField
+                <FormField
                   control={form.control}
                   name="sentido"
                   render={({ field }) => (
@@ -242,7 +275,9 @@ export default function OcorrenciaTO01Page() {
                     </FormItem>
                   )}
                 />
-                <FormField
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <FormField
                   control={form.control}
                   name="localArea"
                   render={({ field }) => (
