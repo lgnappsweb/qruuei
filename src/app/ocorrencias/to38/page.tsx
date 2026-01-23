@@ -235,9 +235,22 @@ export default function OcorrenciaTO38Page() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Tipo de Propaganda</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <Input placeholder="Ex: Faixa, Cavalete, Outdoor" {...field} />
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o tipo de propaganda" />
+                          </SelectTrigger>
                         </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Faixa">Faixa</SelectItem>
+                          <SelectItem value="Cavalete">Cavalete</SelectItem>
+                          <SelectItem value="Outdoor">Outdoor</SelectItem>
+                          <SelectItem value="Placa">Placa</SelectItem>
+                          <SelectItem value="Lambe-lambe">Lambe-lambe</SelectItem>
+                          <SelectItem value="Letreiro">Letreiro</SelectItem>
+                          <SelectItem value="Outros">Outros</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
