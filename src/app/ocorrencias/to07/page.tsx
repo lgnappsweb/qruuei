@@ -63,6 +63,11 @@ const formSchema = z.object({
   auxilios: z.string().optional(),
 });
 
+const destinacaoPrOptions = [
+  { id: 'PR06', label: 'PR06 - Retirada de material da pista' },
+  { id: 'PR13', label: 'PR13 - Canalização/Sinalização' },
+];
+
 export default function OcorrenciaTO07Page() {
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -83,6 +88,8 @@ export default function OcorrenciaTO07Page() {
       auxilios: '',
     },
   });
+
+  const destinacaoObjetoValue = form.watch('destinacaoObjeto');
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
@@ -255,10 +262,21 @@ export default function OcorrenciaTO07Page() {
                   name="destinacaoObjeto"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Destinação do Objeto</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Ex: Removido para o canteiro central" {...field} />
-                      </FormControl>
+                      <FormLabel>Destinação do Objeto (PR)</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o PR de destinação" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {destinacaoPrOptions.map((item) => (
+                            <SelectItem key={item.id} value={item.id}>
+                              {item.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -268,7 +286,7 @@ export default function OcorrenciaTO07Page() {
                   name="qthDestinacao"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>QTH da Destinação</FormLabel>
+                      <FormLabel>QTH da Destinação {destinacaoObjetoValue ? `(${destinacaoObjetoValue})` : ''}</FormLabel>
                       <FormControl>
                         <Input placeholder="Ex: KM 20+100" {...field} />
                       </FormControl>
