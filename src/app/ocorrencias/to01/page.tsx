@@ -372,7 +372,7 @@ export default function OcorrenciaTO01Page() {
                             />
                           </FormControl>
                           <div className="space-y-0.5 ml-4">
-                            <FormLabel className="text-base">
+                            <FormLabel className="text-lg">
                               Baixa Frequência?
                             </FormLabel>
                           </div>
@@ -386,7 +386,7 @@ export default function OcorrenciaTO01Page() {
                   render={() => (
                     <FormItem>
                       <div className="mb-4">
-                        <FormLabel className="text-base">Auxílios/PR</FormLabel>
+                        <FormLabel className="text-lg">Auxílios/PR</FormLabel>
                         <FormDescription>
                           Selecione os auxílios prestados.
                         </FormDescription>
