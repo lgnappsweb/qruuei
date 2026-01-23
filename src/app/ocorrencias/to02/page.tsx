@@ -74,7 +74,7 @@ export default function OcorrenciaTO02Page() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       rodovia: '',
-      ocorrencia: 'Incêndio em Vegetação (TO02)',
+      ocorrencia: 'Incêndio na Faixa de Domínio / Lindeiro (TO02)',
       qth: '',
       sentido: '',
       localArea: '',
@@ -108,7 +108,7 @@ export default function OcorrenciaTO02Page() {
 
       <div className="space-y-2 text-center">
         <h1 className="font-condensed text-3xl font-bold tracking-tight">
-          INCÊNDIO EM VEGETAÇÃO
+          INCÊNDIO NA FAIXA DE DOMÍNIO / LINDEIRO
         </h1>
         <p className="text-muted-foreground">
           Preencha os campos abaixo para registrar a ocorrência.
