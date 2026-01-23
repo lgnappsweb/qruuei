@@ -70,7 +70,7 @@ export default function OcorrenciaTO02Page() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       rodovia: '',
-      ocorrencia: 'Incêndio na Faixa de Domínio / Lindeiro (TO02)',
+      ocorrencia: 'TO02',
       qth: '',
       sentido: '',
       localArea: '',

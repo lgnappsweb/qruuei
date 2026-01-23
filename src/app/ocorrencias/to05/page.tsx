@@ -101,7 +101,7 @@ export default function OcorrenciaTO05Page() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       rodovia: '',
-      ocorrencia: 'Incêndio Em Veículos (TO05)',
+      ocorrencia: 'TO05',
       tipoPanes: [],
       qth: '',
       sentido: '',
@@ -191,8 +191,8 @@ export default function OcorrenciaTO05Page() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Incêndio Em Veículos (TO05)">TO05 - Incêndio Em Veículos</SelectItem>
-                          <SelectItem value="Incêndio Em Veículos / Pane Sobre Faixa de Rolamento (TO05 / TO06)">TO05 / TO06 - Incêndio Em Veículos / Pane Sobre Faixa de Rolamento</SelectItem>
+                          <SelectItem value="TO05">TO05</SelectItem>
+                          <SelectItem value="TO05 / TO06">TO05 / TO06</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />

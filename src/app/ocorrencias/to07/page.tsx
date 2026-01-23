@@ -74,7 +74,7 @@ export default function OcorrenciaTO07Page() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       rodovia: '',
-      ocorrencia: 'Objeto na Pista (TO07)',
+      ocorrencia: 'TO07',
       qth: '',
       sentido: '',
       localArea: '',

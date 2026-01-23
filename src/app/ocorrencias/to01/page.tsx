@@ -99,7 +99,7 @@ export default function OcorrenciaTO01Page() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       rodovia: '',
-      ocorrencia: 'Veículo Abandonado (TO01)',
+      ocorrencia: 'TO01',
       tipoPanes: [],
       qth: '',
       sentido: '',
@@ -189,8 +189,8 @@ export default function OcorrenciaTO01Page() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Veículo Abandonado (TO01)">TO01 - Veículo Abandonado</SelectItem>
-                          <SelectItem value="Veículo Abandonado / Pane Sobre Faixa de Rolamento (TO01 / TO06)">TO01 / TO06 - Veículo Abandonado / Pane Sobre Faixa de Rolamento</SelectItem>
+                          <SelectItem value="TO01">TO01</SelectItem>
+                          <SelectItem value="TO01 / TO06">TO01 / TO06</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />

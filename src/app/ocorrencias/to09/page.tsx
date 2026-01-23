@@ -79,7 +79,7 @@ export default function OcorrenciaTO09Page() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       rodovia: '',
-      ocorrencia: 'Obras na Rodovia/Conservação de Rotina (TO09)',
+      ocorrencia: 'TO09',
       qth: '',
       sentido: '',
       localArea: '',

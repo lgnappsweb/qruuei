@@ -99,7 +99,7 @@ export default function OcorrenciaTO04Page() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       rodovia: '',
-      ocorrencia: 'Remoção (TO04)',
+      ocorrencia: 'TO04',
       tipoPanes: [],
       qth: '',
       sentido: '',

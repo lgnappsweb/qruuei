@@ -96,7 +96,7 @@ export default function OcorrenciaTO03Page() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       rodovia: '',
-      ocorrencia: 'Animal na Rodovia (TO03)',
+      ocorrencia: 'TO03',
       qth: '',
       sentido: '',
       localArea: '',
