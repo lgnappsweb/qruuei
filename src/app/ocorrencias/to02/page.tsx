@@ -36,12 +36,12 @@ import { Switch } from '@/components/ui/switch';
 
 const auxilios = [
   { id: 'PR02', label: 'PR02 - Auxílio no combate a incêndio' },
+  { id: 'PR09', label: 'PR09 - Outros' },
   { id: 'PR13', label: 'PR13 - Canalização/Sinalização' },
   { id: 'PR22', label: 'PR22 - Limpeza de pista' },
-  { id: 'PR51', label: 'PR51 - Efetuado Registro Fotográfico' },
-  { id: 'PR09', label: 'PR09 - Outros' },
-  { id: 'PR37', label: 'PR37 - Implantação de Pare e Siga/ Interdição total' },
   { id: 'PR33', label: 'PR33 - Reparo em cerca' },
+  { id: 'PR37', label: 'PR37 - Implantação de Pare e Siga/ Interdição total' },
+  { id: 'PR51', label: 'PR51 - Efetuado Registro Fotográfico' },
   { id: 'PR62', label: 'PR62 - Acionamento da Conservação' },
 ] as const;
 
