@@ -19,6 +19,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
+import { Label } from '@/components/ui/label';
 
 const veiculoSchema = z.object({
     marca: z.string().min(1, "Marca é obrigatória."),
@@ -107,12 +108,134 @@ export default function OcorrenciaFormPage() {
           <div className="space-y-6">
             <h2 className="text-xl font-bold font-condensed tracking-tight">INFORMAÇÕES GERAIS</h2>
             <Separator />
-            <FormField control={form.control} name="rodovia" render={({ field }) => ( <FormItem className="space-y-3"> <FormLabel>RODOVIA</FormLabel> <FormControl> <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-1"> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="MS-112" /></FormControl> <FormLabel className="font-normal">MS-112</FormLabel> </FormItem> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="BR-158" /></FormControl> <FormLabel className="font-normal">BR-158</FormLabel> </FormItem> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="MS-306" /></FormControl> <FormLabel className="font-normal">MS-306</FormLabel> </FormItem> </RadioGroup> </FormControl> <FormMessage /> </FormItem> )}/>
+            <FormField
+              control={form.control}
+              name="rodovia"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>RODOVIA</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex flex-col space-y-1"
+                    >
+                      <div className="flex items-center space-x-3 space-y-0">
+                        <RadioGroupItem value="MS-112" id="rodovia_ms112" />
+                        <Label htmlFor="rodovia_ms112" className="font-normal">MS-112</Label>
+                      </div>
+                      <div className="flex items-center space-x-3 space-y-0">
+                        <RadioGroupItem value="BR-158" id="rodovia_br158" />
+                        <Label htmlFor="rodovia_br158" className="font-normal">BR-158</Label>
+                      </div>
+                      <div className="flex items-center space-x-3 space-y-0">
+                        <RadioGroupItem value="MS-306" id="rodovia_ms306" />
+                        <Label htmlFor="rodovia_ms306" className="font-normal">MS-306</Label>
+                      </div>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormItem> <FormLabel>OCORRÊNCIA</FormLabel> <p className="text-sm text-muted-foreground pt-2">TO-06</p> </FormItem>
-            <FormField control={form.control} name="tipoPane" render={({ field }) => ( <FormItem> <FormLabel>TIPO DE PANE</FormLabel> <div className="space-y-2 pt-2"> {tipoPaneOptions.map((item) => ( <FormItem key={item.id} className="flex flex-row items-center space-x-3 space-y-0"> <FormControl> <Checkbox checked={field.value?.includes(item.id)} onCheckedChange={(checked) => { return checked ? field.onChange([...field.value, item.id]) : field.onChange(field.value?.filter((value) => value !== item.id)) }} /> </FormControl> <FormLabel className="font-normal">{item.label}</FormLabel> </FormItem>))} </div> <FormMessage /> </FormItem>)}/>
+            <FormField
+              control={form.control}
+              name="tipoPane"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>TIPO DE PANE</FormLabel>
+                  <div className="space-y-2 pt-2">
+                    {tipoPaneOptions.map((item) => (
+                      <div key={item.id} className="flex flex-row items-center space-x-3 space-y-0">
+                        <Checkbox
+                          checked={field.value?.includes(item.id)}
+                          onCheckedChange={(checked) => {
+                            return checked
+                              ? field.onChange([...field.value, item.id])
+                              : field.onChange(
+                                  field.value?.filter(
+                                    (value) => value !== item.id
+                                  )
+                                );
+                          }}
+                          id={`pane_${item.id}`}
+                        />
+                        <Label htmlFor={`pane_${item.id}`} className="font-normal">
+                          {item.label}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField control={form.control} name="qth" render={({ field }) => ( <FormItem> <FormLabel>QTH (LOCAL)</FormLabel> <FormControl> <Input placeholder="Ex: km 123 da MS-306" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
-            <FormField control={form.control} name="sentido" render={({ field }) => ( <FormItem className="space-y-3"> <FormLabel>SENTIDO</FormLabel> <FormControl> <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-1"> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="NORTE" /></FormControl> <FormLabel className="font-normal">NORTE</FormLabel> </FormItem> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="SUL" /></FormControl> <FormLabel className="font-normal">SUL</FormLabel> </FormItem> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="NORTE E SUL" /></FormControl> <FormLabel className="font-normal">NORTE E SUL</FormLabel> </FormItem> </RadioGroup> </FormControl> <FormMessage /> </FormItem> )}/>
-            <FormField control={form.control} name="localArea" render={({ field }) => ( <FormItem className="space-y-3"> <FormLabel>LOCAL/ÁREA</FormLabel> <FormControl> <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-1"> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="FAIXA DE ROLAMENTO" /></FormControl> <FormLabel className="font-normal">FAIXA DE ROLAMENTO</FormLabel> </FormItem> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="TERCEIRA FAIXA" /></FormControl> <FormLabel className="font-normal">TERCEIRA FAIXA</FormLabel> </FormItem> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="FAIXA DE ROLAMENTO/ACOSTAMENTO" /></FormControl> <FormLabel className="font-normal">FAIXA DE ROLAMENTO/ACOSTAMENTO</FormLabel> </FormItem> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="TERCEIRA FAIXA/ACOSTAMENTO" /></FormControl> <FormLabel className="font-normal">TERCEIRA FAIXA/ACOSTAMENTO</FormLabel> </FormItem> </RadioGroup> </FormControl> <FormMessage /> </FormItem> )}/>
+            <FormField
+              control={form.control}
+              name="sentido"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>SENTIDO</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex flex-col space-y-1"
+                    >
+                      <div className="flex items-center space-x-3 space-y-0">
+                        <RadioGroupItem value="NORTE" id="sentido_norte" />
+                        <Label htmlFor="sentido_norte" className="font-normal">NORTE</Label>
+                      </div>
+                      <div className="flex items-center space-x-3 space-y-0">
+                        <RadioGroupItem value="SUL" id="sentido_sul" />
+                        <Label htmlFor="sentido_sul" className="font-normal">SUL</Label>
+                      </div>
+                      <div className="flex items-center space-x-3 space-y-0">
+                        <RadioGroupItem value="NORTE E SUL" id="sentido_nortesul" />
+                        <Label htmlFor="sentido_nortesul" className="font-normal">NORTE E SUL</Label>
+                      </div>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="localArea"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>LOCAL/ÁREA</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex flex-col space-y-1"
+                    >
+                      <div className="flex items-center space-x-3 space-y-0">
+                        <RadioGroupItem value="FAIXA DE ROLAMENTO" id="area_rolamento" />
+                        <Label htmlFor="area_rolamento" className="font-normal">FAIXA DE ROLAMENTO</Label>
+                      </div>
+                      <div className="flex items-center space-x-3 space-y-0">
+                        <RadioGroupItem value="TERCEIRA FAIXA" id="area_terceira" />
+                        <Label htmlFor="area_terceira" className="font-normal">TERCEIRA FAIXA</Label>
+                      </div>
+                      <div className="flex items-center space-x-3 space-y-0">
+                        <RadioGroupItem value="FAIXA DE ROLAMENTO/ACOSTAMENTO" id="area_rolacost" />
+                        <Label htmlFor="area_rolacost" className="font-normal">FAIXA DE ROLAMENTO/ACOSTAMENTO</Label>
+                      </div>
+                      <div className="flex items-center space-x-3 space-y-0">
+                        <RadioGroupItem value="TERCEIRA FAIXA/ACOSTAMENTO" id="area_teracost" />
+                        <Label htmlFor="area_teracost" className="font-normal">TERCEIRA FAIXA/ACOSTAMENTO</Label>
+                      </div>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
 
           <div className="space-y-6">
@@ -127,9 +250,84 @@ export default function OcorrenciaFormPage() {
              <FormField control={form.control} name="veiculos.0.cidadeEmplacamento" render={({ field }) => ( <FormItem> <FormLabel>CIDADE EMPLACAMENTO</FormLabel> <FormControl> <Input placeholder="Ex: São Paulo" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
              <FormField control={form.control} name="veiculos.0.vindoDe" render={({ field }) => ( <FormItem> <FormLabel>VINDO DE</FormLabel> <FormControl> <Input placeholder="Ex: Rio de Janeiro" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
              <FormField control={form.control} name="veiculos.0.indoPara" render={({ field }) => ( <FormItem> <FormLabel>INDO PARA</FormLabel> <FormControl> <Input placeholder="Ex: Belo Horizonte" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
-            <FormField control={form.control} name="veiculos.0.eixos" render={({ field }) => ( <FormItem> <FormLabel>QUANTIDADE DE EIXOS</FormLabel> <FormControl> <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-5 gap-2 pt-2"> {eixosOptions.map(val => ( <FormItem key={val} className="flex items-center space-x-2 space-y-0"> <FormControl><RadioGroupItem value={val} /></FormControl> <FormLabel className="font-normal">{val}</FormLabel> </FormItem>))} </RadioGroup> </FormControl> <FormMessage /> </FormItem> )}/>
-            <FormField control={form.control} name="veiculos.0.tipoVeiculo" render={({ field }) => ( <FormItem> <FormLabel>TIPO DE VEÍCULO</FormLabel> <FormControl> <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-1 pt-2"> {tipoVeiculoOptions.map(item => ( <FormItem key={item.value} className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value={item.value} /></FormControl> <FormLabel className="font-normal">{item.label}</FormLabel> </FormItem>))} </RadioGroup> </FormControl> <FormMessage /> </FormItem> )}/>
-            <FormField control={form.control} name="veiculos.0.estadoPneu" render={({ field }) => ( <FormItem> <FormLabel>ESTADO DO PNEU</FormLabel> <FormControl> <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-1 pt-2"> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="BOM" /></FormControl> <FormLabel className="font-normal">BOM</FormLabel> </FormItem> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="REGULAR" /></FormControl> <FormLabel className="font-normal">REGULAR</FormLabel> </FormItem> <FormItem className="flex items-center space-x-3 space-y-0"> <FormControl><RadioGroupItem value="RUIM" /></FormControl> <FormLabel className="font-normal">RUIM</FormLabel> </FormItem> </RadioGroup> </FormControl> <FormMessage /> </FormItem> )}/>
+            <FormField
+              control={form.control}
+              name="veiculos.0.eixos"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>QUANTIDADE DE EIXOS</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="grid grid-cols-5 gap-2 pt-2"
+                    >
+                      {eixosOptions.map((val) => (
+                        <div key={val} className="flex items-center space-x-2 space-y-0">
+                          <RadioGroupItem value={val} id={`eixo_${val}`} />
+                          <Label htmlFor={`eixo_${val}`} className="font-normal">{val}</Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="veiculos.0.tipoVeiculo"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>TIPO DE VEÍCULO</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex flex-col space-y-1 pt-2"
+                    >
+                      {tipoVeiculoOptions.map((item) => (
+                        <div key={item.value} className="flex items-center space-x-3 space-y-0">
+                          <RadioGroupItem value={item.value} id={`tipo_${item.value.replace('/', '-')}`} />
+                          <Label htmlFor={`tipo_${item.value.replace('/', '-')}`} className="font-normal">{item.label}</Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="veiculos.0.estadoPneu"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>ESTADO DO PNEU</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex flex-col space-y-1 pt-2"
+                    >
+                        <div className="flex items-center space-x-3 space-y-0">
+                          <RadioGroupItem value="BOM" id="pneu_bom" />
+                          <Label htmlFor="pneu_bom" className="font-normal">BOM</Label>
+                        </div>
+                        <div className="flex items-center space-x-3 space-y-0">
+                          <RadioGroupItem value="REGULAR" id="pneu_regular" />
+                          <Label htmlFor="pneu_regular" className="font-normal">REGULAR</Label>
+                        </div>
+                        <div className="flex items-center space-x-3 space-y-0">
+                          <RadioGroupItem value="RUIM" id="pneu_ruim" />
+                          <Label htmlFor="pneu_ruim" className="font-normal">RUIM</Label>
+                        </div>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
              <FormField control={form.control} name="veiculos.0.tipoCarga" render={({ field }) => ( <FormItem> <FormLabel>TIPO DE CARGA</FormLabel> <FormControl> <Input placeholder="Ex: Soja, Vazio" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
             <div> <h3 className="text-base font-bold font-condensed tracking-tight">CONDUTOR</h3> <Separator className="my-2"/> </div>
              <FormField control={form.control} name="veiculos.0.qraCondutor" render={({ field }) => ( <FormItem> <FormLabel>QRA DO CONDUTOR(A)</FormLabel> <FormControl> <Input placeholder="Nome do Condutor" {...field} /> </FormControl> <FormMessage /> </FormItem> )}/>
@@ -153,3 +351,5 @@ export default function OcorrenciaFormPage() {
     </div>
   );
 }
+
+    
