@@ -16,12 +16,16 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
   const Icon = occurrence.icon;
 
   const handleClick = () => {
-    // TODO: Futuramente, este clique poderá buscar e exibir
-    // um relatório detalhado do Firestore e salvar a ocorrência.
-    toast({
-      title: "Página em construção",
-      description: `A página para ${occurrence.title} ainda está em desenvolvimento.`,
-    });
+    if (occurrence.id === '4') { // This is TO 01
+      router.push('/ocorrencias/to01');
+    } else {
+      // TODO: Futuramente, este clique poderá buscar e exibir
+      // um relatório detalhado do Firestore e salvar a ocorrência.
+      toast({
+        title: "Página em construção",
+        description: `A página para ${occurrence.title} ainda está em desenvolvimento.`,
+      });
+    }
   };
 
   return (
