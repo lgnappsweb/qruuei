@@ -210,11 +210,8 @@ export default function OcorrenciaTO02Page() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Faixa de Rolamento">Faixa de Rolamento</SelectItem>
-                        <SelectItem value="Terceira Faixa">Terceira Faixa</SelectItem>
-                        <SelectItem value="Acostamento">Acostamento</SelectItem>
-                        <SelectItem value="Faixa de Bordo">Faixa de Bordo</SelectItem>
                         <SelectItem value="Área de Domínio">Área de Domínio</SelectItem>
+                        <SelectItem value="Área Lindeira">Área Lindeira</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
