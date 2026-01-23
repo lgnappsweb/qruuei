@@ -63,6 +63,7 @@ const auxilios = [
   { id: 'PR51', label: 'PR51 - Efetuado Registro Fotográfico' },
   { id: 'PR53', label: 'PR53 - Meios próprios' },
   { id: 'PR54', label: 'PR54 - Aux. com ferram./ Empréstimo ferram.' },
+  { id: 'PR63', label: 'PR63 - Desatolamento de Veículos' },
 ] as const;
 
 const tiposPane = [
