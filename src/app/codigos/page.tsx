@@ -46,6 +46,11 @@ const codeSections = [
     title: 'Relacionamentos',
     content: 'Conteúdo para Relacionamentos em breve.',
   },
+  {
+    value: 'item-8',
+    title: 'Pontos de Apoio',
+    content: 'Conteúdo para Pontos de Apoio em breve.',
+  },
 ];
 
 export default function CodigosPage() {
