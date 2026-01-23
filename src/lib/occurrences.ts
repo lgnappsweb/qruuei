@@ -1,6 +1,7 @@
 import { 
   LifeBuoy, Megaphone, Milestone, Truck, Flame, Users, Car, Cone, HardHat, Shield, 
-  HeartPulse, Search, Heart, User, Siren, Link, Ban, Droplet, Trees, Send, Anchor, Wrench
+  HeartPulse, Search, Heart, User, Siren, Link, Ban, Droplet, Trees, Send, Anchor, Wrench,
+  FlameKindling
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -16,7 +17,7 @@ export const occurrences: Occurrence[] = [
   { id: '2', title: 'QUD OPERAÇÃO', icon: Megaphone, color: 'bg-blue-500' },
   { id: '3', title: 'TRAÇADO DE PISTA', icon: Milestone, color: 'bg-green-500' },
   { id: '4', title: 'TO 01', icon: Truck, color: 'bg-yellow-500' },
-  { id: '5', title: 'TO 02', icon: Flame, color: 'bg-indigo-500' },
+  { id: '5', title: 'TO 02', icon: FlameKindling, color: 'bg-indigo-500' },
   { id: '6', title: 'TO 03', icon: Users, color: 'bg-purple-500' },
   { id: '7', title: 'TO 04', icon: Car, color: 'bg-pink-500' },
   { id: '8', title: 'TO 05', icon: Flame, color: 'bg-orange-500' },
