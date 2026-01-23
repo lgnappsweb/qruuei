@@ -61,7 +61,7 @@ export const occurrences: Occurrence[] = [
   { id: '19', title: 'TO 34', icon: Target, color: 'bg-pink-500' },
   { id: '20', title: 'TO 35', icon: Droplet, color: 'bg-orange-500' },
   { id: '21', title: 'TO 37', icon: Signpost, color: 'bg-teal-500' },
-  { id: '22', title: 'TO 38', icon: Send, color: 'bg-cyan-500' },
+  { id: '22', title: 'TO 38', icon: Megaphone, color: 'bg-cyan-500' },
   { id: '23', 'title': 'TO 39', icon: Anchor, color: 'bg-red-600' },
   { id: '24', title: 'TO 50', icon: Wrench, color: 'bg-sky-500' },
 ];
