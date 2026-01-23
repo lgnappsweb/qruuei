@@ -305,63 +305,57 @@ export default function OcorrenciaTO01Page() {
               <CardTitle>Dados do Veículo</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6 pt-6">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                 <FormField name="marca" control={form.control} render={({ field }) => (<FormItem><FormLabel>Marca</FormLabel><FormControl><Input placeholder="Ex: Ford" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                 <FormField name="modelo" control={form.control} render={({ field }) => (<FormItem><FormLabel>Modelo</FormLabel><FormControl><Input placeholder="Ex: Ka" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                 <FormField name="ano" control={form.control} render={({ field }) => (<FormItem><FormLabel>Ano</FormLabel><FormControl><Input placeholder="Ex: 2020" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                 <FormField name="cor" control={form.control} render={({ field }) => (<FormItem><FormLabel>Cor</FormLabel><FormControl><Input placeholder="Ex: Preto" {...field} /></FormControl><FormMessage /></FormItem>)} />
-              </div>
-               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                 <FormField name="placa" control={form.control} render={({ field }) => (<FormItem><FormLabel>Placa</FormLabel><FormControl><Input placeholder="Ex: ABC-1234" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                 <FormField name="cidadeEmplacamento" control={form.control} render={({ field }) => (<FormItem><FormLabel>Cidade Emplacamento</FormLabel><FormControl><Input placeholder="Ex: Campo Grande" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                 <FormField name="eixos" control={form.control} render={({ field }) => (<FormItem><FormLabel>Quantidade de Eixos</FormLabel><FormControl><Input placeholder="Ex: 2" type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField
-                    control={form.control}
-                    name="tipoVeiculo"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Tipo de Veículo</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Selecione o tipo" />
-                            </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                                <SelectItem value="moto">Moto</SelectItem>
-                                <SelectItem value="carro">Carro</SelectItem>
-                                <SelectItem value="caminhonete">Caminhonete</SelectItem>
-                                <SelectItem value="caminhao">Caminhão</SelectItem>
-                                <SelectItem value="onibus">Ônibus</SelectItem>
-                                <SelectItem value="outro">Outro</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
-              </div>
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
+              <FormField name="marca" control={form.control} render={({ field }) => (<FormItem><FormLabel>Marca</FormLabel><FormControl><Input placeholder="Ex: Ford" {...field} /></FormControl><FormMessage /></FormItem>)} />
+              <FormField name="modelo" control={form.control} render={({ field }) => (<FormItem><FormLabel>Modelo</FormLabel><FormControl><Input placeholder="Ex: Ka" {...field} /></FormControl><FormMessage /></FormItem>)} />
+              <FormField name="ano" control={form.control} render={({ field }) => (<FormItem><FormLabel>Ano</FormLabel><FormControl><Input placeholder="Ex: 2020" {...field} /></FormControl><FormMessage /></FormItem>)} />
+              <FormField name="cor" control={form.control} render={({ field }) => (<FormItem><FormLabel>Cor</FormLabel><FormControl><Input placeholder="Ex: Preto" {...field} /></FormControl><FormMessage /></FormItem>)} />
+              <FormField name="placa" control={form.control} render={({ field }) => (<FormItem><FormLabel>Placa</FormLabel><FormControl><Input placeholder="Ex: ABC-1234" {...field} /></FormControl><FormMessage /></FormItem>)} />
+              <FormField name="cidadeEmplacamento" control={form.control} render={({ field }) => (<FormItem><FormLabel>Cidade Emplacamento</FormLabel><FormControl><Input placeholder="Ex: Campo Grande" {...field} /></FormControl><FormMessage /></FormItem>)} />
+              <FormField name="eixos" control={form.control} render={({ field }) => (<FormItem><FormLabel>Quantidade de Eixos</FormLabel><FormControl><Input placeholder="Ex: 2" type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+              <FormField
                   control={form.control}
-                  name="estadoPneu"
+                  name="tipoVeiculo"
                   render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel>Estado do Pneu</FormLabel>
-                      <FormControl>
-                        <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-row space-x-4">
-                          <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Bom" /></FormControl><FormLabel className="font-normal text-xl">Bom</FormLabel></FormItem>
-                          <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Razoável" /></FormControl><FormLabel className="font-normal text-xl">Razoável</FormLabel></FormItem>
-                          <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Ruim" /></FormControl><FormLabel className="font-normal text-xl">Ruim</FormLabel></FormItem>
-                          <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Não se aplica" /></FormControl><FormLabel className="font-normal text-xl">N/A</FormLabel></FormItem>
-                        </RadioGroup>
-                      </FormControl>
+                      <FormItem>
+                      <FormLabel>Tipo de Veículo</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                          <SelectTrigger>
+                              <SelectValue placeholder="Selecione o tipo" />
+                          </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                              <SelectItem value="moto">Moto</SelectItem>
+                              <SelectItem value="carro">Carro</SelectItem>
+                              <SelectItem value="caminhonete">Caminhonete</SelectItem>
+                              <SelectItem value="caminhao">Caminhão</SelectItem>
+                              <SelectItem value="onibus">Ônibus</SelectItem>
+                              <SelectItem value="outro">Outro</SelectItem>
+                          </SelectContent>
+                      </Select>
                       <FormMessage />
-                    </FormItem>
+                      </FormItem>
                   )}
-                />
-                <FormField name="tipoCarga" control={form.control} render={({ field }) => (<FormItem><FormLabel>Tipo de Carga</FormLabel><FormControl><Input placeholder="Ex: Soja, vazia, etc." {...field} /></FormControl><FormMessage /></FormItem>)} />
-              </div>
+              />
+              <FormField
+                control={form.control}
+                name="estadoPneu"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Estado do Pneu</FormLabel>
+                    <FormControl>
+                      <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-row space-x-4">
+                        <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Bom" /></FormControl><FormLabel className="font-normal text-xl">Bom</FormLabel></FormItem>
+                        <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Razoável" /></FormControl><FormLabel className="font-normal text-xl">Razoável</FormLabel></FormItem>
+                        <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Ruim" /></FormControl><FormLabel className="font-normal text-xl">Ruim</FormLabel></FormItem>
+                        <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Não se aplica" /></FormControl><FormLabel className="font-normal text-xl">N/A</FormLabel></FormItem>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField name="tipoCarga" control={form.control} render={({ field }) => (<FormItem><FormLabel>Tipo de Carga</FormLabel><FormControl><Input placeholder="Ex: Soja, vazia, etc." {...field} /></FormControl><FormMessage /></FormItem>)} />
             </CardContent>
           </Card>
           
