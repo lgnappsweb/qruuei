@@ -144,8 +144,20 @@ export default function OcorrenciaTO01Page() {
                         <RadioGroup
                           onValueChange={field.onChange}
                           defaultValue={field.value}
-                          className="flex flex-row space-x-4"
+                          className="flex flex-row flex-wrap gap-4"
                         >
+                          <FormItem className="flex items-center space-x-2 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="MS-112" />
+                            </FormControl>
+                            <FormLabel className="font-normal">MS-112</FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-2 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="BR-158" />
+                            </FormControl>
+                            <FormLabel className="font-normal">BR-158</FormLabel>
+                          </FormItem>
                           <FormItem className="flex items-center space-x-2 space-y-0">
                             <FormControl>
                               <RadioGroupItem value="MS-306" />
@@ -154,9 +166,9 @@ export default function OcorrenciaTO01Page() {
                           </FormItem>
                           <FormItem className="flex items-center space-x-2 space-y-0">
                             <FormControl>
-                              <RadioGroupItem value="BR-158" />
+                              <RadioGroupItem value="BR-436" />
                             </FormControl>
-                            <FormLabel className="font-normal">BR-158</FormLabel>
+                            <FormLabel className="font-normal">BR-436</FormLabel>
                           </FormItem>
                         </RadioGroup>
                       </FormControl>
