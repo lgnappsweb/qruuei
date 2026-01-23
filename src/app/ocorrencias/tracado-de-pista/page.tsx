@@ -20,6 +20,13 @@ import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   Card,
   CardHeader,
   CardTitle,
@@ -36,6 +43,7 @@ import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   // PRÉVIA
+  rodovia: z.string().min(1, 'Selecione a rodovia.'),
   qthExato: z.string().optional(),
   sentido: z.string().optional(),
   faixaInterditada: z.string().optional(),
@@ -110,9 +118,9 @@ function RadioGroupField({ control, name, label, options, orientation = 'vertica
               {options.map((option) => (
                 <FormItem key={option.value} className="flex items-center space-x-3 space-y-0">
                   <FormControl>
-                    <RadioGroupItem value={option.value} id={`${name}-${option.value}`} />
+                    <RadioGroupItem value={option.value} id={`${String(name)}-${option.value}`} />
                   </FormControl>
-                  <FormLabel htmlFor={`${name}-${option.value}`} className="font-normal text-base">
+                  <FormLabel htmlFor={`${String(name)}-${option.value}`} className="font-normal text-base">
                     {option.label}
                   </FormLabel>
                 </FormItem>
@@ -139,7 +147,7 @@ function CheckboxGroupField({ control, name, label, options }: { control: Contro
               control={control}
               name={name as any}
               render={({ field }) => {
-                const fieldValue = field.value || [];
+                const fieldValue = Array.isArray(field.value) ? field.value : [];
                 return (
                   <FormItem
                     key={item.id}
@@ -211,6 +219,7 @@ export default function TracadoDePistaPage() {
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            rodovia: '',
             veiculos: [],
             recursosAdicionaisPrevia: [],
             potencialGravidadeAbordagem: [],
@@ -248,6 +257,29 @@ export default function TracadoDePistaPage() {
                             <AccordionTrigger className="px-6 text-xl">PRÉVIA</AccordionTrigger>
                             <AccordionContent className="px-6 pt-2">
                                 <div className="space-y-6">
+                                    <FormField
+                                      control={form.control}
+                                      name="rodovia"
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel>Rodovia</FormLabel>
+                                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                              <SelectTrigger>
+                                                <SelectValue placeholder="Selecione a rodovia" />
+                                              </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                              <SelectItem value="MS-112">MS-112</SelectItem>
+                                              <SelectItem value="BR-158">BR-158</SelectItem>
+                                              <SelectItem value="MS-306">MS-306</SelectItem>
+                                              <SelectItem value="BR-436">BR-436</SelectItem>
+                                            </SelectContent>
+                                          </Select>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
                                     <FormField control={form.control} name="qthExato" render={({ field }) => (<FormItem><FormLabel>QTH exato</FormLabel><FormControl><Input placeholder="Km do acidente" {...field} /></FormControl><FormMessage /></FormItem>)} />
                                     <RadioGroupField control={form.control} name="sentido" label="Sentido" options={formOptions.sentido} orientation="horizontal" />
                                     <RadioGroupField control={form.control} name="faixaInterditada" label="Faixa de rolamento interditada?" options={formOptions.faixaInterditada} orientation="horizontal" />
@@ -323,7 +355,7 @@ export default function TracadoDePistaPage() {
                             <AccordionContent className="px-6 pt-2">
                                 <div className="space-y-6">
                                     <RadioGroupField control={form.control} name="sinalizacaoVertical" label="Sinalização vertical (placas, banners, postes)" options={formOptions.sinalizacao} orientation="horizontal" />
-                                    <RadioGroupField control={form.control} name="sinalizacaoHorizontal" label="Sinalização horizontal (faixa de bordo, etc.)" options={formOptions.sinalizacao} orientation="horizontal" />
+                                    <RadioGroupField control={form.control} name="sinalizacaoHorizontal" label="Sinalização horizontal (faixa de bordo, faixa segmentada, pintura de pista...)" options={formOptions.sinalizacao} orientation="horizontal" />
                                     <RadioGroupField control={form.control} name="sinalizacaoSemaforo" label="Sinalização semáforo" options={formOptions.sinalizacaoSemaforo} />
                                 </div>
                             </AccordionContent>
