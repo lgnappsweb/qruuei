@@ -56,6 +56,7 @@ const formSchema = z.object({
   
   // Detalhes da Propaganda
   tipoPropaganda: z.string().min(1, "O tipo de propaganda é obrigatório."),
+  tipoPropagandaOutros: z.string().optional(),
   acao: z.string().min(1, 'Selecione a ação.'),
   mensagem: z.string().optional(),
   quantidade: z.string().min(1, 'A quantidade é obrigatória.'),
@@ -78,6 +79,7 @@ export default function OcorrenciaTO38Page() {
       sentido: '',
       localArea: '',
       tipoPropaganda: '',
+      tipoPropagandaOutros: '',
       acao: '',
       mensagem: '',
       quantidade: '1',
@@ -255,6 +257,21 @@ export default function OcorrenciaTO38Page() {
                     </FormItem>
                   )}
                 />
+                {form.watch('tipoPropaganda') === 'Outros' && (
+                  <FormField
+                    control={form.control}
+                    name="tipoPropagandaOutros"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Descreva o tipo de propaganda</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Descreva o tipo" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
                 <FormField
                   control={form.control}
                   name="acao"
