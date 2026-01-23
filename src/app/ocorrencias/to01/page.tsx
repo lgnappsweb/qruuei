@@ -18,7 +18,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -84,7 +83,7 @@ const formSchema = z.object({
   sentido: z.string().min(1, 'Selecione o sentido.'),
   localArea: z.string().min(1, 'Selecione o local/área.'),
   vehicles: z.array(vehicleSchema).optional(),
-  auxilios: z.array(z.string()).optional(),
+  auxilios: z.string().optional(),
   observacoes: z.string().optional(),
   numeroOcorrencia: z.string().optional(),
 });
@@ -101,7 +100,7 @@ export default function OcorrenciaTO01Page() {
       sentido: '',
       localArea: '',
       vehicles: [],
-      auxilios: [],
+      auxilios: '',
       observacoes: '',
       numeroOcorrencia: '',
     },
@@ -416,50 +415,29 @@ export default function OcorrenciaTO01Page() {
           <Card>
             <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
             <CardContent className="space-y-6 pt-6">
-                 <FormField
+                <FormField
                   control={form.control}
                   name="auxilios"
-                  render={() => (
+                  render={({ field }) => (
                     <FormItem>
-                      <div className="mb-4">
-                        <FormLabel>Auxílios/PR</FormLabel>
-                        <FormDescription>
-                          Selecione os auxílios prestados.
-                        </FormDescription>
-                      </div>
-                      {auxilios.map((item) => (
-                        <FormField
-                          key={item.id}
-                          control={form.control}
-                          name="auxilios"
-                          render={({ field }) => {
-                            return (
-                              <FormItem
-                                key={item.id}
-                                className="flex flex-row items-start space-x-3 space-y-0"
-                              >
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value?.includes(item.id)}
-                                    onCheckedChange={(checked) => {
-                                      return checked
-                                        ? field.onChange([...(field.value || []), item.id])
-                                        : field.onChange(
-                                            field.value?.filter(
-                                              (value) => value !== item.id
-                                            )
-                                          )
-                                    }}
-                                  />
-                                </FormControl>
-                                <FormLabel className="font-normal text-xl">
-                                  {item.label}
-                                </FormLabel>
-                              </FormItem>
-                            )
-                          }}
+                      <FormLabel>Auxílios/PR</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Descreva os auxílios prestados. Ex: PR01, PR13"
+                          className="resize-none"
+                          {...field}
                         />
-                      ))}
+                      </FormControl>
+                      <div className="space-y-2 pt-2">
+                        <p className="text-sm font-medium text-foreground">
+                          Códigos de referência:
+                        </p>
+                        <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+                          {auxilios.map((item) => (
+                            <li key={item.id}>{item.label}</li>
+                          ))}
+                        </ul>
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
