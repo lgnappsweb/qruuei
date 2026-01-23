@@ -48,11 +48,14 @@ const auxilios = [
   { id: 'PR24', label: 'PR24 - Troca de pneu' },
   { id: 'PR25', label: 'PR25 - Pane solucionada' },
   { id: 'PR27', label: 'PR27 - Remoção de veículo' },
+  { id: 'PR30', label: 'PR30 - Auxílio no transporte do usuário' },
+  { id: 'PR37', label: 'PR37 - Implantação de Pare e Siga/ Interdição total' },
   { id: 'PR45', label: 'PR45 - Auxílio a usuário p/comprar combustível' },
   { id: 'PR51', label: 'PR51 - Efetuado Registro Fotográfico' },
   { id: 'PR53', label: 'PR53 - Meios próprios' },
   { id: 'PR54', label: 'PR54 - Aux. com ferram./ Empréstimo ferram.' },
   { id: 'PR55', label: 'PR55 - Desbloqueio de veículo' },
+  { id: 'PR62', label: 'PR62 - Acionamento da Conservação' },
   { id: 'PR63', label: 'PR63 - Desatolamento de Veículos' },
 ] as const;
 
