@@ -357,6 +357,23 @@ export default function OcorrenciaTO09Page() {
             <CardContent className="space-y-6 pt-6">
                 <FormField
                   control={form.control}
+                  name="observacoes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Observações</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Detalhes adicionais sobre a ocorrência."
+                          className="resize-none"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
                   name="auxilios"
                   render={({ field }) => (
                     <FormItem>
@@ -382,23 +399,6 @@ export default function OcorrenciaTO09Page() {
                           </AccordionContent>
                         </AccordionItem>
                       </Accordion>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="observacoes"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Observações</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Detalhes adicionais sobre a ocorrência."
-                          className="resize-none"
-                          {...field}
-                        />
-                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
