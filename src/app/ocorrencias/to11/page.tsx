@@ -80,6 +80,12 @@ const vehicleSchema = z.object({
   qraCondutor: z.string().optional(),
   baixaFrequencia: z.string().optional(),
   ocupantes: z.string().optional(),
+  cpf: z.string().optional(),
+  rg: z.string().optional(),
+  endereco: z.string().optional(),
+  numero: z.string().optional(),
+  bairro: z.string().optional(),
+  cidade: z.string().optional(),
 });
 
 const formSchema = z.object({
@@ -412,6 +418,18 @@ export default function OcorrenciaTO11Page() {
                     />
 
                     <FormField name={`vehicles.${index}.ocupantes`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Nº de Ocupantes</FormLabel><FormControl><Input placeholder="Ex: 0" type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                
+                    <div className="pt-4">
+                        <h4 className="text-lg font-medium mb-4">Dados e Endereço do Condutor</h4>
+                        <div className="space-y-6">
+                            <FormField name={`vehicles.${index}.cpf`} control={form.control} render={({ field }) => (<FormItem><FormLabel>CPF</FormLabel><FormControl><Input placeholder="000.000.000-00" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                            <FormField name={`vehicles.${index}.rg`} control={form.control} render={({ field }) => (<FormItem><FormLabel>RG</FormLabel><FormControl><Input placeholder="00.000.000-0" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                            <FormField name={`vehicles.${index}.endereco`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Endereço</FormLabel><FormControl><Input placeholder="Rua, Av, etc." {...field} /></FormControl><FormMessage /></FormItem>)} />
+                            <FormField name={`vehicles.${index}.numero`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Nº</FormLabel><FormControl><Input placeholder="123" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                            <FormField name={`vehicles.${index}.bairro`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Bairro</FormLabel><FormControl><Input placeholder="Centro" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                            <FormField name={`vehicles.${index}.cidade`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Cidade</FormLabel><FormControl><Input placeholder="Sua cidade" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                        </div>
+                    </div>
                 </CardContent>
               </Card>
             ))}
@@ -420,7 +438,7 @@ export default function OcorrenciaTO11Page() {
               type="button"
               size="lg"
               className="w-full"
-              onClick={() => append({ marca: '', modelo: '', ano: '', cor: '', placa: '', cidadeEmplacamento: '', eixos: '', tipoVeiculo: '', estadoPneu: '', tipoCarga: '', qraCondutor: '', baixaFrequencia: '', ocupantes: '' })}
+              onClick={() => append({ marca: '', modelo: '', ano: '', cor: '', placa: '', cidadeEmplacamento: '', eixos: '', tipoVeiculo: '', estadoPneu: '', tipoCarga: '', qraCondutor: '', baixaFrequencia: '', ocupantes: '', cpf: '', rg: '', endereco: '', numero: '', bairro: '', cidade: '' })}
             >
               <PlusCircle className="mr-2 h-5 w-5" />
               {fields.length === 0 ? 'Adicionar Veículo' : 'Adicionar Outro Veículo'}
