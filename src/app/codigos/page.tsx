@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import {
@@ -69,7 +70,7 @@ function TiposDeOcorrenciaTable() {
       </TableHeader>
       <TableBody>
         {tiposDeOcorrenciaData.map((item) => (
-          <TableRow key={item.codigo}>
+          <TableRow key={item.codigo} id={item.codigo}>
             <TableCell className="font-medium">{item.codigo}</TableCell>
             <TableCell>{item.mensagem}</TableCell>
             <TableCell>{item.grupo}</TableCell>
@@ -156,7 +157,7 @@ function TiposDeAcaoTable() {
       </TableHeader>
       <TableBody>
         {tiposDeAcaoData.map((item) => (
-          <TableRow key={item.codigo}>
+          <TableRow key={item.codigo} id={item.codigo}>
             <TableCell className="font-medium">{item.codigo}</TableCell>
             <TableCell>{item.mensagem}</TableCell>
           </TableRow>
@@ -186,7 +187,7 @@ function TiposDePaneTable() {
       </TableHeader>
       <TableBody>
         {tiposDePaneData.map((item) => (
-          <TableRow key={item.codigo}>
+          <TableRow key={item.codigo} id={item.codigo}>
             <TableCell className="font-medium">{item.codigo}</TableCell>
             <TableCell>{item.mensagem}</TableCell>
           </TableRow>
@@ -226,7 +227,7 @@ function OutrasMensagensTable() {
       </TableHeader>
       <TableBody>
         {outrasMensagensData.map((item) => (
-          <TableRow key={item.codigo}>
+          <TableRow key={item.codigo} id={item.codigo}>
             <TableCell className="font-medium">{item.codigo}</TableCell>
             <TableCell>{item.mensagem}</TableCell>
           </TableRow>
@@ -271,7 +272,7 @@ function CodigosDeMensagemTable() {
       </TableHeader>
       <TableBody>
         {codigosDeMensagemData.map((item) => (
-          <TableRow key={item.codigo}>
+          <TableRow key={item.codigo} id={item.codigo}>
             <TableCell className="font-medium">{item.codigo}</TableCell>
             <TableCell>{item.mensagem}</TableCell>
           </TableRow>
@@ -322,7 +323,7 @@ function AlfabetoFoneticoTable() {
             </TableHeader>
             <TableBody>
                 {alfabetoFoneticoData.map((item) => (
-                    <TableRow key={item.letra}>
+                    <TableRow key={item.letra} id={item.letra}>
                         <TableCell className="font-medium">{item.letra}</TableCell>
                         <TableCell>{item.palavra}</TableCell>
                         <TableCell>{item.pronuncia}</TableCell>
@@ -427,7 +428,56 @@ const relacionamentosData = [
   },
 ];
 
-function RelacionamentosContent() {
+function RelacionamentosContent({ setOpenAccordion }: { setOpenAccordion: (value: string | undefined) => void }) {
+
+  const handleCodeClick = (codeId: string, accordionId: string) => {
+    setOpenAccordion(accordionId);
+
+    setTimeout(() => {
+      const element = document.getElementById(codeId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        element.classList.add('bg-primary/20', 'rounded-lg');
+        element.style.transition = 'background-color 0.5s ease-in-out';
+        setTimeout(() => {
+          element.classList.remove('bg-primary/20', 'rounded-lg');
+        }, 2000);
+      }
+    }, 300); 
+  };
+
+  const DescriptionWithLinks = ({ text }: { text: string }) => {
+    const regex = /\((Ocorrências: (.*?))\)/;
+    const match = text.match(regex);
+
+    if (!match) {
+        return <CardDescription>{text}</CardDescription>;
+    }
+
+    const preText = text.substring(0, match.index);
+    const codesText = match[2];
+    const codes = codesText.split(',').map(c => c.trim());
+    const postText = text.substring(match.index! + match[0].length);
+
+    return (
+        <CardDescription>
+            {preText}
+            (Ocorrências:{' '}
+            {codes.map((code, index) => (
+                <React.Fragment key={code}>
+                    <button
+                        onClick={() => handleCodeClick(code, 'item-1')}
+                        className="text-primary hover:underline"
+                    >
+                        {code}
+                    </button>
+                    {index < codes.length - 1 && ', '}
+                </React.Fragment>
+            ))}
+            ){postText}
+        </CardDescription>
+    );
+  };
 
   const findItem = (list: {codigo: string, mensagem: string}[], code: string) => {
     return list.find(item => item.codigo === code);
@@ -439,16 +489,22 @@ function RelacionamentosContent() {
         <Card key={rel.title} className="bg-card/50 border-border">
           <CardHeader>
             <CardTitle className="text-xl">{rel.title}</CardTitle>
-            <CardDescription>{rel.description}</CardDescription>
+            <DescriptionWithLinks text={rel.description} />
           </CardHeader>
           <CardContent className="space-y-4 pt-0">
             {rel.providencias && rel.providencias.length > 0 && (
               <div>
                 <h4 className="font-semibold mb-2 text-base text-foreground/90">Ações/Providências Comuns</h4>
-                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                <ul className="list-disc list-inside space-y-1 text-sm">
                   {rel.providencias.map(code => {
                     const item = findItem(tiposDeAcaoData, code);
-                    return item ? <li key={code}><strong>{code}:</strong> {item.mensagem}</li> : null;
+                    return item ? (
+                      <li key={code} className="text-muted-foreground">
+                        <button onClick={() => handleCodeClick(code, 'item-2')} className="text-left hover:underline">
+                          <strong className="text-foreground/90 font-semibold">{code}:</strong> {item.mensagem}
+                        </button>
+                      </li>
+                    ) : null;
                   })}
                 </ul>
               </div>
@@ -456,10 +512,16 @@ function RelacionamentosContent() {
              {rel.panes && rel.panes.length > 0 && (
               <div>
                 <h4 className="font-semibold mb-2 text-base text-foreground/90">Tipos de Pane Comuns</h4>
-                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                <ul className="list-disc list-inside space-y-1 text-sm">
                   {rel.panes.map(code => {
                     const item = findItem(tiposDePaneData, code);
-                    return item ? <li key={code}><strong>{code}:</strong> {item.mensagem}</li> : null;
+                    return item ? (
+                       <li key={code} className="text-muted-foreground">
+                        <button onClick={() => handleCodeClick(code, 'item-3')} className="text-left hover:underline">
+                           <strong className="text-foreground/90 font-semibold">{code}:</strong> {item.mensagem}
+                        </button>
+                      </li>
+                    ) : null;
                   })}
                 </ul>
               </div>
@@ -467,10 +529,16 @@ function RelacionamentosContent() {
              {rel.outras && rel.outras.length > 0 && (
               <div>
                 <h4 className="font-semibold mb-2 text-base text-foreground/90">Outras Mensagens Comuns</h4>
-                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                <ul className="list-disc list-inside space-y-1 text-sm">
                   {rel.outras.map(code => {
                     const item = findItem(outrasMensagensData, code);
-                    return item ? <li key={code}><strong>{code}:</strong> {item.mensagem}</li> : null;
+                    return item ? (
+                       <li key={code} className="text-muted-foreground">
+                        <button onClick={() => handleCodeClick(code, 'item-4')} className="text-left hover:underline">
+                           <strong className="text-foreground/90 font-semibold">{code}:</strong> {item.mensagem}
+                        </button>
+                      </li>
+                    ) : null;
                   })}
                 </ul>
               </div>
@@ -482,51 +550,52 @@ function RelacionamentosContent() {
   )
 }
 
-
-const codeSections = [
-  {
-    value: 'item-1',
-    title: 'Tipos de Ocorrência',
-    content: <TiposDeOcorrenciaTable />,
-  },
-  {
-    value: 'item-2',
-    title: 'Tipos de Ação/Providência',
-    content: <TiposDeAcaoTable />,
-  },
-  {
-    value: 'item-3',
-    title: 'Tipos de Pane',
-    content: <TiposDePaneTable />,
-  },
-  {
-    value: 'item-4',
-    title: 'Outras Mensagens',
-    content: <OutrasMensagensTable />,
-  },
-  {
-    value: 'item-5',
-    title: 'Códigos de Mensagem',
-    content: <CodigosDeMensagemTable />,
-  },
-  {
-    value: 'item-6',
-    title: 'Código Q (Alfabeto Fonético)',
-    content: <AlfabetoFoneticoTable />,
-  },
-  {
-    value: 'item-7',
-    title: 'Relacionamentos',
-    content: <RelacionamentosContent />,
-  },
-  {
-    value: 'item-8',
-    title: 'Pontos de Apoio',
-    content: <PontosDeApoioTable />,
-  },
-];
-
 export default function CodigosPage() {
+  const [openAccordion, setOpenAccordion] = React.useState<string>();
+
+  const codeSections = [
+    {
+      value: 'item-1',
+      title: 'Tipos de Ocorrência',
+      content: <TiposDeOcorrenciaTable />,
+    },
+    {
+      value: 'item-2',
+      title: 'Tipos de Ação/Providência',
+      content: <TiposDeAcaoTable />,
+    },
+    {
+      value: 'item-3',
+      title: 'Tipos de Pane',
+      content: <TiposDePaneTable />,
+    },
+    {
+      value: 'item-4',
+      title: 'Outras Mensagens',
+      content: <OutrasMensagensTable />,
+    },
+    {
+      value: 'item-5',
+      title: 'Códigos de Mensagem',
+      content: <CodigosDeMensagemTable />,
+    },
+    {
+      value: 'item-6',
+      title: 'Código Q (Alfabeto Fonético)',
+      content: <AlfabetoFoneticoTable />,
+    },
+    {
+      value: 'item-7',
+      title: 'Relacionamentos',
+      content: <RelacionamentosContent setOpenAccordion={setOpenAccordion} />,
+    },
+    {
+      value: 'item-8',
+      title: 'Pontos de Apoio',
+      content: <PontosDeApoioTable />,
+    },
+  ];
+
   return (
     <div className="space-y-8 pb-24">
       <Button asChild variant="ghost" className="pl-0">
@@ -545,7 +614,7 @@ export default function CodigosPage() {
         </p>
       </div>
 
-      <Accordion type="single" collapsible className="w-full">
+      <Accordion type="single" collapsible className="w-full" value={openAccordion} onValueChange={setOpenAccordion}>
         {codeSections.map((section) => (
           <AccordionItem key={section.value} value={section.value}>
             <AccordionTrigger className="text-lg font-medium">
