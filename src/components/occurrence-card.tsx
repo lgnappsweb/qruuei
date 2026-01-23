@@ -18,6 +18,8 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
   const handleClick = () => {
     if (occurrence.id === '4') { // This is TO 01
       router.push('/ocorrencias/to01');
+    } else if (occurrence.id === '5') { // This is TO 02
+      router.push('/ocorrencias/to02');
     } else if (occurrence.id === '6') { // This is TO 03
       router.push('/ocorrencias/to03');
     } else {
