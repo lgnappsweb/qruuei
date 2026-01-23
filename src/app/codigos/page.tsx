@@ -401,14 +401,14 @@ const relacionamentosData = [
   },
   {
     title: 'Incidentes na Via',
-    description: 'Eventos que afetam o fluxo ou a segurança, como veículo abandonado, animais, objetos na pista, incêndios, congestionamento, manifestações ou derramamentos. (Ocorrências: TO01, TO02, TO03, TO04, TO05, TO07, TO13, TO18, TO25, TO35, TO39, TO40)',
-    providencias: ['PR02', 'PR03', 'PR04', 'PR05', 'PR06', 'PR12', 'PR13', 'PR19', 'PR21', 'PR22', 'PR23', 'PR27', 'PR32', 'PR44', 'PR56'],
+    description: 'Eventos que afetam o fluxo ou a segurança, como veículo abandonado, animais, objetos na pista, incêndios, congestionamento, manifestações ou derramamentos. (Ocorrências: TO01, TO02, TO03, TO04, TO05, TO07, TO13, TO18, TO25, TO32, TO35, TO39, TO40)',
+    providencias: ['PR02', 'PR03', 'PR04', 'PR05', 'PR06', 'PR12', 'PR13', 'PR19', 'PR21', 'PR22', 'PR23', 'PR27', 'PR32', 'PR44', 'PR56', 'PR62', 'PR37', 'PR33'],
     panes: [],
     outras: [],
   },
   {
     title: 'Obras e Manutenção',
-    description: 'Atividades de conservação, reparos na via, sinalização e fiscalização da faixa de domínio. (Ocorrências: TO09, TO15, TO21, TO34, TO36, TO37, TO38, TO50)',
+    description: 'Atividades de conservação, reparos na via, sinalização e fiscalização da faixa de domínio. (Ocorrências: TO09, TO15, TO21, TO32, TO34, TO36, TO37, TO38, TO50)',
     providencias: ['PR08', 'PR13', 'PR14', 'PR29', 'PR33', 'PR34', 'PR35', 'PR36', 'PR37', 'PR39', 'PR40', 'PR41', 'PR48', 'PR60', 'PR62'],
     panes: [],
     outras: [],
