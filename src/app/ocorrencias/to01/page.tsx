@@ -362,35 +362,33 @@ export default function OcorrenciaTO01Page() {
                 )}
               />
               <FormField name="tipoCarga" control={form.control} render={({ field }) => (<FormItem><FormLabel>Tipo de Carga</FormLabel><FormControl><Input placeholder="Ex: Soja, vazia, etc." {...field} /></FormControl><FormMessage /></FormItem>)} />
+              <FormField name="qraCondutor" control={form.control} render={({ field }) => (<FormItem><FormLabel>QRA do Condutor(a)</FormLabel><FormControl><Input placeholder="Nome do condutor (se presente)" {...field} /></FormControl><FormMessage /></FormItem>)} />
+              <FormField
+                control={form.control}
+                name="baixaFrequencia"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-start rounded-lg border p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-0.5 ml-4">
+                      <FormLabel className="text-xl">
+                        Baixa Frequência?
+                      </FormLabel>
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <FormField name="ocupantes" control={form.control} render={({ field }) => (<FormItem><FormLabel>Nº de Ocupantes</FormLabel><FormControl><Input placeholder="Ex: 0" type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
             </CardContent>
           </Card>
           
           <Card>
             <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
             <CardContent className="space-y-6 pt-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <FormField name="qraCondutor" control={form.control} render={({ field }) => (<FormItem><FormLabel>QRA do Condutor(a)</FormLabel><FormControl><Input placeholder="Nome do condutor (se presente)" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField name="ocupantes" control={form.control} render={({ field }) => (<FormItem><FormLabel>Ocupantes</FormLabel><FormControl><Input placeholder="Ex: 0" type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField
-                      control={form.control}
-                      name="baixaFrequencia"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-start rounded-lg border p-4 mt-8">
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <div className="space-y-0.5 ml-4">
-                            <FormLabel className="text-xl">
-                              Baixa Frequência?
-                            </FormLabel>
-                          </div>
-                        </FormItem>
-                      )}
-                    />
-                </div>
                  <FormField
                   control={form.control}
                   name="auxilios"
