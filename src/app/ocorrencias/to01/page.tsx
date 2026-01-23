@@ -79,8 +79,7 @@ const formSchema = z.object({
   estadoPneu: z.string().optional(),
   tipoCarga: z.string().optional(),
   qraCondutor: z.string().optional(),
-  baixaFrequencia: z.boolean().default(false),
-  telefone: z.string().optional(),
+  baixaFrequencia: z.string().optional(),
   ocupantes: z.string().optional(),
   auxilios: z.array(z.string()).optional(),
   observacoes: z.string().optional(),
@@ -109,8 +108,7 @@ export default function OcorrenciaTO01Page() {
       estadoPneu: '',
       tipoCarga: '',
       qraCondutor: '',
-      baixaFrequencia: false,
-      telefone: '',
+      baixaFrequencia: '',
       ocupantes: '',
       auxilios: [],
       observacoes: '',
@@ -189,8 +187,7 @@ export default function OcorrenciaTO01Page() {
                   )}
                 />
               </div>
-
-               <FormField
+              <FormField
                   control={form.control}
                   name="tipoPanes"
                   render={({ field }) => (
@@ -237,7 +234,6 @@ export default function OcorrenciaTO01Page() {
                       </FormItem>
                   )}
               />
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
@@ -274,7 +270,6 @@ export default function OcorrenciaTO01Page() {
                   )}
                 />
               </div>
-              
               <FormField
                 control={form.control}
                 name="localArea"
@@ -364,57 +359,41 @@ export default function OcorrenciaTO01Page() {
               />
               <FormField name="tipoCarga" control={form.control} render={({ field }) => (<FormItem><FormLabel>Tipo de Carga</FormLabel><FormControl><Input placeholder="Ex: Soja, vazia, etc." {...field} /></FormControl><FormMessage /></FormItem>)} />
               <FormField name="qraCondutor" control={form.control} render={({ field }) => (<FormItem><FormLabel>QRA do Condutor(a)</FormLabel><FormControl><Input placeholder="Nome do condutor (se presente)" {...field} /></FormControl><FormMessage /></FormItem>)} />
+              
               <FormField
                 control={form.control}
                 name="baixaFrequencia"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-start rounded-lg border p-4">
+                  <FormItem>
+                    <FormLabel>Baixa Frequência</FormLabel>
                     <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
+                      <Input
+                        placeholder="(99) 99999-9999"
+                        {...field}
+                        onChange={(e) => {
+                          let value = e.target.value.replace(/\D/g, "");
+                          value = value.substring(0, 11);
+                          if (value.length > 10) {
+                            value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                          } else if (value.length > 6) {
+                            value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+                          } else if (value.length > 2) {
+                            value = value.replace(/(\d{2})(\d*)/, '($1) $2');
+                          } else if (value.length > 0) {
+                            value = `(${value}`;
+                          }
+                          field.onChange(value);
+                        }}
                       />
                     </FormControl>
-                    <div className="space-y-0.5 ml-4">
-                      <FormLabel className="text-xl">
-                        Baixa Frequência?
-                      </FormLabel>
-                    </div>
+                    <FormDescription>
+                      Preencha com o número de telefone para contato.
+                    </FormDescription>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
-              {form.watch('baixaFrequencia') && (
-                <FormField
-                  control={form.control}
-                  name="telefone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Telefone</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="(99) 99999-9999"
-                          {...field}
-                          onChange={(e) => {
-                            let value = e.target.value.replace(/\D/g, "");
-                            value = value.substring(0, 11);
-                            if (value.length > 10) {
-                              value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-                            } else if (value.length > 6) {
-                              value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-                            } else if (value.length > 2) {
-                              value = value.replace(/(\d{2})(\d*)/, '($1) $2');
-                            } else if (value.length > 0) {
-                              value = `(${value}`;
-                            }
-                            field.onChange(value);
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
+
               <FormField name="ocupantes" control={form.control} render={({ field }) => (<FormItem><FormLabel>Nº de Ocupantes</FormLabel><FormControl><Input placeholder="Ex: 0" type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
             </CardContent>
           </Card>
