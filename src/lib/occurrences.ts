@@ -1,5 +1,5 @@
 import { 
-  LifeBuoy, Megaphone, Milestone, Truck, FlameKindling, Users, Car, Cone, HardHat, Shield, 
+  LifeBuoy, Megaphone, Route, Truck, FlameKindling, Users, Car, Cone, HardHat, Shield, 
   HeartPulse, Search, Heart, User, Siren, Link, Ban, Droplet, Trees, Send, Anchor, Wrench,
   Ambulance
 } from 'lucide-react';
@@ -15,7 +15,7 @@ export type Occurrence = {
 export const occurrences: Occurrence[] = [
   { id: '1', title: 'QUD RESGATE', icon: Ambulance, color: 'bg-rose-500' },
   { id: '2', title: 'QUD OPERAÇÃO', icon: Siren, color: 'bg-blue-500' },
-  { id: '3', title: 'TRAÇADO DE PISTA', icon: Milestone, color: 'bg-green-500' },
+  { id: '3', title: 'TRAÇADO DE PISTA', icon: Route, color: 'bg-green-500' },
   { id: '4', title: 'TO 01', icon: Truck, color: 'bg-yellow-500' },
   { id: '5', title: 'TO 02', icon: FlameKindling, color: 'bg-indigo-500' },
   { id: '6', title: 'TO 03', icon: Users, color: 'bg-purple-500' },
