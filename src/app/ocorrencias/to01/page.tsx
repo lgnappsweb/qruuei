@@ -39,6 +39,7 @@ import {
   CardContent,
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
 
 const auxilios = [
   { id: 'PR01', label: 'PR01 - Atendimento inicial' },
@@ -84,8 +85,12 @@ const formSchema = z.object({
   sentido: z.string().min(1, 'Selecione o sentido.'),
   localArea: z.string().min(1, 'Selecione o local/área.'),
   vehicles: z.array(vehicleSchema).optional(),
-  auxilios: z.string().optional(),
+  vtrApoio: z.boolean().default(false),
+  vtrApoioDescricao: z.string().optional(),
+  danoPatrimonio: z.boolean().default(false),
+  danoPatrimonioDescricao: z.string().optional(),
   observacoes: z.string().optional(),
+  auxilios: z.string().optional(),
 });
 
 export default function OcorrenciaTO01Page() {
@@ -100,8 +105,12 @@ export default function OcorrenciaTO01Page() {
       sentido: '',
       localArea: '',
       vehicles: [],
-      auxilios: '',
+      vtrApoio: false,
+      vtrApoioDescricao: '',
+      danoPatrimonio: false,
+      danoPatrimonioDescricao: '',
       observacoes: '',
+      auxilios: '',
     },
   });
 
@@ -301,40 +310,48 @@ export default function OcorrenciaTO01Page() {
                   </Button>
                 </CardHeader>
                 <CardContent className="space-y-6 pt-6">
-                    <FormField name={`vehicles.${index}.marca`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Marca</FormLabel><FormControl><Input placeholder="Ex: Ford" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField name={`vehicles.${index}.modelo`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Modelo</FormLabel><FormControl><Input placeholder="Ex: Ka" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField name={`vehicles.${index}.ano`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Ano</FormLabel><FormControl><Input placeholder="Ex: 2020" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField name={`vehicles.${index}.cor`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Cor</FormLabel><FormControl><Input placeholder="Ex: Preto" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField name={`vehicles.${index}.placa`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Placa</FormLabel><FormControl><Input placeholder="Ex: ABC-1234" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField name={`vehicles.${index}.cidadeEmplacamento`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Cidade Emplacamento</FormLabel><FormControl><Input placeholder="Ex: Campo Grande" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField name={`vehicles.${index}.eixos`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Quantidade de Eixos</FormLabel><FormControl><Input placeholder="Ex: 2" type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField
-                        control={form.control}
-                        name={`vehicles.${index}.tipoVeiculo`}
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Tipo de Veículo</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Selecione o tipo" />
-                                </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    <SelectItem value="mo">MO</SelectItem>
-                                    <SelectItem value="ap">AP</SelectItem>
-                                    <SelectItem value="ca">CA</SelectItem>
-                                    <SelectItem value="on">ON</SelectItem>
-                                    <SelectItem value="car">CAR</SelectItem>
-                                    <SelectItem value="utilitaria">UTILITÁRIA</SelectItem>
-                                    <SelectItem value="romel_e_julieta">ROMEL E JULIETA</SelectItem>
-                                    <SelectItem value="carretinha_reboque">CARRETINHA / REBOQUE</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField name={`vehicles.${index}.marca`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Marca</FormLabel><FormControl><Input placeholder="Ex: Ford" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField name={`vehicles.${index}.modelo`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Modelo</FormLabel><FormControl><Input placeholder="Ex: Ka" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField name={`vehicles.${index}.ano`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Ano</FormLabel><FormControl><Input placeholder="Ex: 2020" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField name={`vehicles.${index}.cor`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Cor</FormLabel><FormControl><Input placeholder="Ex: Preto" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    </div>
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField name={`vehicles.${index}.placa`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Placa</FormLabel><FormControl><Input placeholder="Ex: ABC-1234" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField name={`vehicles.${index}.cidadeEmplacamento`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Cidade Emplacamento</FormLabel><FormControl><Input placeholder="Ex: Campo Grande" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    </div>
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField name={`vehicles.${index}.eixos`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Quantidade de Eixos</FormLabel><FormControl><Input placeholder="Ex: 2" type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField
+                            control={form.control}
+                            name={`vehicles.${index}.tipoVeiculo`}
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Tipo de Veículo</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Selecione o tipo" />
+                                    </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="mo">MO</SelectItem>
+                                        <SelectItem value="ap">AP</SelectItem>
+                                        <SelectItem value="ca">CA</SelectItem>
+                                        <SelectItem value="on">ON</SelectItem>
+                                        <SelectItem value="car">CAR</SelectItem>
+                                        <SelectItem value="utilitaria">UTILITÁRIA</SelectItem>
+                                        <SelectItem value="romel_e_julieta">ROMEL E JULIETA</SelectItem>
+                                        <SelectItem value="carretinha_reboque">CARRETINHA / REBOQUE</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
                     <FormField
                       control={form.control}
                       name={`vehicles.${index}.estadoPneu`}
@@ -414,6 +431,80 @@ export default function OcorrenciaTO01Page() {
           <Card>
             <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
             <CardContent className="space-y-6 pt-6">
+                <FormField
+                    control={form.control}
+                    name="vtrApoio"
+                    render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                        <FormLabel className="text-base">
+                            Houve VTR de apoio?
+                        </FormLabel>
+                        </div>
+                        <FormControl>
+                        <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                        />
+                        </FormControl>
+                    </FormItem>
+                    )}
+                />
+                {form.watch('vtrApoio') && (
+                    <FormField
+                    control={form.control}
+                    name="vtrApoioDescricao"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Descreva a VTR de apoio</FormLabel>
+                        <FormControl>
+                            <Textarea
+                            placeholder="Ex: VTR-01, Polícia Militar..."
+                            {...field}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                )}
+                <FormField
+                    control={form.control}
+                    name="danoPatrimonio"
+                    render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                        <FormLabel className="text-base">
+                            Houve dano ao Patrimônio?
+                        </FormLabel>
+                        </div>
+                        <FormControl>
+                        <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                        />
+                        </FormControl>
+                    </FormItem>
+                    )}
+                />
+                {form.watch('danoPatrimonio') && (
+                    <FormField
+                    control={form.control}
+                    name="danoPatrimonioDescricao"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Descreva o dano ao patrimônio</FormLabel>
+                        <FormControl>
+                            <Textarea
+                            placeholder="Ex: Defensas metálicas danificadas, placa de sinalização..."
+                            {...field}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                )}
                 <FormField
                   control={form.control}
                   name="observacoes"
