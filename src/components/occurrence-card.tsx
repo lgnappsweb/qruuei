@@ -16,7 +16,9 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
   const Icon = occurrence.icon;
 
   const handleClick = () => {
-    if (occurrence.id === '2') { // This is QUD OPERAÇÃO
+    if (occurrence.id === '1') { // This is QUD RESGATE
+      router.push('/ocorrencias/qud-resgate');
+    } else if (occurrence.id === '2') { // This is QUD OPERAÇÃO
       router.push('/ocorrencias/qud-operacao');
     } else if (occurrence.id === '3') { // This is TRAÇADO DE PISTA
       router.push('/ocorrencias/tracado-de-pista');
