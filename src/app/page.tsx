@@ -15,9 +15,9 @@ export default function Home() {
 
   return (
     <div className="space-y-8 md:pb-24">
-      <div>
+      <div className="text-center">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
-          QRU | PRIORIDADE
+          QRU UEI
         </h1>
         <p className="text-muted-foreground mt-2">
           Selecione o tipo de ocorrência para gerar o relatório
