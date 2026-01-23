@@ -47,13 +47,18 @@ import {
 } from '@/components/ui/accordion';
 
 const auxilios = [
+  { id: 'PR01', label: 'PR01 - Atendimento inicial' },
   { id: 'PR07', label: 'PR07 - Escolta' },
+  { id: 'PR09', label: 'PR09 - Outros' },
+  { id: 'PR13', label: 'PR13 - Canalização/Sinalização' },
+  { id: 'PR17', label: 'PR17 - Orientação/Informação ao usuário' },
   { id: 'PR18', label: 'PR18 - Recusa de dados' },
   { id: 'PR19', label: 'PR19 - Operação comboio' },
   { id: 'PR44', label: 'PR44 - Acionamento de Polícia' },
   { id: 'PR49', label: 'PR49 - Evento acompanhamento pelo CFTV' },
   { id: 'PR51', label: 'PR51 - Efetuado Registro Fotográfico' },
-  { id: 'PR09', label: 'PR09 - Outros' },
+  { id: 'PR53', label: 'PR53 - Meios próprios' },
+  { id: 'PR54', label: 'PR54 - Aux. com ferram./ Empréstimo ferram.' },
 ] as const;
 
 const tiposPane = [
