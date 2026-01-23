@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { 
   LifeBuoy, Megaphone, Route, Truck, PawPrint, Car, HardHat, Shield, 
-  HeartPulse, Search, Heart, User, Siren, Link, Ban, Droplet, Trees, Send, Anchor, Wrench,
+  HeartPulse, Search, Heart, User, Siren, Shovel, Ban, Droplet, Trees, Send, Anchor, Wrench,
   Ambulance, Flame
 } from 'lucide-react';
 import type { LucideIcon, LucideProps } from 'lucide-react';
@@ -29,7 +29,7 @@ const TireIcon = (props: LucideProps) => (
   React.createElement('path', { d: "M20 12h2" }),
   React.createElement('path', { d: "m4.93 19.07 1.41-1.41" }),
   React.createElement('path', { d: "m17.66 6.34 1.41-1.41" })
-));
+))
 
 
 export type Occurrence = {
@@ -57,7 +57,7 @@ export const occurrences: Occurrence[] = [
   { id: '15', title: 'TO 16', icon: Heart, color: 'bg-green-500' },
   { id: '16', title: 'TO 17', icon: User, color: 'bg-yellow-500' },
   { id: '17', title: 'TO 19', icon: Siren, color: 'bg-indigo-500' },
-  { id: '18', title: 'TO 33', icon: Link, color: 'bg-purple-500' },
+  { id: '18', title: 'TO 33', icon: Shovel, color: 'bg-purple-500' },
   { id: '19', title: 'TO 34', icon: Ban, color: 'bg-pink-500' },
   { id: '20', title: 'TO 35', icon: Droplet, color: 'bg-orange-500' },
   { id: '21', title: 'TO 37', icon: Trees, color: 'bg-teal-500' },
