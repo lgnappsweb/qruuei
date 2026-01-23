@@ -89,7 +89,7 @@ const vehicleSchema = z.object({
 
 const formSchema = z.object({
   rodovia: z.string().min(1, 'Selecione a rodovia.'),
-  ocorrencia: z.string().min(1, "Selecione a ocorrência."),
+  ocorrencia: z.string(),
   tipoPanes: z.array(z.string()).optional(),
   qth: z.string().min(1, 'O QTH é obrigatório.'),
   sentido: z.string().min(1, 'Selecione o sentido.'),
@@ -297,10 +297,10 @@ export default function OcorrenciaTO33Page() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Faixa de Rolamento">Faixa de Rolamento</SelectItem>
-                        <SelectItem value="Terceira Faixa">Terceira Faixa</SelectItem>
-                        <SelectItem value="Acostamento">Acostamento</SelectItem>
                         <SelectItem value="Área de Domínio">Área de Domínio</SelectItem>
+                        <SelectItem value="Faixa de Rolamento / Área de Domínio">Faixa de Rolamento / Área de Domínio</SelectItem>
+                        <SelectItem value="Acostamento / Área de Domínio">Acostamento / Área de Domínio</SelectItem>
+                        <SelectItem value="Terceira Faixa / Área de Domínio">Terceira Faixa / Área de Domínio</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
