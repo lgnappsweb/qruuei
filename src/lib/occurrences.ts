@@ -1,7 +1,7 @@
 import { 
   LifeBuoy, Megaphone, Route, Truck, FlameKindling, PawPrint, Car, Cone, HardHat, Shield, 
   HeartPulse, Search, Heart, User, Siren, Link, Ban, Droplet, Trees, Send, Anchor, Wrench,
-  Ambulance
+  Ambulance, Flame
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -20,7 +20,7 @@ export const occurrences: Occurrence[] = [
   { id: '5', title: 'TO 02', icon: FlameKindling, color: 'bg-indigo-500' },
   { id: '6', title: 'TO 03', icon: PawPrint, color: 'bg-purple-500' },
   { id: '7', title: 'TO 04', icon: Car, color: 'bg-pink-500' },
-  { id: '8', title: 'TO 05', icon: FlameKindling, color: 'bg-orange-500' },
+  { id: '8', title: 'TO 05', icon: Flame, color: 'bg-orange-500' },
   { id: '9', title: 'TO 06', icon: Truck, color: 'bg-teal-500' },
   { id: '10', title: 'TO 07', icon: Cone, color: 'bg-cyan-500' },
   { id: '11', title: 'TO 09', icon: HardHat, color: 'bg-red-600' },
