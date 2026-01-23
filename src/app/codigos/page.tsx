@@ -625,7 +625,7 @@ export default function CodigosPage() {
       <Accordion type="single" collapsible className="w-full" value={openAccordion} onValueChange={setOpenAccordion}>
         {codeSections.map((section) => (
           <AccordionItem key={section.value} value={section.value}>
-            <AccordionTrigger className="text-lg font-medium">
+            <AccordionTrigger className="text-lg font-medium font-condensed">
               {section.title}
             </AccordionTrigger>
             <AccordionContent>{section.content}</AccordionContent>
