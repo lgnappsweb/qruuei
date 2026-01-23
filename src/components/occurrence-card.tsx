@@ -25,7 +25,10 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
   return (
     <Card
       onClick={handleClick}
-      className="bg-card hover:bg-accent/50 transition-colors duration-200 cursor-pointer group shadow-lg"
+      className={cn(
+        "hover:brightness-110 transition-all duration-200 cursor-pointer group shadow-lg",
+        occurrence.cardColor
+      )}
     >
       <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6 gap-3 h-40">
         <div
