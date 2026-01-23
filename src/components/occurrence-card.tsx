@@ -30,7 +30,7 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
       <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6 gap-3 h-36">
         <div
           className={cn(
-            "rounded-full p-4 transition-transform group-hover:scale-110",
+            "rounded-full p-3 transition-transform group-hover:scale-110",
             occurrence.color
           )}
         >
