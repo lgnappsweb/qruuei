@@ -276,9 +276,9 @@ export default function OcorrenciaTO03Page() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Vivo">Vivo</SelectItem>
-                          <SelectItem value="Morto">Morto</SelectItem>
-                          <SelectItem value="Agressivo">Agressivo</SelectItem>
+                          <SelectItem value="Ileso">Ileso</SelectItem>
+                          <SelectItem value="Ferido">Ferido</SelectItem>
+                          <SelectItem value="Fatal">Fatal</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
