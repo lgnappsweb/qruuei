@@ -27,12 +27,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from '@/components/ui/card';
-import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -100,7 +94,6 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-// Helper components to prevent rendering errors
 function RadioGroupField({ control, name, label, options, orientation = 'vertical' }: { control: Control<FormValues>, name: keyof FormValues, label: string, options: { value: string, label: string }[], orientation?: 'vertical' | 'horizontal' }) {
   return (
     <FormField
@@ -120,7 +113,7 @@ function RadioGroupField({ control, name, label, options, orientation = 'vertica
                   <FormControl>
                     <RadioGroupItem value={option.value} id={`${String(name)}-${option.value}`} />
                   </FormControl>
-                  <FormLabel htmlFor={`${String(name)}-${option.value}`} className="font-normal text-base">
+                  <FormLabel htmlFor={`${String(name)}-${option.value}`} className="font-normal text-lg">
                     {option.label}
                   </FormLabel>
                 </FormItem>
@@ -167,7 +160,7 @@ function CheckboxGroupField({ control, name, label, options }: { control: Contro
                         }}
                       />
                     </FormControl>
-                    <FormLabel className="text-base font-normal">
+                    <FormLabel className="text-lg font-normal">
                       {item.label}
                     </FormLabel>
                   </FormItem>
@@ -252,12 +245,12 @@ export default function TracadoDePistaPage() {
 
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    <Accordion type="multiple" className="w-full space-y-4">
+                    <Accordion type="multiple" className="w-full space-y-4" defaultValue={['previa']}>
                         <AccordionItem value="previa" className="border rounded-lg">
                             <AccordionTrigger className="px-6 text-xl">PRÉVIA</AccordionTrigger>
                             <AccordionContent className="px-6 pt-2">
                                 <div className="space-y-6">
-                                    <FormField
+                                     <FormField
                                       control={form.control}
                                       name="rodovia"
                                       render={({ field }) => (
