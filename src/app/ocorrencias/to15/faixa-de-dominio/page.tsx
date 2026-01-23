@@ -59,6 +59,7 @@ const auxilios = [
   { id: 'PR36', label: 'PR36 - Notificação a lindeiros da faixa de domínio' },
   { id: 'PR37', label: 'PR37 - Implantação de Pare e Siga/ Interdição total' },
   { id: 'PR39', label: 'PR39 - Alocação de PMV móvel' },
+  { id: 'PR45', label: 'PR45 - Auxílio a usuário p/comprar combustível' },
   { id: 'PR48', label: 'PR48 - Orientação/Acompanhamento de Obra' },
   { id: 'PR51', label: 'PR51 - Efetuado Registro Fotográfico' },
   { id: 'PR53', label: 'PR53 - Meios próprios' },
