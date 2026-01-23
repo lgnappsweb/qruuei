@@ -15,44 +15,19 @@ const navItems = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    setIsClient(true);
   }, []);
-
-  // Render a placeholder on the server and initial client render
-  if (!mounted) {
-    return (
-      <div className="flex flex-col min-h-screen bg-background">
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-24">{children}</main>
-        <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-10">
-          <div className="flex justify-around items-center h-16 max-w-lg mx-auto">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="flex flex-col items-center justify-center gap-1 w-full h-full rounded-lg transition-colors text-muted-foreground hover:text-foreground"
-              >
-                <item.icon className="h-5 w-5" />
-                <span className="font-condensed font-bold text-sm">{item.label}</span>
-              </Link>
-            ))}
-          </div>
-        </nav>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-24">
-        {children}
-      </main>
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-24">{children}</main>
       <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-10">
         <div className="flex justify-around items-center h-16 max-w-lg mx-auto">
           {navItems.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = isClient && pathname === item.href;
             return (
               <Link
                 key={item.href}
