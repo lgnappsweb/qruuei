@@ -44,13 +44,13 @@ import { Switch } from '@/components/ui/switch';
 const auxilios = [
   { id: 'PR01', label: 'PR01 - Atendimento inicial' },
   { id: 'PR02', label: 'PR02 - Auxílio no combate a incêndio' },
+  { id: 'PR09', label: 'PR09 - Outros' },
   { id: 'PR13', label: 'PR13 - Canalização/Sinalização' },
   { id: 'PR22', label: 'PR22 - Limpeza de pista' },
   { id: 'PR27', label: 'PR27 - Remoção de veículo' },
   { id: 'PR37', label: 'PR37 - Implantação de Pare e Siga/ Interdição total' },
   { id: 'PR44', label: 'PR44 - Acionamento de Polícia' },
   { id: 'PR51', label: 'PR51 - Efetuado Registro Fotográfico' },
-  { id: 'PR09', label: 'PR09 - Outros' },
 ] as const;
 
 const tiposPane = [
@@ -81,7 +81,7 @@ const vehicleSchema = z.object({
 
 const formSchema = z.object({
   rodovia: z.string().min(1, 'Selecione a rodovia.'),
-  ocorrencia: z.string(),
+  ocorrencia: z.string().min(1, "Selecione a ocorrência."),
   tipoPanes: z.array(z.string()).optional(),
   qth: z.string().min(1, 'O QTH é obrigatório.'),
   sentido: z.string().min(1, 'Selecione o sentido.'),
@@ -184,9 +184,17 @@ export default function OcorrenciaTO05Page() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Ocorrência</FormLabel>
-                      <FormControl>
-                        <Input {...field} readOnly className="bg-muted"/>
-                      </FormControl>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione a ocorrência" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Incêndio Em Veículos (TO05)">TO05 - Incêndio Em Veículos</SelectItem>
+                          <SelectItem value="Incêndio Em Veículos / Pane Sobre Faixa de Rolamento (TO05 / TO06)">TO05 / TO06 - Incêndio Em Veículos / Pane Sobre Faixa de Rolamento</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
