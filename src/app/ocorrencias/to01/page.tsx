@@ -79,7 +79,7 @@ const vehicleSchema = z.object({
 
 const formSchema = z.object({
   rodovia: z.string().min(1, 'Selecione a rodovia.'),
-  ocorrencia: z.string(),
+  ocorrencia: z.string().min(1, "Selecione a ocorrência."),
   tipoPanes: z.array(z.string()).optional(),
   qth: z.string().min(1, 'O QTH é obrigatório.'),
   sentido: z.string().min(1, 'Selecione o sentido.'),
@@ -182,9 +182,17 @@ export default function OcorrenciaTO01Page() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Ocorrência</FormLabel>
-                      <FormControl>
-                        <Input {...field} readOnly className="bg-muted"/>
-                      </FormControl>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione a ocorrência" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Veículo Abandonado (TO01)">TO01 - Veículo Abandonado</SelectItem>
+                          <SelectItem value="Veículo Abandonado / Pane Sobre Faixa de Rolamento (TO01 / TO06)">TO01 / TO06 - Veículo Abandonado / Pane Sobre Faixa de Rolamento</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
