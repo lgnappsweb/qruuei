@@ -56,6 +56,8 @@ const formSchema = z.object({
   qth: z.string().min(1, 'O QTH é obrigatório.'),
   sentido: z.string().min(1, 'Selecione o sentido.'),
   localArea: z.string().min(1, 'Selecione o local/área.'),
+  qthInicio: z.string().optional(),
+  qthTermino: z.string().optional(),
   dimensoes: z.string().optional(),
   quantidade: z.string().min(1, 'A quantidade é obrigatória.'),
 
@@ -77,6 +79,8 @@ export default function OcorrenciaTO34Page() {
       qth: '',
       sentido: '',
       localArea: '',
+      qthInicio: '',
+      qthTermino: '',
       dimensoes: '',
       quantidade: '1',
       vtrApoio: false,
@@ -217,6 +221,34 @@ export default function OcorrenciaTO34Page() {
                   </FormItem>
                 )}
               />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="qthInicio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>QTH de Início</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Km inicial" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="qthTermino"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>QTH de Término</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Km final" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <FormField
                     control={form.control}
