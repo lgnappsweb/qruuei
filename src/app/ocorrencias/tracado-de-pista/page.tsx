@@ -113,7 +113,7 @@ function RadioGroupField({ control, name, label, options, orientation = 'vertica
                                     <FormControl>
                                         <RadioGroupItem value={option.value} />
                                     </FormControl>
-                                    <FormLabel className="font-normal text-xl">
+                                    <FormLabel className="font-normal text-2xl">
                                         {option.label}
                                     </FormLabel>
                                 </FormItem>
@@ -160,7 +160,7 @@ function CheckboxGroupField({ control, name, label, options }: { control: Contro
                         }}
                       />
                     </FormControl>
-                    <FormLabel className="text-xl font-normal">
+                    <FormLabel className="text-2xl font-normal">
                       {item.label}
                     </FormLabel>
                   </FormItem>
@@ -191,7 +191,7 @@ const formOptions = {
     condicaoVisibilidade: [{ value: 'Boa', label: 'Boa' }, { value: 'Parcial', label: 'Parcial' }, { value: 'Ruim', label: 'Ruim' }],
     condicoesEspeciais: [{ value: 'NILL', label: 'NILL' }, { value: 'Fumaça', label: 'Fumaça' }, { value: 'Poeira', label: 'Poeira' }, { value: 'Lama', label: 'Lama' }, { value: 'Óleo', label: 'Óleo' }, { value: 'Poça d\'água', label: 'Poça d\'água' }, { value: 'Outros', label: 'Outros' }],
     condicoesSinalizacao: [{ value: 'Existente e visível', label: 'Existente e visível' }, { value: 'Existente e encoberta', label: 'Existente e encoberta' }, { value: 'Inexistente', label: 'Inexistente' }, { value: 'Outros', label: 'Outros' }],
-    tipoPista: [{ value: 'Dupla', label: 'Dupla' }, { value: 'Simples', label: 'Simples' }, { value: 'Multivias', label: 'Multivias' }],
+    tipoPista: [{ value: 'Dupla', label: 'Dupla' }, { value: 'Simples', label: 'Simples' }, { value: 'Multivias', label: 'Pista Multivias' }],
     tracadoPista: [{ value: 'Reta', label: 'Reta' }, { value: 'Curva acentuada', label: 'Curva acentuada' }, { value: 'Curva suave', label: 'Curva suave' }],
     perfil: [{ value: 'Em nível', label: 'Em nível' }, { value: 'Aclive', label: 'Aclive' }, { value: 'Declive', label: 'Declive' }],
     obrasNaPista: [{ value: 'Não existe', label: 'Não existe' }, { value: 'Existe mal sinalizada', label: 'Existe mal sinalizada' }, { value: 'Existe bem sinalizada', label: 'Existe bem sinalizada' }],
