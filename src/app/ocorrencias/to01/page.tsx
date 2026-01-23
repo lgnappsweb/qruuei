@@ -86,7 +86,6 @@ const formSchema = z.object({
   vehicles: z.array(vehicleSchema).optional(),
   auxilios: z.string().optional(),
   observacoes: z.string().optional(),
-  numeroOcorrencia: z.string().optional(),
 });
 
 export default function OcorrenciaTO01Page() {
@@ -103,7 +102,6 @@ export default function OcorrenciaTO01Page() {
       vehicles: [],
       auxilios: '',
       observacoes: '',
-      numeroOcorrencia: '',
     },
   });
 
@@ -418,6 +416,23 @@ export default function OcorrenciaTO01Page() {
             <CardContent className="space-y-6 pt-6">
                 <FormField
                   control={form.control}
+                  name="observacoes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Observações</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Detalhes adicionais sobre a ocorrência."
+                          className="resize-none"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
                   name="auxilios"
                   render={({ field }) => (
                     <FormItem>
@@ -443,25 +458,6 @@ export default function OcorrenciaTO01Page() {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="observacoes"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Observações</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Detalhes adicionais sobre a ocorrência."
-                          className="resize-none"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Separator />
-                <FormField name="numeroOcorrencia" control={form.control} render={({ field }) => (<FormItem><FormLabel>Número da Ocorrência</FormLabel><FormControl><Input placeholder="Nº gerado pelo sistema" {...field} /></FormControl><FormMessage /></FormItem>)} />
             </CardContent>
           </Card>
           
