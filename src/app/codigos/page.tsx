@@ -332,6 +332,55 @@ function AlfabetoFoneticoTable() {
     );
 }
 
+const pontosDeApoioData = [
+  { ponto: 'POSTO INDEPENDENCIA', rodovia: 'MS 306', km: '217+900', sentido: 'NORTE' },
+  { ponto: 'POSTO ESPLANADA', rodovia: 'BR 158', km: '05+000', sentido: 'NORTE' },
+  { ponto: 'POSTO 5ª RODA', rodovia: 'BR 158', km: '26+320', sentido: 'SUL' },
+  { ponto: 'RESTAURANTE KABANAS', rodovia: 'BR 158', km: '32+020', sentido: 'SUL' },
+  { ponto: 'RESTAURANTE FIGUEIRA', rodovia: 'BR 158', km: '34+020', sentido: 'NORTE' },
+  { ponto: 'RESTAURANTE EDINHO', rodovia: 'BR 158', km: '35+050', sentido: 'NORTE' },
+  { ponto: 'VILA RAIMUNDO', rodovia: 'BR 158', km: '60+040', sentido: 'NORTE' },
+  { ponto: 'POSTO TREVÃO', rodovia: 'BR 158', km: '90+340', sentido: 'NORTE' },
+  { ponto: 'POSTO GRAMADÃO/ DANIEL', rodovia: 'BR 158', km: '97+260', sentido: 'NORTE' },
+  { ponto: 'RESTAURANTE FOGÃO A LENHA', rodovia: 'BR 158', km: '127+600', sentido: 'SUL' },
+  { ponto: 'POSTO NOVO MATO GROSSO', rodovia: 'BR 158', km: '141+440', sentido: 'SUL' },
+  { ponto: 'RESTAURANTE COPO SUJO', rodovia: 'BR 158', km: '170+000', sentido: 'SUL' },
+  { ponto: 'POSTO NOVO MATO GROSSO', rodovia: 'BR 158', km: '195+350', sentido: 'SUL' },
+  { ponto: 'POSTO JC', rodovia: 'BR 158', km: '252+000', sentido: 'SUL' },
+  { ponto: 'RESTAURANTE CAZUZA', rodovia: 'MS 112', km: '56+020', sentido: 'SUL' },
+  { ponto: 'POSTO PASSARELA', rodovia: 'MS 112', km: '107+400', sentido: 'SUL' },
+  { ponto: 'POSTO 2000 (CARRO)', rodovia: 'MS 112', km: '113+300', sentido: 'SUL' },
+  { ponto: 'RESTAURANTE DO PAULINHO', rodovia: 'MS 112', km: '151+000', sentido: 'NORTE' },
+  { ponto: 'RESTAURANTE OASIS', rodovia: 'BR 436', km: '11+900', sentido: 'NORTE' },
+  { ponto: 'RESTAURANTE DO BOLA', rodovia: 'BR 436', km: '13+050', sentido: 'SUL' },
+  { ponto: 'POSTO MONTE CARLO', rodovia: 'BR 436', km: '21+500', sentido: 'SUL' },
+];
+
+function PontosDeApoioTable() {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Ponto de Apoio</TableHead>
+          <TableHead>Rodovia</TableHead>
+          <TableHead>KM</TableHead>
+          <TableHead>Sentido</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {pontosDeApoioData.map((item, index) => (
+          <TableRow key={index}>
+            <TableCell className="font-medium">{item.ponto}</TableCell>
+            <TableCell>{item.rodovia}</TableCell>
+            <TableCell>{item.km}</TableCell>
+            <TableCell>{item.sentido}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
+
 
 const codeSections = [
   {
@@ -372,7 +421,7 @@ const codeSections = [
   {
     value: 'item-8',
     title: 'Pontos de Apoio',
-    content: 'Conteúdo para Pontos de Apoio em breve.',
+    content: <PontosDeApoioTable />,
   },
 ];
 
