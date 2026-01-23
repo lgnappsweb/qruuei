@@ -95,36 +95,36 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 function RadioGroupField({ control, name, label, options, orientation = 'vertical' }: { control: Control<FormValues>, name: keyof FormValues, label: string, options: { value: string, label: string }[], orientation?: 'vertical' | 'horizontal' }) {
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem className="space-y-3">
-          <FormLabel>{label}</FormLabel>
-          <FormControl>
-            <RadioGroup
-              onValueChange={field.onChange}
-              defaultValue={field.value}
-              className={cn("flex", orientation === 'vertical' ? "flex-col space-y-1" : "flex-wrap gap-x-4 gap-y-2")}
-            >
-              {options.map((option) => (
-                <FormItem key={option.value} className="flex items-center space-x-3 space-y-0">
-                  <FormControl>
-                    <RadioGroupItem value={option.value} id={`${String(name)}-${option.value}`} />
-                  </FormControl>
-                  <FormLabel htmlFor={`${String(name)}-${option.value}`} className="font-normal text-lg">
-                    {option.label}
-                  </FormLabel>
+    return (
+        <FormField
+            control={control}
+            name={name}
+            render={({ field }) => (
+                <FormItem className="space-y-3">
+                    <FormLabel>{label}</FormLabel>
+                    <FormControl>
+                        <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className={cn("flex", orientation === 'vertical' ? "flex-col space-y-1" : "flex-wrap gap-x-4 gap-y-2")}
+                        >
+                            {options.map((option) => (
+                                <FormItem key={option.value} className="flex items-center space-x-3 space-y-0">
+                                    <FormControl>
+                                        <RadioGroupItem value={option.value} />
+                                    </FormControl>
+                                    <FormLabel className="font-normal text-xl">
+                                        {option.label}
+                                    </FormLabel>
+                                </FormItem>
+                            ))}
+                        </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
                 </FormItem>
-              ))}
-            </RadioGroup>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
+            )}
+        />
+    );
 }
 
 function CheckboxGroupField({ control, name, label, options }: { control: Control<FormValues>, name: keyof FormValues, label: string, options: { id: string, label: string }[] }) {
@@ -160,7 +160,7 @@ function CheckboxGroupField({ control, name, label, options }: { control: Contro
                         }}
                       />
                     </FormControl>
-                    <FormLabel className="text-lg font-normal">
+                    <FormLabel className="text-xl font-normal">
                       {item.label}
                     </FormLabel>
                   </FormItem>
