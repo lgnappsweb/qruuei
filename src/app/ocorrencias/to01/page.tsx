@@ -117,12 +117,12 @@ export default function OcorrenciaTO01Page() {
         </Link>
       </Button>
 
-      <div className="space-y-2">
+      <div className="space-y-2 text-center">
         <h1 className="font-condensed text-3xl font-bold tracking-tight">
-          Formulário de Ocorrência - TO01
+          VEÍCULO ABANDONADO
         </h1>
         <p className="text-muted-foreground">
-          Preencha os campos abaixo para registrar a ocorrência de veículo abandonado.
+          Preencha os campos abaixo para registrar a ocorrência.
         </p>
       </div>
 
