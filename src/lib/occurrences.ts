@@ -13,7 +13,7 @@ export type Occurrence = {
 };
 
 export const occurrences: Occurrence[] = [
-  { id: '1', title: 'QUD RESGATE', icon: LifeBuoy, color: 'bg-rose-500' },
+  { id: '1', title: 'QUD RESGATE', icon: Ambulance, color: 'bg-rose-500' },
   { id: '2', title: 'QUD OPERAÇÃO', icon: Megaphone, color: 'bg-blue-500' },
   { id: '3', title: 'TRAÇADO DE PISTA', icon: Milestone, color: 'bg-green-500' },
   { id: '4', title: 'TO 01', icon: Truck, color: 'bg-yellow-500' },
