@@ -51,6 +51,7 @@ const formSchema = z.object({
   data: z.string().optional(),
   condutor: z.string().optional(),
   resgatista1: z.string().optional(),
+  resgatista2: z.string().optional(),
   acionamento: z.string().optional(),
   chegadaLocal: z.string().optional(),
   numOcorrencia: z.string().optional(),
@@ -352,6 +353,7 @@ export default function QudResgatePage() {
                             <FormField control={form.control} name="medicoRegulador" render={({ field }) => (<FormItem><FormLabel>Médico Regulador</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
                             <FormField control={form.control} name="condutor" render={({ field }) => (<FormItem><FormLabel>Condutor</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
                             <FormField control={form.control} name="resgatista1" render={({ field }) => (<FormItem><FormLabel>Resgatista I</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                            <FormField control={form.control} name="resgatista2" render={({ field }) => (<FormItem><FormLabel>Resgatista II</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
                             <FormField control={form.control} name="data" render={({ field }) => (<FormItem><FormLabel>Data</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                             <FormField control={form.control} name="numOcorrencia" render={({ field }) => (<FormItem><FormLabel>Nº Ocorrência</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
                             <FormField control={form.control} name="acionamento" render={({ field }) => (<FormItem><FormLabel>Acionamento</FormLabel><FormControl><Input type="time" {...field} /></FormControl><FormMessage /></FormItem>)}/>
