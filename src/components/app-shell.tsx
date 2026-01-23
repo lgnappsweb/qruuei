@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, FileCode, ShieldAlert, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 const navItems = [
   { href: "/", label: "Início", icon: Home },
@@ -14,6 +15,11 @@ const navItems = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -21,7 +27,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-10">
         <div className="flex justify-around items-center h-16 max-w-lg mx-auto">
           {navItems.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = isClient ? pathname === item.href : false;
             return (
               <Link
                 key={item.href}
