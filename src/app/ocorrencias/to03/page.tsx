@@ -58,7 +58,9 @@ const formSchema = z.object({
 
   // Características do Entorno
   entornoNorte: z.string().optional(),
+  entornoNorteOutros: z.string().optional(),
   entornoSul: z.string().optional(),
+  entornoSulOutros: z.string().optional(),
 
   // Traçado da Pista
   pista: z.string().optional(),
@@ -71,6 +73,8 @@ const formSchema = z.object({
   qthDestinacao: z.string().optional(),
   vtrApoio: z.boolean().default(false),
   vtrApoioDescricao: z.string().optional(),
+  danoPatrimonio: z.boolean().default(false),
+  danoPatrimonioDescricao: z.string().optional(),
   observacoes: z.string().optional(),
   auxilios: z.string().optional(),
 });
@@ -89,7 +93,9 @@ export default function OcorrenciaTO03Page() {
       quantidade: '',
       situacao: '',
       entornoNorte: '',
+      entornoNorteOutros: '',
       entornoSul: '',
+      entornoSulOutros: '',
       pista: '',
       acostamento: '',
       tracado: '',
@@ -98,6 +104,8 @@ export default function OcorrenciaTO03Page() {
       qthDestinacao: '',
       vtrApoio: false,
       vtrApoioDescricao: '',
+      danoPatrimonio: false,
+      danoPatrimonioDescricao: '',
       observacoes: '',
       auxilios: '',
     },
@@ -294,32 +302,90 @@ export default function OcorrenciaTO03Page() {
               <CardTitle>Características do Entorno</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
-              <FormField
-                control={form.control}
-                name="entornoNorte"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Entorno Norte</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Descreva o entorno" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+              <div className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="entornoNorte"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Entorno Norte</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o entorno" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Área Urbada">Área Urbada</SelectItem>
+                          <SelectItem value="Curso D'Agua">Curso D&apos;Agua</SelectItem>
+                          <SelectItem value="Fragmento Nativo">Fragmento Nativo</SelectItem>
+                          <SelectItem value="Plantio Agrícola">Plantio Agrícola</SelectItem>
+                          <SelectItem value="Pecuária">Pecuária</SelectItem>
+                          <SelectItem value="Outros">Outros</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {form.watch('entornoNorte') === 'Outros' && (
+                  <FormField
+                    control={form.control}
+                    name="entornoNorteOutros"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Descreva o entorno Norte</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Descreva aqui..." {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 )}
-              />
-              <FormField
-                control={form.control}
-                name="entornoSul"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Entorno Sul</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Descreva o entorno" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+              </div>
+              <div className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="entornoSul"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Entorno Sul</FormLabel>
+                       <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o entorno" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Área Urbada">Área Urbada</SelectItem>
+                          <SelectItem value="Curso D'Agua">Curso D&apos;Agua</SelectItem>
+                          <SelectItem value="Fragmento Nativo">Fragmento Nativo</SelectItem>
+                          <SelectItem value="Plantio Agrícola">Plantio Agrícola</SelectItem>
+                          <SelectItem value="Pecuária">Pecuária</SelectItem>
+                          <SelectItem value="Outros">Outros</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {form.watch('entornoSul') === 'Outros' && (
+                  <FormField
+                    control={form.control}
+                    name="entornoSulOutros"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Descreva o entorno Sul</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Descreva aqui..." {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 )}
-              />
+              </div>
             </CardContent>
           </Card>
 
@@ -477,6 +543,43 @@ export default function OcorrenciaTO03Page() {
                         <FormControl>
                             <Textarea
                             placeholder="Ex: VTR-01, Polícia Militar Ambiental..."
+                            {...field}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                )}
+                <FormField
+                    control={form.control}
+                    name="danoPatrimonio"
+                    render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                        <FormLabel className="text-base">
+                            Houve dano ao Patrimônio?
+                        </FormLabel>
+                        </div>
+                        <FormControl>
+                        <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                        />
+                        </FormControl>
+                    </FormItem>
+                    )}
+                />
+                {form.watch('danoPatrimonio') && (
+                    <FormField
+                    control={form.control}
+                    name="danoPatrimonioDescricao"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Descreva o dano ao patrimônio</FormLabel>
+                        <FormControl>
+                            <Textarea
+                            placeholder="Ex: Defensas metálicas danificadas..."
                             {...field}
                             />
                         </FormControl>
