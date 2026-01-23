@@ -14,7 +14,7 @@ export default function Home() {
   );
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 md:pb-24">
       <div>
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
           QRU | PRIORIDADE
