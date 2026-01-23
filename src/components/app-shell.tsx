@@ -29,14 +29,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex flex-col items-center justify-center gap-1 text-xs w-full h-full rounded-lg transition-colors",
+                  "flex flex-col items-center justify-center gap-1 w-full h-full rounded-lg transition-colors",
                   isActive
                     ? "text-primary"
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 <item.icon className="h-5 w-5" />
-                <span>{item.label}</span>
+                <span className="font-condensed font-bold text-sm">{item.label}</span>
               </Link>
             );
           })}
