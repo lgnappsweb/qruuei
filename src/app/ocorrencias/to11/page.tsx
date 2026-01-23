@@ -422,8 +422,62 @@ export default function OcorrenciaTO11Page() {
                     <div className="pt-4">
                         <h4 className="text-lg font-medium mb-4">Dados e Endereço do Condutor</h4>
                         <div className="space-y-6">
-                            <FormField name={`vehicles.${index}.cpf`} control={form.control} render={({ field }) => (<FormItem><FormLabel>CPF</FormLabel><FormControl><Input placeholder="000.000.000-00" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                            <FormField name={`vehicles.${index}.rg`} control={form.control} render={({ field }) => (<FormItem><FormLabel>RG</FormLabel><FormControl><Input placeholder="00.000.000-0" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                            <FormField
+                              name={`vehicles.${index}.cpf`}
+                              control={form.control}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>CPF</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="000.000.000-00"
+                                      {...field}
+                                      onChange={(e) => {
+                                        const rawValue = e.target.value.replace(/\D/g, '');
+                                        let maskedValue = rawValue.substring(0, 11);
+                                        if (rawValue.length > 9) {
+                                          maskedValue = maskedValue.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                                        } else if (rawValue.length > 6) {
+                                          maskedValue = maskedValue.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+                                        } else if (rawValue.length > 3) {
+                                          maskedValue = maskedValue.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+                                        }
+                                        field.onChange(maskedValue);
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              name={`vehicles.${index}.rg`}
+                              control={form.control}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>RG</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="00.000.000-0"
+                                      {...field}
+                                      onChange={(e) => {
+                                        const rawValue = e.target.value.replace(/\D/g, '');
+                                        let maskedValue = rawValue.substring(0, 9);
+                                        if (rawValue.length > 8) {
+                                          maskedValue = maskedValue.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/, '$1.$2.$3-$4');
+                                        } else if (rawValue.length > 5) {
+                                          maskedValue = maskedValue.replace(/(\d{2})(\d{3})(\d{1,3})/, '$1.$2.$3');
+                                        } else if (rawValue.length > 2) {
+                                          maskedValue = maskedValue.replace(/(\d{2})(\d{1,3})/, '$1.$2');
+                                        }
+                                        field.onChange(maskedValue);
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
                             <FormField name={`vehicles.${index}.endereco`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Endereço</FormLabel><FormControl><Input placeholder="Rua, Av, etc." {...field} /></FormControl><FormMessage /></FormItem>)} />
                             <FormField name={`vehicles.${index}.numero`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Nº</FormLabel><FormControl><Input placeholder="123" {...field} /></FormControl><FormMessage /></FormItem>)} />
                             <FormField name={`vehicles.${index}.bairro`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Bairro</FormLabel><FormControl><Input placeholder="Centro" {...field} /></FormControl><FormMessage /></FormItem>)} />
