@@ -492,7 +492,7 @@ export default function OcorrenciaTO03Page() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Plano">Plano</SelectItem>
+                        <SelectItem value="Em Nível">Em Nível</SelectItem>
                         <SelectItem value="Aclive">Aclive</SelectItem>
                         <SelectItem value="Declive">Declive</SelectItem>
                       </SelectContent>
