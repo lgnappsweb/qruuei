@@ -32,6 +32,12 @@ import {
   CardTitle,
   CardContent,
 } from '@/components/ui/card';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 const auxilios = [
     { id: 'PR08', label: 'PR08 - Verificação da sinalização de obras' },
@@ -364,16 +370,20 @@ export default function OcorrenciaTO09Page() {
                           {...field}
                         />
                       </FormControl>
-                      <div className="space-y-2 pt-2">
-                        <p className="text-sm font-medium text-foreground">
-                          Códigos de referência:
-                        </p>
-                        <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                          {auxilios.map((item) => (
-                            <li key={item.id}>{item.label}</li>
-                          ))}
-                        </ul>
-                      </div>
+                      <Accordion type="single" collapsible className="w-full pt-2">
+                        <AccordionItem value="item-1" className="border-b-0">
+                          <AccordionTrigger className="py-0 text-sm font-normal text-muted-foreground hover:no-underline hover:text-primary [&[data-state=open]>svg]:text-primary">
+                            Códigos de referência
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 pt-2">
+                              {auxilios.map((item) => (
+                                <li key={item.id}>{item.label}</li>
+                              ))}
+                            </ul>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
                       <FormMessage />
                     </FormItem>
                   )}
