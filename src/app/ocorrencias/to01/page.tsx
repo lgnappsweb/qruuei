@@ -27,13 +27,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
+  } from '@/components/ui/dropdown-menu';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Card,
   CardHeader,
   CardTitle,
   CardContent,
-  CardDescription,
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
@@ -183,53 +188,52 @@ export default function OcorrenciaTO01Page() {
               </div>
 
               <FormField
-                  control={form.control}
-                  name="tipoPanes"
-                  render={() => (
+                control={form.control}
+                name="tipoPanes"
+                render={({ field }) => (
                     <FormItem>
-                      <div className="mb-4">
                         <FormLabel>Tipos de Pane</FormLabel>
-                        <FormDescription>
-                          Selecione um ou mais tipos de pane (opcional).
-                        </FormDescription>
-                      </div>
-                      {tiposPane.map((item) => (
-                        <FormField
-                          key={item.id}
-                          control={form.control}
-                          name="tipoPanes"
-                          render={({ field }) => {
-                            return (
-                              <FormItem
-                                key={item.id}
-                                className="flex flex-row items-start space-x-3 space-y-0"
-                              >
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
                                 <FormControl>
-                                  <Checkbox
-                                    checked={field.value?.includes(item.id)}
-                                    onCheckedChange={(checked) => {
-                                      return checked
-                                        ? field.onChange([...(field.value || []), item.id])
-                                        : field.onChange(
-                                            field.value?.filter(
-                                              (value) => value !== item.id
-                                            )
-                                          )
-                                    }}
-                                  />
+                                    <Button variant="outline" className="w-full justify-start text-left font-normal h-14 text-xl px-4 py-2">
+                                        <div className="truncate">
+                                            {field.value?.length
+                                                ? tiposPane
+                                                    .filter(pane => field.value?.includes(pane.id))
+                                                    .map(pane => pane.label)
+                                                    .join(', ')
+                                                : "Selecione um ou mais tipos de pane (opcional)"}
+                                        </div>
+                                    </Button>
                                 </FormControl>
-                                <FormLabel className="font-normal">
-                                  {item.label}
-                                </FormLabel>
-                              </FormItem>
-                            )
-                          }}
-                        />
-                      ))}
-                      <FormMessage />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]">
+                                {tiposPane.map(item => (
+                                    <DropdownMenuCheckboxItem
+                                        key={item.id}
+                                        checked={field.value?.includes(item.id)}
+                                        onCheckedChange={checked => {
+                                            const newValue = checked
+                                                ? [...(field.value || []), item.id]
+                                                : field.value?.filter(value => value !== item.id);
+                                            field.onChange(newValue);
+                                        }}
+                                        onSelect={e => e.preventDefault()}
+                                        className="text-xl"
+                                    >
+                                        {item.label}
+                                    </DropdownMenuCheckboxItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        <FormDescription>
+                            Você pode selecionar múltiplos tipos de pane.
+                        </FormDescription>
+                        <FormMessage />
                     </FormItem>
-                  )}
-                />
+                )}
+              />
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
@@ -261,13 +265,13 @@ export default function OcorrenciaTO01Page() {
                             <FormControl>
                               <RadioGroupItem value="Norte" />
                             </FormControl>
-                            <FormLabel className="font-normal">Norte</FormLabel>
+                            <FormLabel className="font-normal text-xl">Norte</FormLabel>
                           </FormItem>
                           <FormItem className="flex items-center space-x-2 space-y-0">
                             <FormControl>
                               <RadioGroupItem value="Sul" />
                             </FormControl>
-                            <FormLabel className="font-normal">Sul</FormLabel>
+                            <FormLabel className="font-normal text-xl">Sul</FormLabel>
                           </FormItem>
                         </RadioGroup>
                       </FormControl>
@@ -287,25 +291,25 @@ export default function OcorrenciaTO01Page() {
                         <RadioGroup
                           onValueChange={field.onChange}
                           defaultValue={field.value}
-                          className="flex flex-row space-x-4"
+                          className="flex flex-row flex-wrap gap-4"
                         >
                           <FormItem className="flex items-center space-x-2 space-y-0">
                             <FormControl>
                               <RadioGroupItem value="Acostamento" />
                             </FormControl>
-                            <FormLabel className="font-normal">Acostamento</FormLabel>
+                            <FormLabel className="font-normal text-xl">Acostamento</FormLabel>
                           </FormItem>
                           <FormItem className="flex items-center space-x-2 space-y-0">
                             <FormControl>
                               <RadioGroupItem value="Faixa de Domínio" />
                             </FormControl>
-                            <FormLabel className="font-normal">Faixa de Domínio</FormLabel>
+                            <FormLabel className="font-normal text-xl">Faixa de Domínio</FormLabel>
                           </FormItem>
                            <FormItem className="flex items-center space-x-2 space-y-0">
                             <FormControl>
                               <RadioGroupItem value="Pista" />
                             </FormControl>
-                            <FormLabel className="font-normal">Pista</FormLabel>
+                            <FormLabel className="font-normal text-xl">Pista</FormLabel>
                           </FormItem>
                         </RadioGroup>
                       </FormControl>
@@ -367,10 +371,10 @@ export default function OcorrenciaTO01Page() {
                       <FormLabel>Estado do Pneu</FormLabel>
                       <FormControl>
                         <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-row space-x-4">
-                          <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Bom" /></FormControl><FormLabel className="font-normal">Bom</FormLabel></FormItem>
-                          <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Razoável" /></FormControl><FormLabel className="font-normal">Razoável</FormLabel></FormItem>
-                          <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Ruim" /></FormControl><FormLabel className="font-normal">Ruim</FormLabel></FormItem>
-                          <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Não se aplica" /></FormControl><FormLabel className="font-normal">N/A</FormLabel></FormItem>
+                          <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Bom" /></FormControl><FormLabel className="font-normal text-xl">Bom</FormLabel></FormItem>
+                          <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Razoável" /></FormControl><FormLabel className="font-normal text-xl">Razoável</FormLabel></FormItem>
+                          <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Ruim" /></FormControl><FormLabel className="font-normal text-xl">Ruim</FormLabel></FormItem>
+                          <FormItem className="flex items-center space-x-2 space-y-0"><FormControl><RadioGroupItem value="Não se aplica" /></FormControl><FormLabel className="font-normal text-xl">N/A</FormLabel></FormItem>
                         </RadioGroup>
                       </FormControl>
                       <FormMessage />
@@ -400,7 +404,7 @@ export default function OcorrenciaTO01Page() {
                             />
                           </FormControl>
                           <div className="space-y-0.5 ml-4">
-                            <FormLabel>
+                            <FormLabel className="text-xl">
                               Baixa Frequência?
                             </FormLabel>
                           </div>
@@ -444,7 +448,7 @@ export default function OcorrenciaTO01Page() {
                                     }}
                                   />
                                 </FormControl>
-                                <FormLabel className="font-normal">
+                                <FormLabel className="font-normal text-xl">
                                   {item.label}
                                 </FormLabel>
                               </FormItem>
