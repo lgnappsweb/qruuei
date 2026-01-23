@@ -45,6 +45,7 @@ const auxilios = [
   { id: 'PR13', label: 'PR13 - Canalização/Sinalização' },
   { id: 'PR27', label: 'PR27 - Remoção de veículo' },
   { id: 'PR44', label: 'PR44 - Acionamento de Polícia' },
+  { id: 'PR51', label: 'PR51 - Efetuado Registro Fotográfico' },
   { id: 'PR46', label: 'PR46 - Não localizado' },
   { id: 'PR09', label: 'PR09 - Outros' },
 ] as const;
