@@ -24,6 +24,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
+  } from '@/components/ui/dropdown-menu';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Card,
@@ -45,6 +51,12 @@ const auxilios = [
   { id: 'PR62', label: 'PR62 - Acionamento da Conservação' },
   { id: 'PR09', label: 'PR09 - Outros' },
 ] as const;
+
+const destinacaoPrOptions = [
+  { id: 'PR04', label: 'PR04 - Retirada de animal morto da pista' },
+  { id: 'PR13', label: 'PR13 - Canalização/Sinalização' },
+  { id: 'PR56', label: 'PR56 - Enterro de Animal' },
+];
 
 const formSchema = z.object({
   // Informações Gerais
@@ -70,7 +82,7 @@ const formSchema = z.object({
   perfil: z.string().optional(),
 
   // Outras Informações
-  destinacaoAnimal: z.string().optional(),
+  destinacaoAnimal: z.array(z.string()).optional(),
   qthDestinacao: z.string().optional(),
   vtrApoio: z.boolean().default(false),
   vtrApoioDescricao: z.string().optional(),
@@ -101,7 +113,7 @@ export default function OcorrenciaTO03Page() {
       acostamento: '',
       tracado: '',
       perfil: '',
-      destinacaoAnimal: '',
+      destinacaoAnimal: [],
       qthDestinacao: '',
       vtrApoio: false,
       vtrApoioDescricao: '',
@@ -111,6 +123,8 @@ export default function OcorrenciaTO03Page() {
       auxilios: '',
     },
   });
+
+  const destinacaoAnimalValue = form.watch('destinacaoAnimal') ?? [];
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
@@ -492,24 +506,55 @@ export default function OcorrenciaTO03Page() {
             <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
             <CardContent className="space-y-6 pt-6">
                 <FormField
-                  control={form.control}
-                  name="destinacaoAnimal"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Destinação do Animal</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Ex: Deixado na mata" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                    control={form.control}
+                    name="destinacaoAnimal"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Destinação do Animal (PRs)</FormLabel>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <FormControl>
+                                        <Button variant="outline" className="w-full justify-start text-left font-normal h-14 text-xl px-4 py-2">
+                                            <div className="truncate">
+                                                {field.value?.length
+                                                    ? destinacaoPrOptions
+                                                        .filter(pr => field.value?.includes(pr.id))
+                                                        .map(pr => pr.id)
+                                                        .join(', ')
+                                                    : "Selecione um ou mais PRs"}
+                                            </div>
+                                        </Button>
+                                    </FormControl>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]">
+                                    {destinacaoPrOptions.map(item => (
+                                        <DropdownMenuCheckboxItem
+                                            key={item.id}
+                                            checked={field.value?.includes(item.id)}
+                                            onCheckedChange={checked => {
+                                                const newValue = checked
+                                                    ? [...(field.value || []), item.id]
+                                                    : field.value?.filter(value => value !== item.id);
+                                                field.onChange(newValue);
+                                            }}
+                                            onSelect={e => e.preventDefault()}
+                                            className="text-xl"
+                                        >
+                                            {item.label}
+                                        </DropdownMenuCheckboxItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                            <FormMessage />
+                        </FormItem>
+                    )}
                 />
                  <FormField
                   control={form.control}
                   name="qthDestinacao"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>QTH da Destinação</FormLabel>
+                      <FormLabel>QTH da Destinação {destinacaoAnimalValue.length > 0 ? `(${destinacaoAnimalValue.join(', ')})` : ''}</FormLabel>
                       <FormControl>
                         <Input placeholder="Ex: KM 20+100" {...field} />
                       </FormControl>
@@ -644,3 +689,5 @@ export default function OcorrenciaTO03Page() {
     </div>
   );
 }
+
+    
