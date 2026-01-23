@@ -53,6 +53,7 @@ const auxilios = [
   { id: 'PR26', label: 'PR26 - Transferência de carga' },
   { id: 'PR28', label: 'PR28 - Limpeza na praça' },
   { id: 'PR29', label: 'PR29 - Regularização de Sinalização' },
+  { id: 'PR30', label: 'PR30 - Auxílio no transporte do usuário' },
   { id: 'PR33', label: 'PR33 - Reparo em cerca' },
   { id: 'PR34', label: 'PR34 - Remoção de placas / publicidade da faixa' },
   { id: 'PR35', label: 'PR35 - Orientação a lindeiros da faixa de domínio' },
