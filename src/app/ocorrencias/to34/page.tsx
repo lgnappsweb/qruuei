@@ -40,7 +40,6 @@ import {
 } from '@/components/ui/accordion';
 
 const auxilios = [
-  { id: 'PR01', label: 'PR01 - Atendimento inicial' },
   { id: 'PR09', label: 'PR09 - Outros' },
   { id: 'PR13', label: 'PR13 - Canalização/Sinalização' },
   { id: 'PR14', label: 'PR14 - Tapa buraco' },
