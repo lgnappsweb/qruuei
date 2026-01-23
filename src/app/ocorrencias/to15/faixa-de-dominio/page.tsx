@@ -41,11 +41,16 @@ import {
 } from '@/components/ui/accordion';
 
 const auxilios = [
+  { id: 'PR01', label: 'PR01 - Atendimento inicial' },
   { id: 'PR08', label: 'PR08 - Verificação da sinalização de obras' },
   { id: 'PR09', label: 'PR09 - Outros' },
   { id: 'PR10', label: 'PR10 - Embargo de obra' },
   { id: 'PR13', label: 'PR13 - Canalização/Sinalização' },
   { id: 'PR14', label: 'PR14 - Tapa buraco' },
+  { id: 'PR17', label: 'PR17 - Orientação/Informação ao usuário' },
+  { id: 'PR18', label: 'PR18 - Recusa de dados' },
+  { id: 'PR25', label: 'PR25 - Pane solucionada' },
+  { id: 'PR26', label: 'PR26 - Transferência de carga' },
   { id: 'PR28', label: 'PR28 - Limpeza na praça' },
   { id: 'PR29', label: 'PR29 - Regularização de Sinalização' },
   { id: 'PR33', label: 'PR33 - Reparo em cerca' },
@@ -56,6 +61,8 @@ const auxilios = [
   { id: 'PR39', label: 'PR39 - Alocação de PMV móvel' },
   { id: 'PR48', label: 'PR48 - Orientação/Acompanhamento de Obra' },
   { id: 'PR51', label: 'PR51 - Efetuado Registro Fotográfico' },
+  { id: 'PR53', label: 'PR53 - Meios próprios' },
+  { id: 'PR54', label: 'PR54 - Aux. com ferram./ Empréstimo ferram.' },
   { id: 'PR60', label: 'PR60 - Subst. de Cancela Praça de Pedágio' },
   { id: 'PR62', label: 'PR62 - Acionamento da Conservação' },
 ] as const;
