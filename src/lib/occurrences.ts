@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { 
   LifeBuoy, Megaphone, Route, Truck, PawPrint, Car, HardHat, Shield, 
-  HeartPulse, Search, Heart, User, Siren, Shovel, Ban, Droplet, Trees, Send, Anchor, Wrench,
-  Ambulance, Flame
+  HeartPulse, Search, Heart, User, Siren, Shovel, Droplet, Trees, Send, Anchor, Wrench,
+  Ambulance, Flame, Target
 } from 'lucide-react';
 import type { LucideIcon, LucideProps } from 'lucide-react';
 
 const TireIcon = (props: LucideProps) => (
   React.createElement('svg', {
+    ...props,
     xmlns: "http://www.w3.org/2000/svg",
     width: "24",
     height: "24",
@@ -17,7 +18,6 @@ const TireIcon = (props: LucideProps) => (
     strokeWidth: "2",
     strokeLinecap: "round",
     strokeLinejoin: "round",
-    ...props
   }, 
   React.createElement('circle', { cx: "12", cy: "12", r: "10" }),
   React.createElement('circle', { cx: "12", cy: "12", r: "4" }),
@@ -58,7 +58,7 @@ export const occurrences: Occurrence[] = [
   { id: '16', title: 'TO 17', icon: User, color: 'bg-yellow-500' },
   { id: '17', title: 'TO 19', icon: Siren, color: 'bg-indigo-500' },
   { id: '18', title: 'TO 33', icon: Shovel, color: 'bg-purple-500' },
-  { id: '19', title: 'TO 34', icon: Ban, color: 'bg-pink-500' },
+  { id: '19', title: 'TO 34', icon: Target, color: 'bg-pink-500' },
   { id: '20', title: 'TO 35', icon: Droplet, color: 'bg-orange-500' },
   { id: '21', title: 'TO 37', icon: Trees, color: 'bg-teal-500' },
   { id: '22', title: 'TO 38', icon: Send, color: 'bg-cyan-500' },
