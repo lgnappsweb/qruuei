@@ -31,6 +31,28 @@ const TireIcon = (props: LucideProps) => (
   React.createElement('path', { d: "m17.66 6.34 1.41-1.41" })
 ))
 
+const TractorIcon = (props: LucideProps) => (
+  React.createElement('svg', {
+    ...props,
+    xmlns: "http://www.w3.org/2000/svg",
+    width: "24",
+    height: "24",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+  },
+  React.createElement('path', { d: 'M12 2v3' }),
+  React.createElement('path', { d: 'M4 12V8h5l2-2h3l2 2h4v4' }),
+  React.createElement('path', { d: 'M4 12h16' }),
+  React.createElement('circle', { cx: '6', cy: '16', r: '2' }),
+  React.createElement('circle', { cx: '18', cy: '16', r: '4' }),
+  React.createElement('path', { d: 'M8 16h8' })
+  )
+)
+
 
 export type Occurrence = {
   id: string;
@@ -64,4 +86,5 @@ export const occurrences: Occurrence[] = [
   { id: '22', title: 'TO 38', icon: Megaphone, color: 'bg-cyan-500' },
   { id: '23', 'title': 'TO 39', icon: Anchor, color: 'bg-red-600' },
   { id: '24', title: 'TO 50', icon: Wrench, color: 'bg-sky-500' },
+  { id: '25', title: 'TO 32', icon: TractorIcon, color: 'bg-lime-500' },
 ];
