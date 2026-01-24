@@ -300,29 +300,29 @@ export default function QudResgatePage() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      equipe: '',
-      medicoRegulador: '',
-      data: '',
-      condutor: '',
-      resgatista1: '',
-      resgatista2: '',
-      acionamento: '',
-      chegadaLocal: '',
-      numOcorrencia: '',
       rodovia: '',
       km: '',
       sentido: '',
+      equipe: '',
+      medicoRegulador: '',
+      condutor: '',
+      resgatista1: '',
+      resgatista2: '',
+      data: '',
+      numOcorrencia: '',
+      acionamento: '',
+      chegadaLocal: '',
       saidaLocal: '',
-      saidaHospital: '',
       chegadaHospital: '',
+      saidaHospital: '',
       chegadaBSO: '',
       nomeUsuario: '',
-      sexo: '',
       idade: '',
       dn: '',
-      tel: '',
+      sexo: '',
       cpf: '',
       rg: '',
+      tel: '',
       endereco: '',
       acompanhante: '',
       posicaoVeiculo: '',
@@ -734,21 +734,21 @@ export default function QudResgatePage() {
                              <FormField control={form.control} name="removidoPorTerceiros" render={({ field }) => (<FormItem><FormLabel>Removido por</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="COBOM">COBOM</SelectItem><SelectItem value="SAMU">SAMU</SelectItem><SelectItem value="OUTROS">Outros</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
                         )}
                          {form.watch('conduta') === 'removido_hospital' && (
-                            <FormField control={form.control} name="removidoHospital" render={({ field }) => (<FormItem><FormLabel>Unidade Hospitalar</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                            <FormField control={form.control} name="removidoHospital" render={({ field }) => (<FormItem><FormLabel>Unidade Hospitalar</FormLabel><FormControl><Input placeholder="Ex: Santa Casa" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          )}
                         <RadioGroupField control={form.control} name="codigoConduta" label="Código" options={[
                             {value: 'vermelho', label: 'Vermelho'}, {value: 'amarelo', label: 'Amarelo'},
                             {value: 'verde', label: 'Verde'}, {value: 'azul', label: 'Azul'}, {value: 'preto', label: 'Preto'}
                         ]} orientation="horizontal" />
-                         <FormField control={form.control} name="medicoReguladorConduta" render={({ field }) => (<FormItem><FormLabel>Médico Regulador/Intervencionista</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                         <FormField control={form.control} name="medicoReceptor" render={({ field }) => (<FormItem><FormLabel>Médico Receptor</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                         <FormField control={form.control} name="medicoReguladorConduta" render={({ field }) => (<FormItem><FormLabel>Médico Regulador/Intervencionista</FormLabel><FormControl><Input placeholder="Ex: Dr. House" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                         <FormField control={form.control} name="medicoReceptor" render={({ field }) => (<FormItem><FormLabel>Médico Receptor</FormLabel><FormControl><Input placeholder="Ex: Dra. Grey" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          
-                         <FormField control={form.control} name="relatorioObservacoes" render={({ field }) => (<FormItem><FormLabel>Relatório/Observações</FormLabel><FormControl><Textarea rows={5} {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                         <FormField control={form.control} name="relatorioObservacoes" render={({ field }) => (<FormItem><FormLabel>Relatório/Observações</FormLabel><FormControl><Textarea rows={5} placeholder="Descreva o relatório e observações aqui..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          <FormField control={form.control} name="materiais" render={({ field }) => (<FormItem><FormLabel>Consumo de Materiais</FormLabel><FormControl><Textarea rows={4} placeholder="MATERIAL - QUANTIDADE&#10;Ex: Gaze - 10" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                         <FormField control={form.control} name="rolValores" render={({ field }) => (<FormItem><FormLabel>Rol de Valores/Pertences</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                         <FormField control={form.control} name="responsavelValores" render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                         <FormField control={form.control} name="equipamentosRetidos" render={({ field }) => (<FormItem><FormLabel>Equipamentos/Materiais Retidos</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                         <FormField control={form.control} name="responsavelEquipamentos" render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                         <FormField control={form.control} name="rolValores" render={({ field }) => (<FormItem><FormLabel>Rol de Valores/Pertences</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Celular, carteira, R$ 50,00" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                         <FormField control={form.control} name="responsavelValores" render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input placeholder="Nome do responsável" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                         <FormField control={form.control} name="equipamentosRetidos" render={({ field }) => (<FormItem><FormLabel>Equipamentos/Materiais Retidos</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Colar cervical, prancha rígida" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                         <FormField control={form.control} name="responsavelEquipamentos" render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input placeholder="Nome do responsável" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                     </AccordionContent>
                  </AccordionItem>
 
