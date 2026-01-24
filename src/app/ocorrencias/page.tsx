@@ -1,10 +1,25 @@
 'use client';
 
+import * as React from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Trash2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
-const mockOcorrencias = [
+const initialOcorrencias = [
   {
     id: '1',
     type: 'QUD RESGATE',
@@ -43,8 +58,39 @@ const mockOcorrencias = [
   },
 ];
 
+const occurrencePathMap: { [key: string]: string } = {
+    'QUD RESGATE': '/ocorrencias/qud-resgate',
+    'VEÍCULO ABANDONADO': '/ocorrencias/to01',
+    'ANIMAL NA RODOVIA': '/ocorrencias/to03',
+    'INCÊNDIO EM VEÍCULO': '/ocorrencias/to05',
+};
 
 export default function OcorrenciasPage() {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [ocorrencias, setOcorrencias] = React.useState(initialOcorrencias);
+
+  const handleVerDetalhes = (type: string) => {
+    const path = occurrencePathMap[type];
+    if (path) {
+      router.push(path);
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Página não encontrada",
+        description: `O formulário para a ocorrência "${type}" não foi encontrado.`,
+      });
+    }
+  };
+
+  const handleApagar = (id: string) => {
+    setOcorrencias(ocorrencias.filter(o => o.id !== id));
+    toast({
+      title: "Ocorrência apagada",
+      description: "A ocorrência foi removida da lista.",
+    });
+  };
+
   return (
     <div className="space-y-8 pb-24">
       <div className="space-y-2 text-center">
@@ -57,7 +103,7 @@ export default function OcorrenciasPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {mockOcorrencias.map((ocorrencia) => (
+        {ocorrencias.map((ocorrencia) => (
           <Card key={ocorrencia.id}>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
@@ -79,14 +125,36 @@ export default function OcorrenciasPage() {
                 <span className="font-semibold text-foreground">Data/Hora:</span> {ocorrencia.timestamp}
               </p>
             </CardContent>
-            <CardFooter>
-              <Button variant="outline" size="sm" className="w-full">
+            <CardFooter className="flex gap-2">
+              <Button variant="outline" size="sm" className="w-full" onClick={() => handleVerDetalhes(ocorrencia.type)}>
                 Ver Detalhes
               </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" size="icon" className="shrink-0">
+                    <Trash2 className="h-5 w-5" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esta ação não pode ser desfeita. Isso irá apagar permanentemente
+                      a ocorrência da lista.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => handleApagar(ocorrencia.id)}>
+                      Apagar
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </CardFooter>
           </Card>
         ))}
-         {mockOcorrencias.length === 0 && (
+         {ocorrencias.length === 0 && (
           <div className="col-span-full text-center text-muted-foreground py-12">
             Nenhuma ocorrência registrada ainda.
           </div>
