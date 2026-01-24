@@ -675,12 +675,12 @@ export default function QudResgatePage() {
                         <Card>
                             <CardHeader><CardTitle>Sinais Vitais</CardTitle></CardHeader>
                             <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                                <FormField control={form.control} name="sinaisVitaisPA" render={({ field }) => (<FormItem><FormLabel>PA (mmHg)</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                <FormField control={form.control} name="sinaisVitaisFC" render={({ field }) => (<FormItem><FormLabel>FC (bpm)</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                <FormField control={form.control} name="sinaisVitaisFR" render={({ field }) => (<FormItem><FormLabel>FR (rpm)</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                <FormField control={form.control} name="sinaisVitaisSatO2" render={({ field }) => (<FormItem><FormLabel>Sat O² (%)</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                <FormField control={form.control} name="sinaisVitaisTAX" render={({ field }) => (<FormItem><FormLabel>TAX (°C)</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                <FormField control={form.control} name="sinaisVitaisDXT" render={({ field }) => (<FormItem><FormLabel>DXT (mg/dl)</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={form.control} name="sinaisVitaisPA" render={({ field }) => (<FormItem><FormLabel>PA (mmHg)</FormLabel><FormControl><Input placeholder="120x80" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={form.control} name="sinaisVitaisFC" render={({ field }) => (<FormItem><FormLabel>FC (bpm)</FormLabel><FormControl><Input placeholder="80" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={form.control} name="sinaisVitaisFR" render={({ field }) => (<FormItem><FormLabel>FR (rpm)</FormLabel><FormControl><Input placeholder="16" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={form.control} name="sinaisVitaisSatO2" render={({ field }) => (<FormItem><FormLabel>Sat O² (%)</FormLabel><FormControl><Input placeholder="98" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={form.control} name="sinaisVitaisTAX" render={({ field }) => (<FormItem><FormLabel>TAX (°C)</FormLabel><FormControl><Input placeholder="36.5" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={form.control} name="sinaisVitaisDXT" render={({ field }) => (<FormItem><FormLabel>DXT (mg/dl)</FormLabel><FormControl><Input placeholder="90" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                             </CardContent>
                         </Card>
                         <FormField control={form.control} name="avaliacaoCraniocaudal" render={({ field }) => (<FormItem><FormLabel>Avaliação Crânio-Caudal</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>)}/>
