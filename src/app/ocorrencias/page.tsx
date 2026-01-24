@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { tiposPane } from '@/lib/tipos-pane';
 
 interface Ocorrencia {
   id: string;
@@ -37,6 +38,64 @@ const formatLabel = (key: string) => {
   const result = key.replace(/([A-Z])/g, " $1");
   return result.charAt(0).toUpperCase() + result.slice(1);
 };
+
+const vehicleFieldOrder = ['marca', 'modelo', 'ano', 'cor', 'placa', 'cidadeEmplacamento', 'eixos', 'tipoVeiculo', 'estadoPneu', 'tipoCarga', 'qraCondutor', 'baixaFrequencia', 'ocupantes'];
+const vehicleWithPersonalDataFieldOrder = [...vehicleFieldOrder, 'cpf', 'rg', 'endereco', 'numero', 'bairro', 'cidade'];
+
+const fieldOrders: Record<string, string[]> = {
+    '/ocorrencias/to01': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to02': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'qthInicio', 'qthTermino', 'proporcaoMetros', 'areaTotal', 'vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to03': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'animal', 'quantidade', 'situacao', 'entornoNorte', 'entornoNorteOutros', 'entornoSul', 'entornoSulOutros', 'pista', 'acostamento', 'tracado', 'perfil', 'destinacaoAnimal', 'qthDestinacao', 'vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to04': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to05': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to06': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to07': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'tipoObjeto', 'quantidade', 'destinacaoObjeto', 'qthDestinacao', 'vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to09': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'tipoObra', 'qraResponsavel', 'baixaFrequencia', 'qtrInicio', 'qtrTermino', 'qthInicio', 'qthTermino', 'auxilios', 'observacoes'],
+    '/ocorrencias/to11': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to12': ['equipe', 'medicoRegulador', 'data', 'condutor', 'resgatista1', 'resgatista2', 'acionamento', 'chegadaLocal', 'numOcorrencia', 'rodovia', 'km', 'sentido', 'saidaLocal', 'saidaHospital', 'chegadaHospital', 'chegadaBSO', 'nomeUsuario', 'sexo', 'idade', 'dn', 'tel', 'cpf', 'rg', 'endereco', 'acompanhante', 'posicaoVeiculo', 'eventoClinico', 'eventoClinicoOutros', 'condicaoInicial', 'hemorragiaExsanguinante', 'viasAereas', 'viasAereasObstruidasPor', 'ventilacao', 'detalhesVentilacao', 'pulso', 'pele', 'perfusao', 'sangramentoAtivo', 'glasgowInicial', 'pupilas', 'fotorreagentes', 'exposicao', 'hipotermia', 'lesoesAparentes', 'alergias', 'medicamentosEmUso', 'comorbidades', 'ultimaRefeicao', 'sinaisVitaisPA', 'sinaisVitaisFC', 'sinaisVitaisFR', 'sinaisVitaisSatO2', 'sinaisVitaisTAX', 'sinaisVitaisDXT', 'avaliacaoCraniocaudal', 'glasgowOcular', 'glasgowVerbal', 'glasgowMotora', 'imobilizacao', 'pranchamento', 'procedimentos', 'procedimentosOutros', 'rolValores', 'responsavelValores', 'equipamentosRetidos', 'responsavelEquipamentos', 'conduta', 'removidoPorTerceiros', 'removidoHospital', 'medicoReguladorConduta', 'codigoConduta', 'medicoReceptor', 'termoRecusaNome', 'termoRecusaCPF', 'termoRecusaRG', 'termoRecusaEndereco', 'termoRecusaResponsavelPor', 'termoRecusaParentesco', 'termoRecusaTestemunha1', 'termoRecusaTestemunha2', 'materiais', 'relatorioObservacoes'],
+    '/ocorrencias/to15/faixa-de-dominio': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to16': ['equipe', 'medicoRegulador', 'data', 'condutor', 'resgatista1', 'resgatista2', 'acionamento', 'chegadaLocal', 'numOcorrencia', 'rodovia', 'km', 'sentido', 'saidaLocal', 'saidaHospital', 'chegadaHospital', 'chegadaBSO', 'nomeUsuario', 'sexo', 'idade', 'dn', 'tel', 'cpf', 'rg', 'endereco', 'acompanhante', 'posicaoVeiculo', 'eventoClinico', 'eventoClinicoOutros', 'condicaoInicial', 'hemorragiaExsanguinante', 'viasAereas', 'viasAereasObstruidasPor', 'ventilacao', 'detalhesVentilacao', 'pulso', 'pele', 'perfusao', 'sangramentoAtivo', 'glasgowInicial', 'pupilas', 'fotorreagentes', 'exposicao', 'hipotermia', 'lesoesAparentes', 'alergias', 'medicamentosEmUso', 'comorbidades', 'ultimaRefeicao', 'sinaisVitaisPA', 'sinaisVitaisFC', 'sinaisVitaisFR', 'sinaisVitaisSatO2', 'sinaisVitaisTAX', 'sinaisVitaisDXT', 'avaliacaoCraniocaudal', 'glasgowOcular', 'glasgowVerbal', 'glasgowMotora', 'imobilizacao', 'pranchamento', 'procedimentos', 'procedimentosOutros', 'rolValores', 'responsavelValores', 'equipamentosRetidos', 'responsavelEquipamentos', 'conduta', 'removidoPorTerceiros', 'removidoHospital', 'medicoReguladorConduta', 'codigoConduta', 'medicoReceptor', 'termoRecusaNome', 'termoRecusaCPF', 'termoRecusaRG', 'termoRecusaEndereco', 'termoRecusaResponsavelPor', 'termoRecusaParentesco', 'termoRecusaTestemunha1', 'termoRecusaTestemunha2', 'materiais', 'relatorioObservacoes'],
+    '/ocorrencias/to17': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to19': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to32': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'tipoObra', 'qraResponsavel', 'baixaFrequencia', 'qtrInicio', 'qtrTermino', 'qthInicio', 'qthTermino', 'auxilios', 'observacoes'],
+    '/ocorrencias/to33': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to34': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'qthInicio', 'qthTermino', 'dimensoes', 'quantidade', 'vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to35': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'qthInicio', 'qthTermino', 'extensao', 'vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to37': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'tipoPlaca', 'acao', 'nomePlaca', 'quantidade', 'vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to38': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'tipoPropaganda', 'tipoPropagandaOutros', 'acao', 'mensagem', 'quantidade', 'vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to39': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to50': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'tipoServico', 'qraResponsavel', 'baixaFrequencia', 'rg', 'cpf', 'qtrInicio', 'qtrTermino', 'auxilios', 'observacoes'],
+    '/ocorrencias/qud-operacao': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/qud-resgate': ['equipe', 'medicoRegulador', 'data', 'condutor', 'resgatista1', 'resgatista2', 'acionamento', 'chegadaLocal', 'numOcorrencia', 'rodovia', 'km', 'sentido', 'saidaLocal', 'saidaHospital', 'chegadaHospital', 'chegadaBSO', 'nomeUsuario', 'sexo', 'idade', 'dn', 'tel', 'cpf', 'rg', 'endereco', 'acompanhante', 'posicaoVeiculo', 'tipoEvento', 'eventoTrauma', 'eventoTraumaOutros', 'eventoClinico', 'eventoClinicoOutros', 'condicoesSeguranca', 'condicoesSegurancaOutros', 'cinematicaVeiculo', 'cinematicaPlaca', 'condicaoInicial', 'hemorragiaExsanguinante', 'viasAereas', 'viasAereasObstruidasPor', 'ventilacao', 'detalhesVentilacao', 'pulso', 'pele', 'perfusao', 'sangramentoAtivo', 'glasgowInicial', 'pupilas', 'fotorreagentes', 'exposicao', 'hipotermia', 'lesoesAparentes', 'alergias', 'medicamentosEmUso', 'comorbidades', 'ultimaRefeicao', 'sinaisVitaisPA', 'sinaisVitaisFC', 'sinaisVitaisFR', 'sinaisVitaisSatO2', 'sinaisVitaisTAX', 'sinaisVitaisDXT', 'avaliacaoCraniocaudal', 'glasgowOcular', 'glasgowVerbal', 'glasgowMotora', 'imobilizacao', 'pranchamento', 'procedimentos', 'procedimentosOutros', 'rolValores', 'responsavelValores', 'equipamentosRetidos', 'responsavelEquipamentos', 'conduta', 'removidoPorTerceiros', 'removidoHospital', 'medicoReguladorConduta', 'codigoConduta', 'medicoReceptor', 'termoRecusaNome', 'termoRecusaCPF', 'termoRecusaRG', 'termoRecusaEndereco', 'termoRecusaResponsavelPor', 'termoRecusaParentesco', 'termoRecusaTestemunha1', 'termoRecusaTestemunha2', 'materiais', 'relatorioObservacoes'],
+    '/ocorrencias/tracado-de-pista': ['rodovia', 'qthExato', 'sentido', 'faixaInterditada', 'provavelCinematica', 'provavelCinematicaOutros', 'veiculos', 'quantidadeVitimas', 'potencialGravidadePrevia', 'recursosAdicionaisPrevia', 'cinematica', 'cinematicaOutros', 'energia', 'avarias', 'posicaoVeiculo', 'quantidadeVitimasConfirmacao', 'potencialGravidadeAbordagem', 'cod61_62', 'recursosAdicionaisConfirmacao', 'recursosAdicionaisConfirmacaoOutros', 'condicoesMeteorologicas', 'condicaoVisibilidade', 'condicoesEspeciais', 'condicoesEspeciaisOutros', 'condicoesSinalizacao', 'condicoesSinalizacaoOutros', 'tipoPista', 'tracadoPista', 'perfil', 'obrasNaPista', 'condicaoPista', 'obstaculoCanteiroCentral', 'obstaculoCanteiroCentralOutros', 'obstaculoAcostamento', 'obstaculoAcostamentoOutros', 'obrasNoAcostamento', 'estadoConservacao', 'intersecoesPista', 'deficienciaObras', 'deficienciaObrasOutros', 'obrasDeArte', 'local', 'sinalizacaoVertical', 'sinalizacaoHorizontal', 'sinalizacaoSemaforo'],
+};
+
+const ReportField = ({ fieldKey, value }: { fieldKey: string; value: any; }) => {
+  if (value === null || value === undefined || value === 'NILL' || (Array.isArray(value) && value.length === 0) || value === '') {
+    return null;
+  }
+
+  const renderValue = (val: any) => {
+    if (typeof val === 'boolean') {
+      return val ? 'SIM' : 'NÃO';
+    }
+    if (Array.isArray(val)) {
+        if (fieldKey === 'tipoPanes') {
+            return val.map(id => tiposPane.find(p => p.id === id)?.label.split(' - ')[1] || id).join(', ');
+        }
+      return val.join(', ');
+    }
+    return String(val);
+  };
+
+  return (
+    <p>
+      <span className="font-semibold text-foreground">{formatLabel(fieldKey)}:</span>{' '}
+      {renderValue(value)}
+    </p>
+  );
+};
+
 
 export default function OcorrenciasPage() {
   const { toast } = useToast();
@@ -108,10 +167,16 @@ export default function OcorrenciasPage() {
     
     const processSection = (data: any, sectionTitle?: string) => {
       let sectionText = '';
-      for (const [key, value] of Object.entries(data)) {
-        if (['id', 'formPath', 'vehicles', 'numeroOcorrencia'].includes(key) || value === null || value === undefined || (Array.isArray(value) && value.length === 0) || String(value).trim() === '' || value === 'NILL' ) continue;
+      const order = fieldOrders[ocorrencia.formPath] || Object.keys(data);
+      
+      order.forEach(key => {
+        if (key === 'vehicles' || !(key in data)) return;
+        const value = data[key];
+
+        if (value === null || value === undefined || (Array.isArray(value) && value.length === 0) || String(value).trim() === '' || value === 'NILL' ) return;
         sectionText += `*${formatLabel(key).toUpperCase()}:* ${renderValue(value)}\n`;
-      }
+      })
+
       if (sectionText) {
           if(sectionTitle) text += `*${sectionTitle.toUpperCase()}*\n`;
           text += sectionText + '\n';
@@ -121,8 +186,19 @@ export default function OcorrenciasPage() {
     processSection(ocorrencia.fullReport);
     
     if (Array.isArray(ocorrencia.fullReport.vehicles) && ocorrencia.fullReport.vehicles.length > 0) {
+      const vehicleOrder = ocorrencia.formPath === '/ocorrencias/qud-operacao' || ocorrencia.formPath === '/ocorrencias/to11' || ocorrencia.formPath === '/ocorrencias/to19' ? vehicleWithPersonalDataFieldOrder : vehicleFieldOrder;
       ocorrencia.fullReport.vehicles.forEach((vehicle: any, index: number) => {
-        processSection(vehicle, `DADOS DO VEÍCULO ${index + 1}`);
+        let vehicleText = '';
+        vehicleOrder.forEach(key => {
+            if(key in vehicle) {
+                 const value = vehicle[key];
+                 if (value === null || value === undefined || (Array.isArray(value) && value.length === 0) || String(value).trim() === '' || value === 'NILL' ) return;
+                 vehicleText += `*${formatLabel(key).toUpperCase()}:* ${renderValue(value)}\n`;
+            }
+        });
+        if(vehicleText) {
+            text += `*DADOS DO VEÍCULO ${index + 1}*\n${vehicleText}\n`;
+        }
       });
     }
 
@@ -150,9 +226,12 @@ export default function OcorrenciasPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {ocorrencias.map((ocorrencia) => {
            const isExpanded = expandedCards.has(ocorrencia.id);
+           const fieldOrder = fieldOrders[ocorrencia.formPath] || Object.keys(ocorrencia.fullReport);
+           const vehicleOrder = ocorrencia.formPath === '/ocorrencias/qud-operacao' || ocorrencia.formPath === '/ocorrencias/to11' || ocorrencia.formPath === '/ocorrencias/to19' ? vehicleWithPersonalDataFieldOrder : vehicleFieldOrder;
+
            return (
             <Card key={ocorrencia.id} className="flex flex-col">
-              <div onClick={() => toggleCardExpansion(ocorrencia.id)} className="cursor-pointer flex-grow">
+              <div onClick={() => toggleCardExpansion(ocorrencia.id)} className="cursor-pointer">
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
                     <span>{ocorrencia.codOcorrencia}</span>
@@ -162,35 +241,38 @@ export default function OcorrenciasPage() {
                   </CardTitle>
                   <CardDescription>{ocorrencia.type}</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-2">
-                  <p className="text-base text-muted-foreground">
-                    <span className="font-semibold text-foreground">Rodovia:</span> {ocorrencia.rodovia}
-                  </p>
-                  <p className="text-base text-muted-foreground">
-                    <span className="font-semibold text-foreground">KM:</span> {ocorrencia.km}
-                  </p>
-                  <p className="text-base text-muted-foreground">
-                    <span className="font-semibold text-foreground">Data/Hora:</span> {ocorrencia.timestamp}
-                  </p>
-                </CardContent>
+                {!isExpanded && (
+                    <CardContent className="space-y-2">
+                        <p className="text-base text-muted-foreground">
+                            <span className="font-semibold text-foreground">Rodovia:</span> {ocorrencia.rodovia}
+                        </p>
+                        <p className="text-base text-muted-foreground">
+                            <span className="font-semibold text-foreground">KM:</span> {ocorrencia.km}
+                        </p>
+                        <p className="text-base text-muted-foreground">
+                            <span className="font-semibold text-foreground">Data/Hora:</span> {ocorrencia.timestamp}
+                        </p>
+                    </CardContent>
+                )}
               </div>
 
               {isExpanded && (
-                <div className="flex flex-col">
-                  <CardContent className="border-t pt-4">
-                      <div className="space-y-2 text-sm text-muted-foreground max-h-60 overflow-y-auto">
+                <div className="flex flex-col flex-grow">
+                  <CardContent className="border-t pt-4 flex-grow">
+                      <div className="space-y-2 text-sm text-muted-foreground max-h-96 overflow-y-auto">
                          <h4 className="font-semibold text-base text-foreground mb-2">Relatório Completo:</h4>
-                            {Object.entries(ocorrencia.fullReport).map(([key, value]) => {
-                                if (['id', 'formPath', 'vehicles'].includes(key) || value === null || value === undefined || value === 'NILL' || (Array.isArray(value) && value.length === 0)) return null;
-
-                                return <p key={key}><span className="font-semibold text-foreground">{formatLabel(key)}:</span> {Array.isArray(value) ? value.join(', ') : String(value)}</p>
+                            {fieldOrder.map(key => {
+                                if (key === 'vehicles' || !(key in ocorrencia.fullReport)) return null;
+                                return <ReportField key={key} fieldKey={key} value={ocorrencia.fullReport[key]} />;
                             })}
+
                             {Array.isArray(ocorrencia.fullReport.vehicles) && ocorrencia.fullReport.vehicles.map((vehicle: any, index: number) => (
                                 <div key={index} className="pt-2 mt-2 border-t">
                                     <h5 className="font-semibold text-foreground">Veículo {index + 1}</h5>
-                                    {Object.entries(vehicle).map(([key, value]) => (
-                                        (value && value !== 'NILL') && <p key={key}><span className="font-semibold text-foreground">{formatLabel(key)}:</span> {String(value)}</p>
-                                    ))}
+                                    {vehicleOrder.map(key => {
+                                        if (!(key in vehicle)) return null;
+                                        return <ReportField key={`${index}-${key}`} fieldKey={key} value={vehicle[key]} />;
+                                    })}
                                 </div>
                             ))}
                       </div>
