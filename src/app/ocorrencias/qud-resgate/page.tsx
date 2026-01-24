@@ -178,7 +178,7 @@ const fillEmptyWithNill = (data: any): any => {
         if (data.length === 0) return 'NILL';
         return data.map(item => fillEmptyWithNill(item));
     }
-    if (data && typeof data === 'object') {
+    if (data && typeof data === 'object' && Object.keys(data).length > 0) {
         const newObj: {[key: string]: any} = {};
         Object.keys(data).forEach(key => {
             newObj[key] = fillEmptyWithNill(data[key]);
@@ -192,7 +192,16 @@ const fillEmptyWithNill = (data: any): any => {
 };
 
 const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null; onClose: () => void; onSave: (data: any) => void; formTitle: string; }) => {
+    const [numeroOcorrencia, setNumeroOcorrencia] = React.useState('');
     if (!data) return null;
+
+     const handleSaveClick = () => {
+        const dataToSave = {
+            ...data,
+            numeroOcorrencia: numeroOcorrencia || 'NILL',
+        };
+        onSave(dataToSave);
+    };
 
     const formatLabel = (key: string) => {
         const result = key.replace(/([A-Z])/g, " $1");
@@ -212,9 +221,9 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
     const Field = ({ label, value }: { label: string, value: any}) => (
       value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
-        <div className="text-xl break-words">
-            <span className="font-semibold text-muted-foreground mr-2">{formatLabel(label)}:</span>
-            <span className="text-foreground font-mono">{renderSimpleValue(value)}</span>
+         <div className="flex flex-wrap items-baseline">
+            <span className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</span>
+            <span className="text-foreground font-mono break-words">{renderSimpleValue(value)}</span>
         </div>
       ) : null
     );
@@ -222,8 +231,8 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     const MaterialItem = ({ item, index }: { item: any, index: number }) => (
         <Card key={index} className="mt-4">
             <CardHeader><CardTitle>Material {index + 1}</CardTitle></CardHeader>
-            <CardContent>
-                <div className="space-y-4">
+            <CardContent className="pt-6">
+                <div className="text-xl space-y-4">
                     <Field label="nome" value={item.nome} />
                     <Field label="quantidade" value={item.quantidade} />
                 </div>
@@ -243,22 +252,22 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
         { title: "Desfecho e Observações", fields: ['rolValores', 'responsavelValores', 'equipamentosRetidos', 'responsavelEquipamentos', 'conduta', 'removidoPorTerceiros', 'removidoHospital', 'medicoReguladorConduta', 'codigoConduta', 'medicoReceptor', 'relatorioObservacoes']},
     ];
 
-    const termoRecusaFields = ['termoRecusaNome', 'termoRecusaCPF', 'termoRecusaRG', 'termoRecusaEndereco', 'termoRecusaResponsavelPor', 'termoRecusaParentesco', 'termoRecusaTestemunha1', 'termoRecusaTestemunha2'];
+    const termoRecusaFields: (keyof FormValues)[] = ['termoRecusaNome', 'termoRecusaCPF', 'termoRecusaRG', 'termoRecusaEndereco', 'termoRecusaResponsavelPor', 'termoRecusaParentesco', 'termoRecusaTestemunha1', 'termoRecusaTestemunha2'];
 
     return (
         <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
-                <DialogHeader className="text-center">
+                <DialogHeader className="text-center pt-6">
                     <DialogTitle className="text-3xl font-bold">{`Pré-visualização (${occurrenceCode})`}</DialogTitle>
                     <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
                 </DialogHeader>
-                <ScrollArea className="flex-1 pr-6 -mr-6">
+                <ScrollArea className="flex-1 pr-6 -mr-6 mt-4">
                     <div className="space-y-6">
                         {sections.map(section => (
                             <Card key={section.title}>
                                 <CardHeader><CardTitle>{section.title}</CardTitle></CardHeader>
-                                <CardContent>
-                                    <div className="space-y-4">
+                                <CardContent className="pt-6">
+                                    <div className="text-xl space-y-4">
                                         {section.fields.map(key => <Field key={String(key)} label={String(key)} value={data[key]} />)}
                                     </div>
                                 </CardContent>
@@ -268,25 +277,38 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         { (data.conduta === 'recusa_atendimento' || data.conduta === 'recusa_remocao') &&
                             <Card className="border-destructive">
                                 <CardHeader><CardTitle className="text-destructive">Termo de Recusa</CardTitle></CardHeader>
-                                <CardContent>
-                                    <div className="space-y-4">
-                                        {termoRecusaFields.map(key => <Field key={key} label={key} value={data[key]} />)}
+                                <CardContent className="pt-6">
+                                    <div className="text-xl space-y-4">
+                                        {termoRecusaFields.map(key => <Field key={String(key)} label={String(key)} value={data[key]} />)}
                                     </div>
                                 </CardContent>
                             </Card>
                         }
 
-                        {data.materiais && data.materiais.length > 0 && data.materiais[0] !== "NILL" && (
+                        {data.materiais && Array.isArray(data.materiais) && data.materiais.length > 0 && (
                             <Card>
                                 <CardHeader><CardTitle>Consumo de Materiais</CardTitle></CardHeader>
-                                <CardContent>{data.materiais.map((item: any, index: number) => <MaterialItem key={index} item={item} index={index} />)}</CardContent>
+                                <CardContent className="pt-6">{data.materiais.map((item: any, index: number) => <MaterialItem key={index} item={item} index={index} />)}</CardContent>
                             </Card>
                         )}
+                          <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
+                            <CardHeader>
+                                <CardTitle className="text-primary text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <Input
+                                    value={numeroOcorrencia}
+                                    onChange={(e) => setNumeroOcorrencia(e.target.value.toUpperCase())}
+                                    placeholder="INSIRA O NÚMERO DA OCORRÊNCIA"
+                                    className="text-center text-2xl font-bold h-16 bg-background border-primary focus-visible:ring-primary"
+                                />
+                            </CardContent>
+                        </Card>
                     </div>
                 </ScrollArea>
                 <DialogFooter className="mt-4 pt-4 border-t">
                     <Button variant="outline" onClick={onClose}>Editar</Button>
-                    <Button onClick={() => onSave(data)}>Confirmar e Salvar</Button>
+                    <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

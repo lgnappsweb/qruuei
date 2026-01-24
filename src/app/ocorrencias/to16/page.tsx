@@ -43,6 +43,8 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from '@/lib/utils';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Schema definition
 const materialSchema = z.object({
@@ -156,6 +158,148 @@ const formSchema = z.object({
   relatorioObservacoes: z.string().optional(),
 });
 type FormValues = z.infer<typeof formSchema>;
+
+const fillEmptyWithNill = (data: any): any => {
+    if (Array.isArray(data)) {
+        if (data.length === 0) return 'NILL';
+        return data.map(item => fillEmptyWithNill(item));
+    }
+    if (data && typeof data === 'object' && Object.keys(data).length > 0) {
+        const newObj: {[key: string]: any} = {};
+        Object.keys(data).forEach(key => {
+            newObj[key] = fillEmptyWithNill(data[key]);
+        });
+        return newObj;
+    }
+    if (data === '' || data === undefined || data === null) {
+        return 'NILL';
+    }
+    return data;
+};
+
+const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null; onClose: () => void; onSave: (data: any) => void; formTitle: string; }) => {
+    const [numeroOcorrencia, setNumeroOcorrencia] = React.useState('');
+    if (!data) return null;
+
+    const handleSaveClick = () => {
+        const dataToSave = {
+            ...data,
+            numeroOcorrencia: numeroOcorrencia || 'NILL',
+        };
+        onSave(dataToSave);
+    };
+
+    const formatLabel = (key: string) => {
+        const result = key.replace(/([A-Z])/g, " $1");
+        return result.charAt(0).toUpperCase() + result.slice(1);
+    };
+
+    const renderSimpleValue = (value: any): string => {
+        if (typeof value === 'boolean') {
+        return value ? 'SIM' : 'NÃO';
+        }
+        if (Array.isArray(value)) {
+            if (value.length === 0) return 'NILL';
+            return value.join(', ').toUpperCase();
+        }
+        return String(value).toUpperCase();
+    }
+
+    const Field = ({ label, value }: { label: string, value: any}) => (
+      value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
+        <div className="flex flex-wrap items-baseline">
+            <span className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</span>
+            <span className="text-foreground font-mono break-words">{renderSimpleValue(value)}</span>
+        </div>
+      ) : null
+    );
+
+    const MaterialItem = ({ item, index }: { item: any, index: number }) => (
+        <Card key={index} className="mt-4">
+            <CardHeader><CardTitle>Material {index + 1}</CardTitle></CardHeader>
+            <CardContent className="pt-6">
+                <div className="text-xl space-y-4">
+                    <Field label="nome" value={item.nome} />
+                    <Field label="quantidade" value={item.quantidade} />
+                </div>
+            </CardContent>
+        </Card>
+    )
+
+    const occurrenceCode = formTitle.match(/\(([^)]+)\)/)?.[1] || formTitle.split(' ')[0] || "Relatório";
+
+    const sections: {title: string, fields: (keyof FormValues)[]}[] = [
+        { title: "Dados Operacionais", fields: ['equipe', 'medicoRegulador', 'data', 'condutor', 'resgatista1', 'resgatista2', 'acionamento', 'chegadaLocal', 'numOcorrencia', 'rodovia', 'km', 'sentido', 'saidaLocal', 'saidaHospital', 'chegadaHospital', 'chegadaBSO']},
+        { title: "Dados Cadastrais do Usuário", fields: ['nomeUsuario', 'sexo', 'idade', 'dn', 'tel', 'cpf', 'rg', 'endereco', 'acompanhante', 'posicaoVeiculo']},
+        { title: "Evento", fields: ['eventoClinico', 'eventoClinicoOutros', 'condicaoInicial']},
+        { title: "Avaliação Primária (XABCDE)", fields: ['hemorragiaExsanguinante', 'viasAereas', 'viasAereasObstruidasPor', 'ventilacao', 'detalhesVentilacao', 'pulso', 'pele', 'perfusao', 'sangramentoAtivo', 'glasgowInicial', 'pupilas', 'fotorreagentes', 'exposicao', 'hipotermia', 'lesoesAparentes']},
+        { title: "Avaliação Secundária e Sinais Vitais", fields: ['alergias', 'medicamentosEmUso', 'comorbidades', 'ultimaRefeicao', 'sinaisVitaisPA', 'sinaisVitaisFC', 'sinaisVitaisFR', 'sinaisVitaisSatO2', 'sinaisVitaisTAX', 'sinaisVitaisDXT', 'avaliacaoCraniocaudal']},
+        { title: "Glasgow e Procedimentos", fields: ['glasgowOcular', 'glasgowVerbal', 'glasgowMotora', 'imobilizacao', 'pranchamento', 'procedimentos', 'procedimentosOutros']},
+        { title: "Desfecho e Observações", fields: ['rolValores', 'responsavelValores', 'equipamentosRetidos', 'responsavelEquipamentos', 'conduta', 'removidoPorTerceiros', 'removidoHospital', 'medicoReguladorConduta', 'codigoConduta', 'medicoReceptor', 'relatorioObservacoes']},
+    ];
+
+    const termoRecusaFields: (keyof FormValues)[] = ['termoRecusaNome', 'termoRecusaCPF', 'termoRecusaRG', 'termoRecusaEndereco', 'termoRecusaResponsavelPor', 'termoRecusaParentesco', 'termoRecusaTestemunha1', 'termoRecusaTestemunha2'];
+
+    return (
+        <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
+            <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+                <DialogHeader className="text-center pt-6">
+                    <DialogTitle className="text-3xl font-bold">{`Pré-visualização (${occurrenceCode})`}</DialogTitle>
+                    <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
+                </DialogHeader>
+                <ScrollArea className="flex-1 pr-6 -mr-6 mt-4">
+                    <div className="space-y-6">
+                        {sections.map(section => (
+                            <Card key={section.title}>
+                                <CardHeader><CardTitle>{section.title}</CardTitle></CardHeader>
+                                <CardContent className="pt-6">
+                                    <div className="text-xl space-y-4">
+                                        {section.fields.map(key => <Field key={String(key)} label={String(key)} value={data[key]} />)}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+
+                        { (data.conduta === 'recusa_atendimento' || data.conduta === 'recusa_remocao') &&
+                            <Card className="border-destructive">
+                                <CardHeader><CardTitle className="text-destructive">Termo de Recusa</CardTitle></CardHeader>
+                                <CardContent className="pt-6">
+                                    <div className="text-xl space-y-4">
+                                        {termoRecusaFields.map(key => <Field key={String(key)} label={String(key)} value={data[key]} />)}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        }
+
+                        {data.materiais && Array.isArray(data.materiais) && data.materiais.length > 0 && (
+                            <Card>
+                                <CardHeader><CardTitle>Consumo de Materiais</CardTitle></CardHeader>
+                                <CardContent className="pt-6">{data.materiais.map((item: any, index: number) => <MaterialItem key={index} item={item} index={index} />)}</CardContent>
+                            </Card>
+                        )}
+                         <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
+                            <CardHeader>
+                                <CardTitle className="text-primary text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <Input
+                                    value={numeroOcorrencia}
+                                    onChange={(e) => setNumeroOcorrencia(e.target.value.toUpperCase())}
+                                    placeholder="INSIRA O NÚMERO DA OCORRÊNCIA"
+                                    className="text-center text-2xl font-bold h-16 bg-background border-primary focus-visible:ring-primary"
+                                />
+                            </CardContent>
+                        </Card>
+                    </div>
+                </ScrollArea>
+                <DialogFooter className="mt-4 pt-4 border-t">
+                    <Button variant="outline" onClick={onClose}>Editar</Button>
+                    <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    );
+};
 
 // Reusable components
 function CheckboxGroupField({ control, name, label, options }: { control: Control<FormValues>, name: keyof FormValues, label: string, options: { id: string, label: string }[] }) {
@@ -289,6 +433,8 @@ function GlasgowScale({ control }: { control: Control<FormValues> }) {
 // Main page component
 export default function OcorrenciaTO16Page() {
   const { toast } = useToast();
+  const [previewData, setPreviewData] = React.useState<FormValues | null>(null);
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -385,11 +531,17 @@ export default function OcorrenciaTO16Page() {
   });
 
   function onSubmit(values: FormValues) {
-    console.log(values);
+    const processedValues = fillEmptyWithNill(values);
+    setPreviewData(processedValues);
+  }
+
+  function handleSave(data: FormValues) {
+    console.log("Saving data:", data);
     toast({
       title: 'Formulário Enviado',
       description: 'Ocorrência TO16 (Atendimento a Funcionário) registrada com sucesso!',
     });
+    setPreviewData(null);
   }
 
   return (
@@ -405,6 +557,9 @@ export default function OcorrenciaTO16Page() {
         <h1 className="font-condensed text-3xl font-bold tracking-tight">
           TO16 - ATENDIMENTO A FUNCIONÁRIO
         </h1>
+         <p className="text-muted-foreground">
+          Preencha os campos abaixo para registrar a ocorrência.
+        </p>
       </div>
 
       <Form {...form}>
@@ -787,6 +942,7 @@ export default function OcorrenciaTO16Page() {
           <Button type="submit" size="lg" className="w-full">Gerar Relatório</Button>
         </form>
       </Form>
+      <PreviewDialog data={previewData} onClose={() => setPreviewData(null)} onSave={handleSave} formTitle="ATENDIMENTO A FUNCIONÁRIO (TO16)" />
     </div>
   );
 }

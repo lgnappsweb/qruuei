@@ -102,7 +102,7 @@ const fillEmptyWithNill = (data: any): any => {
         if (data.length === 0) return 'NILL';
         return data.map(item => fillEmptyWithNill(item));
     }
-    if (data && typeof data === 'object') {
+    if (data && typeof data === 'object' && Object.keys(data).length > 0) {
         const newObj: {[key: string]: any} = {};
         Object.keys(data).forEach(key => {
             newObj[key] = fillEmptyWithNill(data[key]);
@@ -116,7 +116,16 @@ const fillEmptyWithNill = (data: any): any => {
 };
 
 const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null; onClose: () => void; onSave: (data: any) => void; formTitle: string; }) => {
+  const [numeroOcorrencia, setNumeroOcorrencia] = React.useState('');
   if (!data) return null;
+
+  const handleSaveClick = () => {
+    const dataToSave = {
+        ...data,
+        numeroOcorrencia: numeroOcorrencia || 'NILL',
+    };
+    onSave(dataToSave);
+  };
 
   const formatLabel = (key: string) => {
     const result = key.replace(/([A-Z])/g, " $1");
@@ -136,77 +145,60 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
   const Field = ({ label, value }: { label: string, value: any}) => (
     value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
-      <>
-          <div className="font-semibold text-muted-foreground text-left">{formatLabel(label)}:</div>
-          <div className="text-foreground break-words font-mono uppercase">{renderSimpleValue(value)}</div>
-      </>
+      <div className="flex flex-wrap items-baseline">
+          <span className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</span>
+          <span className="text-foreground font-mono break-words">{renderSimpleValue(value)}</span>
+      </div>
     ) : null
   );
 
-  const sections = {
-    previa: ['rodovia', 'qthExato', 'sentido', 'faixaInterditada', 'provavelCinematica', 'provavelCinematicaOutros', 'veiculos', 'quantidadeVitimas', 'potencialGravidadePrevia', 'recursosAdicionaisPrevia'],
-    confirmacao: ['cinematica', 'cinematicaOutros', 'energia', 'avarias', 'posicaoVeiculo', 'quantidadeVitimasConfirmacao', 'potencialGravidadeAbordagem', 'cod61_62', 'recursosAdicionaisConfirmacao', 'recursosAdicionaisConfirmacaoOutros'],
-    condicao: ['condicoesMeteorologicas', 'condicaoVisibilidade', 'condicoesEspeciais', 'condicoesEspeciaisOutros', 'condicoesSinalizacao', 'condicoesSinalizacaoOutros'],
-    pista: ['tipoPista', 'tracadoPista', 'perfil', 'obrasNaPista', 'condicaoPista', 'obstaculoCanteiroCentral', 'obstaculoCanteiroCentralOutros', 'obstaculoAcostamento', 'obstaculoAcostamentoOutros', 'obrasNoAcostamento', 'estadoConservacao', 'intersecoesPista', 'deficienciaObras', 'deficienciaObrasOutros', 'obrasDeArte', 'local'],
-    sinalizacao: ['sinalizacaoVertical', 'sinalizacaoHorizontal', 'sinalizacaoSemaforo'],
-  }
+  const sections: { title: string, fields: (keyof FormValues)[] }[] = [
+    { title: 'PRÉVIA', fields: ['rodovia', 'qthExato', 'sentido', 'faixaInterditada', 'provavelCinematica', 'provavelCinematicaOutros', 'veiculos', 'quantidadeVitimas', 'potencialGravidadePrevia', 'recursosAdicionaisPrevia'] },
+    { title: 'CONFIRMAÇÃO DA PRÉVIA', fields: ['cinematica', 'cinematicaOutros', 'energia', 'avarias', 'posicaoVeiculo', 'quantidadeVitimasConfirmacao', 'potencialGravidadeAbordagem', 'cod61_62', 'recursosAdicionaisConfirmacao', 'recursosAdicionaisConfirmacaoOutros'] },
+    { title: 'CONDIÇÃO', fields: ['condicoesMeteorologicas', 'condicaoVisibilidade', 'condicoesEspeciais', 'condicoesEspeciaisOutros', 'condicoesSinalizacao', 'condicoesSinalizacaoOutros'] },
+    { title: 'PISTA', fields: ['tipoPista', 'tracadoPista', 'perfil', 'obrasNaPista', 'condicaoPista', 'obstaculoCanteiroCentral', 'obstaculoCanteiroCentralOutros', 'obstaculoAcostamento', 'obstaculoAcostamentoOutros', 'obrasNoAcostamento', 'estadoConservacao', 'intersecoesPista', 'deficienciaObras', 'deficienciaObrasOutros', 'obrasDeArte', 'local'] },
+    { title: 'SINALIZAÇÃO', fields: ['sinalizacaoVertical', 'sinalizacaoHorizontal', 'sinalizacaoSemaforo'] },
+  ];
 
   const occurrenceCode = formTitle.match(/\(([^)]+)\)/)?.[1] || formTitle.split(' ')[0] || "Relatório";
 
   return (
     <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
-        <DialogHeader className="text-center">
-          <DialogTitle className="text-3xl font-bold">Pré-visualização ({occurrenceCode})</DialogTitle>
+        <DialogHeader className="text-center pt-6">
+          <DialogTitle className="text-3xl font-bold">{`Pré-visualização (${occurrenceCode})`}</DialogTitle>
           <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-1 pr-6 -mr-6">
+        <ScrollArea className="flex-1 pr-6 -mr-6 mt-4">
             <div className="space-y-6">
-              <Card>
-                <CardHeader><CardTitle>PRÉVIA</CardTitle></CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
-                    {sections.previa.map(key => <Field key={key} label={key} value={data[key]} />)}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader><CardTitle>CONFIRMAÇÃO DA PRÉVIA</CardTitle></CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
-                    {sections.confirmacao.map(key => <Field key={key} label={key} value={data[key]} />)}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader><CardTitle>CONDIÇÃO</CardTitle></CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
-                    {sections.condicao.map(key => <Field key={key} label={key} value={data[key]} />)}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader><CardTitle>PISTA</CardTitle></CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
-                    {sections.pista.map(key => <Field key={key} label={key} value={data[key]} />)}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader><CardTitle>SINALIZAÇÃO</CardTitle></CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
-                    {sections.sinalizacao.map(key => <Field key={key} label={key} value={data[key]} />)}
-                  </div>
-                </CardContent>
-              </Card>
+              {sections.map(section => (
+                  <Card key={section.title}>
+                    <CardHeader><CardTitle>{section.title}</CardTitle></CardHeader>
+                    <CardContent className="pt-6">
+                        <div className="text-xl space-y-4">
+                            {section.fields.map(key => <Field key={String(key)} label={String(key)} value={data[key]} />)}
+                        </div>
+                    </CardContent>
+                  </Card>
+              ))}
+               <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
+                    <CardHeader>
+                        <CardTitle className="text-primary text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Input
+                            value={numeroOcorrencia}
+                            onChange={(e) => setNumeroOcorrencia(e.target.value.toUpperCase())}
+                            placeholder="INSIRA O NÚMERO DA OCORRÊNCIA"
+                            className="text-center text-2xl font-bold h-16 bg-background border-primary focus-visible:ring-primary"
+                        />
+                    </CardContent>
+                </Card>
             </div>
         </ScrollArea>
         <DialogFooter className="mt-4 pt-4 border-t">
           <Button variant="outline" onClick={onClose}>Editar</Button>
-          <Button onClick={() => onSave(data)}>Confirmar e Salvar</Button>
+          <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
