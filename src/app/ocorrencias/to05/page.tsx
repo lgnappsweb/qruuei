@@ -144,7 +144,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
       <div className="flex flex-col sm:flex-row sm:items-baseline">
           <span className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</span>
-          <span className="text-foreground font-mono break-words">{renderSimpleValue(value)}</span>
+          <span className="text-foreground font-mono break-all">{renderSimpleValue(value)}</span>
       </div>
     ) : null
   );
@@ -172,7 +172,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                     </CardContent>
                 </Card>
 
-                {data.vehicles && data.vehicles.length > 0 && data.vehicles.map((vehicle: any, index: number) => (
+                {data.vehicles && Array.isArray(data.vehicles) && data.vehicles.map((vehicle: any, index: number) => (
                     <Card key={index}>
                         <CardHeader><CardTitle>Dados do Veículo {index + 1}</CardTitle></CardHeader>
                         <CardContent className="text-xl space-y-4">
