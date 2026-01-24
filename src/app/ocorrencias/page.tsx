@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Trash2, ArrowLeft, Edit, Share2 } from 'lucide-react';
+import { Trash2, ArrowLeft, Edit, Share2, ShieldAlert } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
   AlertDialog,
@@ -231,8 +231,10 @@ export default function OcorrenciasPage() {
           )
         })}
          {ocorrencias.length === 0 && (
-          <div className="col-span-full text-center text-muted-foreground py-12">
-            Nenhuma ocorrência registrada ainda.
+          <div className="col-span-full text-center text-muted-foreground py-12 border-2 border-dashed rounded-lg flex flex-col items-center justify-center">
+            <ShieldAlert className="h-10 w-10 mb-4" />
+            <h3 className="text-xl font-semibold text-foreground">Nenhuma ocorrência registrada</h3>
+            <p>Comece a registrar novas ocorrências para visualizá-las aqui.</p>
           </div>
         )}
       </div>
