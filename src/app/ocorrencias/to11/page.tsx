@@ -115,7 +115,11 @@ const formSchema = z.object({
 const fillEmptyWithNill = (data: any): any => {
     if (Array.isArray(data)) {
         if (data.length === 0) return 'NILL';
-        return data.map(item => fillEmptyWithNill(item));
+        // Check if it's an array of objects (vehicles)
+        if (typeof data[0] === 'object' && data[0] !== null) {
+          return data.map(item => fillEmptyWithNill(item));
+        }
+        return data; // Keep array of strings as is
     }
     if (data && typeof data === 'object') {
         const newObj: {[key: string]: any} = {};
@@ -131,7 +135,16 @@ const fillEmptyWithNill = (data: any): any => {
 };
 
 const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null; onClose: () => void; onSave: (data: any) => void; formTitle: string; }) => {
+  const [numeroOcorrencia, setNumeroOcorrencia] = React.useState('');
   if (!data) return null;
+
+  const handleSaveClick = () => {
+    const dataToSave = {
+        ...data,
+        numeroOcorrencia: numeroOcorrencia || 'NILL',
+    };
+    onSave(dataToSave);
+  };
 
   const formatLabel = (key: string) => {
     const result = key.replace(/([A-Z])/g, " $1");
@@ -151,9 +164,9 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
   const Field = ({ label, value }: { label: string, value: any}) => (
     value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
-      <div className="flex flex-col sm:flex-row sm:items-baseline">
-          <span className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</span>
-          <span className="text-foreground font-mono break-all">{renderSimpleValue(value)}</span>
+      <div className="flex flex-col sm:flex-row sm:items-start">
+        <span className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</span>
+        <span className="text-foreground font-mono break-words uppercase flex-1 text-left">{renderSimpleValue(value)}</span>
       </div>
     ) : null
   );
@@ -201,11 +214,24 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         <Field label="auxilios" value={data.auxilios} />
                     </CardContent>
                 </Card>
+                 <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
+                    <CardHeader>
+                        <CardTitle className="text-foreground text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Input
+                            value={numeroOcorrencia}
+                            onChange={(e) => setNumeroOcorrencia(e.target.value.toUpperCase())}
+                            placeholder="INSIRA O NÚMERO DA OCORRÊNCIA"
+                            className="text-center text-2xl font-bold h-16 bg-background border-primary focus-visible:ring-primary"
+                        />
+                    </CardContent>
+                </Card>
             </div>
         </ScrollArea>
         <DialogFooter className="mt-4 pt-4 border-t">
           <Button variant="outline" onClick={onClose}>Editar</Button>
-          <Button onClick={() => onSave(data)}>Confirmar e Salvar</Button>
+          <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

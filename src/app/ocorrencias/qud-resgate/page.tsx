@@ -46,6 +46,7 @@ import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
+// Schema definition
 const materialSchema = z.object({
   nome: z.string().min(1, "Nome do material é obrigatório."),
   quantidade: z.string().min(1, "Quantidade é obrigatória."),
@@ -62,9 +63,9 @@ const formSchema = z.object({
   acionamento: z.string().optional(),
   chegadaLocal: z.string().optional(),
   numOcorrencia: z.string().optional(),
-  rodovia: z.string().min(1, "Rodovia é obrigatória"),
-  km: z.string().min(1, "KM é obrigatório"),
-  sentido: z.string().min(1, "Sentido é obrigatório"),
+  rodovia: z.string().optional(),
+  km: z.string().optional(),
+  sentido: z.string().optional(),
   saidaLocal: z.string().optional(),
   saidaHospital: z.string().optional(),
   chegadaHospital: z.string().optional(),
@@ -83,7 +84,7 @@ const formSchema = z.object({
   posicaoVeiculo: z.string().optional(),
 
   // EVENTO
-  tipoEvento: z.enum(["trauma", "clinico"]),
+  tipoEvento: z.enum(["trauma", "clinico"]).optional(),
   eventoTrauma: z.array(z.string()).optional(),
   eventoTraumaOutros: z.string().optional(),
   eventoClinico: z.array(z.string()).optional(),
@@ -166,9 +167,6 @@ const formSchema = z.object({
   // MATERIAIS E OBSERVAÇÕES
   materiais: z.array(materialSchema).optional(),
   relatorioObservacoes: z.string().optional(),
-}).refine(data => data.tipoEvento !== undefined, {
-    message: "Selecione o tipo de evento.",
-    path: ["tipoEvento"],
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -176,7 +174,10 @@ type FormValues = z.infer<typeof formSchema>;
 const fillEmptyWithNill = (data: any): any => {
     if (Array.isArray(data)) {
         if (data.length === 0) return 'NILL';
-        return data.map(item => fillEmptyWithNill(item));
+        if (typeof data[0] === 'object' && data[0] !== null) {
+          return data.map(item => fillEmptyWithNill(item));
+        }
+        return data;
     }
     if (data && typeof data === 'object' && Object.keys(data).length > 0) {
         const newObj: {[key: string]: any} = {};
@@ -221,9 +222,9 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
     const Field = ({ label, value }: { label: string, value: any}) => (
       value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
-         <div className="flex flex-wrap items-baseline">
+         <div className="flex flex-col sm:flex-row sm:items-start">
             <span className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</span>
-            <span className="text-foreground font-mono break-words">{renderSimpleValue(value)}</span>
+            <span className="text-foreground font-mono break-words uppercase flex-1 text-left">{renderSimpleValue(value)}</span>
         </div>
       ) : null
     );
@@ -293,7 +294,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         )}
                           <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
                             <CardHeader>
-                                <CardTitle className="text-primary text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
+                                <CardTitle className="text-foreground text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <Input

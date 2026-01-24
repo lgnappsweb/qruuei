@@ -96,12 +96,12 @@ const vehicleSchema = z.object({
 });
 
 const formSchema = z.object({
-  rodovia: z.string().min(1, 'Selecione a rodovia.'),
+  rodovia: z.string().optional(),
   ocorrencia: z.string(),
   tipoPanes: z.array(z.string()).optional(),
-  qth: z.string().min(1, 'O QTH é obrigatório.'),
-  sentido: z.string().min(1, 'Selecione o sentido.'),
-  localArea: z.string().min(1, 'Selecione o local/área.'),
+  qth: z.string().optional(),
+  sentido: z.string().optional(),
+  localArea: z.string().optional(),
   vehicles: z.array(vehicleSchema).optional(),
   vtrApoio: z.boolean().default(false),
   vtrApoioDescricao: z.string().optional(),
@@ -114,7 +114,11 @@ const formSchema = z.object({
 const fillEmptyWithNill = (data: any): any => {
     if (Array.isArray(data)) {
         if (data.length === 0) return 'NILL';
-        return data.map(item => fillEmptyWithNill(item));
+        // Check if it's an array of objects (vehicles)
+        if (typeof data[0] === 'object' && data[0] !== null) {
+          return data.map(item => fillEmptyWithNill(item));
+        }
+        return data; // Keep array of strings as is
     }
     if (data && typeof data === 'object') {
         const newObj: {[key: string]: any} = {};
@@ -130,7 +134,16 @@ const fillEmptyWithNill = (data: any): any => {
 };
 
 const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null; onClose: () => void; onSave: (data: any) => void; formTitle: string; }) => {
+  const [numeroOcorrencia, setNumeroOcorrencia] = React.useState('');
   if (!data) return null;
+
+  const handleSaveClick = () => {
+    const dataToSave = {
+        ...data,
+        numeroOcorrencia: numeroOcorrencia || 'NILL',
+    };
+    onSave(dataToSave);
+  };
 
   const formatLabel = (key: string) => {
     const result = key.replace(/([A-Z])/g, " $1");
@@ -150,9 +163,9 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
   const Field = ({ label, value }: { label: string, value: any}) => (
     value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
-      <div className="flex flex-col sm:flex-row sm:items-baseline">
-          <span className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</span>
-          <span className="text-foreground font-mono break-all">{renderSimpleValue(value)}</span>
+      <div className="flex flex-col sm:flex-row sm:items-start">
+        <span className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</span>
+        <span className="text-foreground font-mono break-words uppercase flex-1 text-left">{renderSimpleValue(value)}</span>
       </div>
     ) : null
   );
@@ -162,11 +175,11 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
   return (
     <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
-        <DialogHeader className="text-center">
+        <DialogHeader className="text-center pt-6">
           <DialogTitle className="text-3xl font-bold">{`Pré-visualização (${occurrenceCode})`}</DialogTitle>
           <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-1 pr-6 -mr-6">
+        <ScrollArea className="flex-1 pr-6 -mr-6 mt-4">
             <div className="space-y-6">
                 <Card>
                     <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
@@ -181,7 +194,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                 </Card>
 
                 {data.vehicles && Array.isArray(data.vehicles) && data.vehicles.map((vehicle: any, index: number) => (
-                    <Card key={index}>
+                    <Card key={index} className="mt-6">
                         <CardHeader><CardTitle>Dados do Veículo {index + 1}</CardTitle></CardHeader>
                         <CardContent className="text-xl space-y-4">
                             {Object.entries(vehicle).map(([key, value]) => <Field key={key} label={key} value={value} />)}
@@ -189,7 +202,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                     </Card>
                 ))}
 
-                <Card>
+                <Card className="mt-6">
                     <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
                     <CardContent className="text-xl space-y-4">
                         <Field label="vtrApoio" value={data.vtrApoio} />
@@ -200,11 +213,24 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         <Field label="auxilios" value={data.auxilios} />
                     </CardContent>
                 </Card>
+                 <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
+                    <CardHeader>
+                        <CardTitle className="text-foreground text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Input
+                            value={numeroOcorrencia}
+                            onChange={(e) => setNumeroOcorrencia(e.target.value.toUpperCase())}
+                            placeholder="INSIRA O NÚMERO DA OCORRÊNCIA"
+                            className="text-center text-2xl font-bold h-16 bg-background border-primary focus-visible:ring-primary"
+                        />
+                    </CardContent>
+                </Card>
             </div>
         </ScrollArea>
         <DialogFooter className="mt-4 pt-4 border-t">
           <Button variant="outline" onClick={onClose}>Editar</Button>
-          <Button onClick={() => onSave(data)}>Confirmar e Salvar</Button>
+          <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -349,6 +375,10 @@ export default function OcorrenciaTO33Page() {
                                               field.onChange(newValue);
                                           }}
                                           className="text-xl"
+                                           onSelect={(e) => {
+                                            e.preventDefault();
+                                            (e.currentTarget as HTMLDivElement).parentElement?.parentElement?.dispatchEvent(new Event('mouseleave'));
+                                          }}
                                       >
                                           {item.label}
                                       </DropdownMenuCheckboxItem>
