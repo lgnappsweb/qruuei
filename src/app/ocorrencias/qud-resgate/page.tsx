@@ -81,7 +81,7 @@ const formSchema = z.object({
   posicaoVeiculo: z.string().optional(),
 
   // EVENTO
-  tipoEvento: z.enum(["trauma", "clinico"]).optional(),
+  tipoEvento: z.enum(["trauma", "clinico"]),
   eventoTrauma: z.array(z.string()).optional(),
   eventoTraumaOutros: z.string().optional(),
   eventoClinico: z.array(z.string()).optional(),
@@ -760,7 +760,7 @@ export default function QudResgatePage() {
                             <CardContent className="space-y-4 pt-6">
                                 {materialFields.map((item, index) => (
                                 <div key={item.id} className="flex items-end gap-4 p-4 border rounded-lg relative">
-                                    <div className="grid grid-cols-2 gap-4 flex-1">
+                                    <div className="grid grid-cols-1 gap-4 flex-1">
                                         <FormField
                                             control={form.control}
                                             name={`materiais.${index}.nome`}
