@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFieldArray } from 'react-hook-form';
 import * as z from 'zod';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ArrowLeft, PlusCircle, Share2, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -258,7 +259,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                     </CardContent>
                 </Card>
 
-                {data.vehicles && Array.isArray(data.vehicles) && data.vehicles.map((vehicle: any, index: number) => (
+                {Array.isArray(data.vehicles) && data.vehicles.map((vehicle: any, index: number) => (
                     <Card key={index} className="mt-6">
                         <CardHeader><CardTitle>Dados do Veículo {index + 1}</CardTitle></CardHeader>
                         <CardContent className="pt-6 space-y-4 text-xl">
@@ -310,7 +311,9 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
 export default function QudOperacaoPage() {
   const { toast } = useToast();
+  const router = useRouter();
   const [previewData, setPreviewData] = React.useState<z.infer<typeof formSchema> | null>(null);
+  const [editingId, setEditingId] = React.useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -331,6 +334,23 @@ export default function QudOperacaoPage() {
     },
   });
 
+  React.useEffect(() => {
+    try {
+        const editDataString = localStorage.getItem('editOcorrenciaData');
+        if (editDataString) {
+            const editData = JSON.parse(editDataString);
+            if(editData.formPath === '/ocorrencias/qud-operacao') {
+                form.reset(editData.fullReport);
+                setEditingId(editData.id);
+                localStorage.removeItem('editOcorrenciaData');
+            }
+        }
+    } catch(e) {
+        console.error("Error reading edit data from localStorage", e);
+        localStorage.removeItem('editOcorrenciaData');
+    }
+  }, [form]);
+
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "vehicles",
@@ -341,13 +361,46 @@ export default function QudOperacaoPage() {
     setPreviewData(processedValues);
   }
 
-  function handleSave(data: z.infer<typeof formSchema>) {
-    console.log("Saving data:", data);
-    toast({
-      title: 'Formulário Enviado',
-      description: 'QUD OPERAÇÃO registrada com sucesso!',
-    });
-    setPreviewData(null);
+  function handleSave(data: any) {
+    try {
+        const savedOcorrencias = JSON.parse(localStorage.getItem('ocorrencias_v2') || '[]');
+        const formTitle = "QUD OPERAÇÃO";
+
+        const ocorrenciaData = {
+            id: editingId || new Date().toISOString(),
+            codOcorrencia: data.ocorrencia,
+            type: formTitle,
+            rodovia: data.rodovia,
+            km: data.qth,
+            timestamp: new Date().toLocaleString('pt-BR'),
+            status: 'Finalizada' as const,
+            fullReport: data,
+            numeroOcorrencia: data.numeroOcorrencia,
+            formPath: '/ocorrencias/qud-operacao'
+        };
+
+        let updatedOcorrencias;
+        if (editingId) {
+            updatedOcorrencias = savedOcorrencias.map((o: any) => o.id === editingId ? ocorrenciaData : o);
+             toast({ title: 'Ocorrência Atualizada', description: 'Ocorrência atualizada com sucesso!' });
+        } else {
+            updatedOcorrencias = [...savedOcorrencias, ocorrenciaData];
+            toast({ title: 'Formulário Enviado', description: 'Ocorrência registrada com sucesso!' });
+        }
+        
+        localStorage.setItem('ocorrencias_v2', JSON.stringify(updatedOcorrencias));
+        
+        setPreviewData(null);
+        router.push('/ocorrencias');
+
+    } catch (e) {
+        console.error("Could not save to localStorage", e);
+        toast({
+          variant: "destructive",
+          title: 'Erro ao Salvar',
+          description: 'Não foi possível salvar a ocorrência.',
+        });
+    }
   }
 
   return (

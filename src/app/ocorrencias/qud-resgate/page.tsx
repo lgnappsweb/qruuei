@@ -4,7 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Control, useWatch, useFieldArray } from 'react-hook-form';
 import * as z from 'zod';
 import Link from 'next/link';
-import { ArrowLeft, PlusCircle, Trash2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft, PlusCircle, Share2, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import * as React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -257,6 +258,51 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
     const termoRecusaFields: (keyof FormValues)[] = ['termoRecusaNome', 'termoRecusaCPF', 'termoRecusaRG', 'termoRecusaEndereco', 'termoRecusaResponsavelPor', 'termoRecusaParentesco', 'termoRecusaTestemunha1', 'termoRecusaTestemunha2'];
 
+    const handleShare = () => {
+    let text = `*${formTitle.toUpperCase()}*\n\n`;
+    if (numeroOcorrencia) {
+      text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n\n`;
+    }
+
+    const formatSectionForShare = (sectionTitle: string, fields: object) => {
+      let sectionText = '';
+      for (const [key, value] of Object.entries(fields)) {
+        if ((key === 'eventoTraumaOutros' && !data.eventoTrauma?.includes('outros')) || 
+            (key === 'eventoClinicoOutros' && !data.eventoClinico?.includes('outros')) ||
+            (key === 'condicoesSegurancaOutros' && !data.condicoesSeguranca?.includes('outros')) ||
+            (key === 'viasAereasObstruidasPor' && data.viasAereas !== 'obstruidas')) continue;
+
+        const processedValue = renderSimpleValue(value);
+        if (processedValue && processedValue !== 'NILL' && processedValue !== '') {
+          sectionText += `*${formatLabel(key).toUpperCase()}:* ${processedValue}\n`;
+        }
+      }
+      if (sectionText) {
+        text += `*${sectionTitle.toUpperCase()}*\n${sectionText}\n`;
+      }
+    };
+
+    sections.forEach(section => {
+      const sectionData = section.fields.reduce((acc, field) => {
+        // @ts-ignore
+        acc[field] = data[field];
+        return acc;
+      }, {} as any);
+      formatSectionForShare(section.title, sectionData);
+    });
+
+    if (Array.isArray(data.materiais) && data.materiais.length > 0) {
+      text += '*CONSUMO DE MATERIAIS*\n';
+      data.materiais.forEach((item: any, index: number) => {
+        text += `*Material ${index + 1}:* ${item.nome.toUpperCase()} - *Qtd:* ${item.quantidade}\n`;
+      });
+      text += '\n';
+    }
+
+    const encodedText = encodeURIComponent(text.trim());
+    window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
+  };
+
     return (
         <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
@@ -288,7 +334,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                             </Card>
                         }
 
-                        {data.materiais && Array.isArray(data.materiais) && data.materiais.length > 0 && (
+                        {Array.isArray(data.materiais) && data.materiais.length > 0 && (
                             <Card>
                                 <CardHeader><CardTitle>Consumo de Materiais</CardTitle></CardHeader>
                                 <CardContent className="pt-6">{data.materiais.map((item: any, index: number) => <MaterialItem key={index} item={item} index={index} />)}</CardContent>
@@ -309,8 +355,11 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         </Card>
                     </div>
                 </ScrollArea>
-                <DialogFooter className="mt-4 pt-4 border-t">
+                <DialogFooter className="mt-4 flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4 border-t">
                     <Button variant="outline" onClick={onClose}>Editar</Button>
+                    <Button onClick={handleShare} className="bg-green-600 hover:bg-green-700">
+                        <Share2 className="mr-2 h-5 w-5"/> Compartilhar
+                    </Button>
                     <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
                 </DialogFooter>
             </DialogContent>
@@ -450,7 +499,10 @@ function GlasgowScale({ control }: { control: Control<FormValues> }) {
 
 export default function QudResgatePage() {
   const { toast } = useToast();
+  const router = useRouter();
   const [previewData, setPreviewData] = React.useState<FormValues | null>(null);
+  const [editingId, setEditingId] = React.useState<string | null>(null);
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -546,6 +598,23 @@ export default function QudResgatePage() {
     },
   });
 
+  React.useEffect(() => {
+    try {
+        const editDataString = localStorage.getItem('editOcorrenciaData');
+        if (editDataString) {
+            const editData = JSON.parse(editDataString);
+            if(editData.formPath === '/ocorrencias/qud-resgate') {
+                form.reset(editData.fullReport);
+                setEditingId(editData.id);
+                localStorage.removeItem('editOcorrenciaData');
+            }
+        }
+    } catch(e) {
+        console.error("Error reading edit data from localStorage", e);
+        localStorage.removeItem('editOcorrenciaData');
+    }
+  }, [form]);
+
   const watchConduta = useWatch({ control: form.control, name: 'conduta'});
 
   const { fields: materialFields, append: appendMaterial, remove: removeMaterial } = useFieldArray({
@@ -558,13 +627,46 @@ export default function QudResgatePage() {
     setPreviewData(processedValues);
   }
 
-  function handleSave(data: FormValues) {
-    console.log("Saving data:", data);
-    toast({
-      title: 'Formulário Enviado',
-      description: 'QUD RESGATE registrada com sucesso!',
-    });
-    setPreviewData(null);
+  function handleSave(data: any) {
+    try {
+        const savedOcorrencias = JSON.parse(localStorage.getItem('ocorrencias_v2') || '[]');
+        const formTitle = 'QUD RESGATE - ATENDIMENTO PRÉ-HOSPITALAR';
+
+        const ocorrenciaData = {
+            id: editingId || new Date().toISOString(),
+            codOcorrencia: 'QUD RESGATE',
+            type: formTitle,
+            rodovia: data.rodovia,
+            km: data.km,
+            timestamp: new Date().toLocaleString('pt-BR'),
+            status: 'Finalizada' as const,
+            fullReport: data,
+            numeroOcorrencia: data.numeroOcorrencia,
+            formPath: '/ocorrencias/qud-resgate'
+        };
+
+        let updatedOcorrencias;
+        if (editingId) {
+            updatedOcorrencias = savedOcorrencias.map((o: any) => o.id === editingId ? ocorrenciaData : o);
+             toast({ title: 'Ocorrência Atualizada', description: 'Ocorrência atualizada com sucesso!' });
+        } else {
+            updatedOcorrencias = [...savedOcorrencias, ocorrenciaData];
+            toast({ title: 'Formulário Enviado', description: 'Ocorrência registrada com sucesso!' });
+        }
+        
+        localStorage.setItem('ocorrencias_v2', JSON.stringify(updatedOcorrencias));
+        
+        setPreviewData(null);
+        router.push('/ocorrencias');
+
+    } catch (e) {
+        console.error("Could not save to localStorage", e);
+        toast({
+          variant: "destructive",
+          title: 'Erro ao Salvar',
+          description: 'Não foi possível salvar a ocorrência.',
+        });
+    }
   }
 
   return (
