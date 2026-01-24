@@ -36,6 +36,7 @@ import {
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 const formSchema = z.object({
   // PRÉVIA
@@ -122,31 +123,32 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     return result.charAt(0).toUpperCase() + result.slice(1);
   };
 
-  const renderValue = (value: any): React.ReactNode => {
-    if (typeof value === 'boolean') {
+  const renderSimpleValue = (value: any): string => {
+     if (typeof value === 'boolean') {
       return value ? 'SIM' : 'NÃO';
     }
     if (Array.isArray(value)) {
-      if (value.length === 0) return 'NILL';
-      const isObjectArray = typeof value[0] === 'object' && value[0] !== null;
-      if (isObjectArray) {
-        return value.map((item, index) => (
-          <div key={index} className="mt-4 pl-4 col-span-full">
-            <h4 className="font-bold text-xl mb-2 border-b">Item {index + 1}</h4>
-            <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 text-lg">
-                {Object.entries(item).map(([k, v]) => (
-                  <React.Fragment key={k}>
-                    <div className="font-semibold text-muted-foreground text-right">{formatLabel(k)}:</div>
-                    <div className="text-foreground break-words font-mono uppercase">{renderValue(v)}</div>
-                  </React.Fragment>
-                ))}
-            </div>
-          </div>
-        ));
-      }
-      return String(value.join(', ')).toUpperCase();
+        if (value.length === 0) return 'NILL';
+        return value.join(', ').toUpperCase();
     }
     return String(value).toUpperCase();
+  }
+
+  const Field = ({ label, value }: { label: string, value: any}) => (
+    value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
+      <>
+          <div className="font-semibold text-muted-foreground text-left">{formatLabel(label)}:</div>
+          <div className="text-foreground break-words font-mono uppercase">{renderSimpleValue(value)}</div>
+      </>
+    ) : null
+  );
+
+  const sections = {
+    previa: ['rodovia', 'qthExato', 'sentido', 'faixaInterditada', 'provavelCinematica', 'provavelCinematicaOutros', 'veiculos', 'quantidadeVitimas', 'potencialGravidadePrevia', 'recursosAdicionaisPrevia'],
+    confirmacao: ['cinematica', 'cinematicaOutros', 'energia', 'avarias', 'posicaoVeiculo', 'quantidadeVitimasConfirmacao', 'potencialGravidadeAbordagem', 'cod61_62', 'recursosAdicionaisConfirmacao', 'recursosAdicionaisConfirmacaoOutros'],
+    condicao: ['condicoesMeteorologicas', 'condicaoVisibilidade', 'condicoesEspeciais', 'condicoesEspeciaisOutros', 'condicoesSinalizacao', 'condicoesSinalizacaoOutros'],
+    pista: ['tipoPista', 'tracadoPista', 'perfil', 'obrasNaPista', 'condicaoPista', 'obstaculoCanteiroCentral', 'obstaculoCanteiroCentralOutros', 'obstaculoAcostamento', 'obstaculoAcostamentoOutros', 'obrasNoAcostamento', 'estadoConservacao', 'intersecoesPista', 'deficienciaObras', 'deficienciaObrasOutros', 'obrasDeArte', 'local'],
+    sinalizacao: ['sinalizacaoVertical', 'sinalizacaoHorizontal', 'sinalizacaoSemaforo'],
   }
 
   const occurrenceCode = formTitle.match(/\(([^)]+)\)/)?.[1] || formTitle.split(' ')[0] || "Relatório";
@@ -155,28 +157,51 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
         <DialogHeader className="text-center">
-          <DialogTitle className="text-2xl">Pré-visualização ({occurrenceCode})</DialogTitle>
+          <DialogTitle className="text-3xl font-bold">Pré-visualização ({occurrenceCode})</DialogTitle>
           <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
         </DialogHeader>
         <ScrollArea className="flex-1 pr-6 -mr-6">
-            <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-lg">
-                {Object.entries(data).map(([key, value]) => {
-                     const isObjectArray = Array.isArray(value) && value.length > 0 && typeof value[0] === 'object';
-                     if (isObjectArray) {
-                        return (
-                             <div key={key} className="col-span-full">
-                                <h3 className="font-bold text-2xl mt-6 mb-2 border-b">{formatLabel(key)}</h3>
-                                {renderValue(value)}
-                            </div>
-                        )
-                     }
-                     return (
-                        <React.Fragment key={key}>
-                            <div className="font-semibold text-muted-foreground text-right">{formatLabel(key)}:</div>
-                            <div className="text-foreground break-words font-mono uppercase">{renderValue(value)}</div>
-                        </React.Fragment>
-                     )
-                })}
+            <div className="space-y-6">
+              <Card>
+                <CardHeader><CardTitle>PRÉVIA</CardTitle></CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
+                    {sections.previa.map(key => <Field key={key} label={key} value={data[key]} />)}
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader><CardTitle>CONFIRMAÇÃO DA PRÉVIA</CardTitle></CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
+                    {sections.confirmacao.map(key => <Field key={key} label={key} value={data[key]} />)}
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader><CardTitle>CONDIÇÃO</CardTitle></CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
+                    {sections.condicao.map(key => <Field key={key} label={key} value={data[key]} />)}
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader><CardTitle>PISTA</CardTitle></CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
+                    {sections.pista.map(key => <Field key={key} label={key} value={data[key]} />)}
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader><CardTitle>SINALIZAÇÃO</CardTitle></CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
+                    {sections.sinalizacao.map(key => <Field key={key} label={key} value={data[key]} />)}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
         </ScrollArea>
         <DialogFooter className="mt-4 pt-4 border-t">

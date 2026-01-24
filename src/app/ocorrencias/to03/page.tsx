@@ -125,32 +125,87 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     return result.charAt(0).toUpperCase() + result.slice(1);
   };
 
-  const renderValue = (value: any): React.ReactNode => {
-    if (typeof value === 'boolean') {
-      return value ? 'Sim' : 'Não';
+  const renderSimpleValue = (value: any): string => {
+     if (typeof value === 'boolean') {
+      return value ? 'SIM' : 'NÃO';
     }
     if (Array.isArray(value)) {
-      if (value.length === 0) return 'NILL';
-      return value.join(', ');
+        if (value.length === 0) return 'NILL';
+        return value.join(', ').toUpperCase();
     }
-    return String(value);
+    return String(value).toUpperCase();
   }
+
+  const Field = ({ label, value }: { label: string, value: any}) => (
+    value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
+      <>
+          <div className="font-semibold text-muted-foreground text-left">{formatLabel(label)}:</div>
+          <div className="text-foreground break-words font-mono uppercase">{renderSimpleValue(value)}</div>
+      </>
+    ) : null
+  );
+  
+  const occurrenceCode = formTitle.match(/\(([^)]+)\)/)?.[1] || formTitle.split(' ')[0] || "Relatório";
 
   return (
     <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
-        <DialogHeader>
-          <DialogTitle>Pré-visualização: {formTitle}</DialogTitle>
+        <DialogHeader className="text-center">
+          <DialogTitle className="text-3xl font-bold">Pré-visualização ({occurrenceCode})</DialogTitle>
           <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
         </DialogHeader>
         <ScrollArea className="flex-1 pr-6 -mr-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-base">
-                {Object.entries(data).map(([key, value]) => (
-                    <div key={key} className="flex flex-col">
-                        <span className="font-semibold text-muted-foreground">{formatLabel(key)}</span>
-                        <div className="text-foreground break-words">{renderValue(value)}</div>
-                    </div>
-                ))}
+            <div className="space-y-6">
+                <Card>
+                    <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
+                    <CardContent>
+                        <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
+                            <Field label="rodovia" value={data.rodovia} />
+                            <Field label="ocorrencia" value={data.ocorrencia} />
+                            <Field label="qth" value={data.qth} />
+                            <Field label="sentido" value={data.sentido} />
+                            <Field label="localArea" value={data.localArea} />
+                            <Field label="animal" value={data.animal} />
+                            <Field label="quantidade" value={data.quantidade} />
+                            <Field label="situacao" value={data.situacao} />
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader><CardTitle>Características do Entorno</CardTitle></CardHeader>
+                    <CardContent>
+                        <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
+                            <Field label="entornoNorte" value={data.entornoNorte} />
+                            {data.entornoNorte === 'Outros' && <Field label="entornoNorteOutros" value={data.entornoNorteOutros} />}
+                            <Field label="entornoSul" value={data.entornoSul} />
+                            {data.entornoSul === 'Outros' && <Field label="entornoSulOutros" value={data.entornoSulOutros} />}
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader><CardTitle>Traçado da Pista</CardTitle></CardHeader>
+                    <CardContent>
+                        <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
+                            <Field label="pista" value={data.pista} />
+                            <Field label="acostamento" value={data.acostamento} />
+                            <Field label="tracado" value={data.tracado} />
+                            <Field label="perfil" value={data.perfil} />
+                        </div>
+                    </CardContent>
+                </Card>
+                 <Card>
+                    <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
+                    <CardContent>
+                        <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
+                            <Field label="destinacaoAnimal" value={data.destinacaoAnimal} />
+                            <Field label="qthDestinacao" value={data.qthDestinacao} />
+                            <Field label="vtrApoio" value={data.vtrApoio} />
+                            {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
+                            <Field label="observacoes" value={data.observacoes} />
+                            <Field label="auxilios" value={data.auxilios} />
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
         </ScrollArea>
         <DialogFooter className="mt-4 pt-4 border-t">

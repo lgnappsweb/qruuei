@@ -139,10 +139,12 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
   }
 
   const Field = ({ label, value }: { label: string, value: any}) => (
-    <>
-        <div className="font-semibold text-muted-foreground text-right">{formatLabel(label)}:</div>
-        <div className="text-foreground break-words font-mono uppercase">{renderSimpleValue(value)}</div>
-    </>
+    value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
+      <>
+          <div className="font-semibold text-muted-foreground text-left">{formatLabel(label)}:</div>
+          <div className="text-foreground break-words font-mono uppercase">{renderSimpleValue(value)}</div>
+      </>
+    ) : null
   );
 
   const occurrenceCode = formTitle.match(/\(([^)]+)\)/)?.[1] || formTitle.split(' ')[0] || "Relatório";
@@ -151,48 +153,50 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
         <DialogHeader className="text-center">
-          <DialogTitle className="text-2xl">Pré-visualização ({occurrenceCode})</DialogTitle>
+          <DialogTitle className="text-3xl font-bold">Pré-visualização ({occurrenceCode})</DialogTitle>
           <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-1 pr-6 -mr-6 space-y-6">
-            <Card>
-                <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-lg">
-                        <Field label="rodovia" value={data.rodovia} />
-                        <Field label="ocorrencia" value={data.ocorrencia} />
-                        <Field label="tipoPanes" value={data.tipoPanes} />
-                        <Field label="qth" value={data.qth} />
-                        <Field label="sentido" value={data.sentido} />
-                        <Field label="localArea" value={data.localArea} />
-                    </div>
-                </CardContent>
-            </Card>
-
-            {data.vehicles && data.vehicles.length > 0 && data.vehicles.map((vehicle: any, index: number) => (
-                <Card key={index}>
-                    <CardHeader><CardTitle>Dados do Veículo {index + 1}</CardTitle></CardHeader>
+        <ScrollArea className="flex-1 pr-6 -mr-6">
+            <div className="space-y-6">
+                <Card>
+                    <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-lg">
-                            {Object.entries(vehicle).map(([key, value]) => <Field key={key} label={key} value={value} />)}
+                        <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
+                            <Field label="rodovia" value={data.rodovia} />
+                            <Field label="ocorrencia" value={data.ocorrencia} />
+                            <Field label="tipoPanes" value={data.tipoPanes} />
+                            <Field label="qth" value={data.qth} />
+                            <Field label="sentido" value={data.sentido} />
+                            <Field label="localArea" value={data.localArea} />
                         </div>
                     </CardContent>
                 </Card>
-            ))}
 
-            <Card>
-                 <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-lg">
-                        <Field label="vtrApoio" value={data.vtrApoio} />
-                        {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
-                        <Field label="danoPatrimonio" value={data.danoPatrimonio} />
-                        {data.danoPatrimonio && <Field label="danoPatrimonioDescricao" value={data.danoPatrimonioDescricao} />}
-                        <Field label="observacoes" value={data.observacoes} />
-                        <Field label="auxilios" value={data.auxilios} />
-                    </div>
-                </CardContent>
-            </Card>
+                {data.vehicles && data.vehicles.length > 0 && data.vehicles.map((vehicle: any, index: number) => (
+                    <Card key={index}>
+                        <CardHeader><CardTitle>Dados do Veículo {index + 1}</CardTitle></CardHeader>
+                        <CardContent>
+                            <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
+                                {Object.entries(vehicle).map(([key, value]) => <Field key={key} label={key} value={value} />)}
+                            </div>
+                        </CardContent>
+                    </Card>
+                ))}
+
+                <Card>
+                    <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
+                    <CardContent>
+                        <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
+                            <Field label="vtrApoio" value={data.vtrApoio} />
+                            {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
+                            <Field label="danoPatrimonio" value={data.danoPatrimonio} />
+                            {data.danoPatrimonio && <Field label="danoPatrimonioDescricao" value={data.danoPatrimonioDescricao} />}
+                            <Field label="observacoes" value={data.observacoes} />
+                            <Field label="auxilios" value={data.auxilios} />
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
         </ScrollArea>
         <DialogFooter className="mt-4 pt-4 border-t">
           <Button variant="outline" onClick={onClose}>Editar</Button>
