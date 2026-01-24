@@ -4,9 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft, Share2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import * as React from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -100,7 +102,17 @@ const fillEmptyWithNill = (data: any): any => {
 };
 
 const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null; onClose: () => void; onSave: (data: any) => void; formTitle: string; }) => {
+  const [numeroOcorrencia, setNumeroOcorrencia] = React.useState('');
+  const isMobile = useIsMobile();
   if (!data) return null;
+
+  const handleSaveClick = () => {
+    const dataToSave = {
+        ...data,
+        numeroOcorrencia: numeroOcorrencia || 'NILL',
+    };
+    onSave(dataToSave);
+  };
 
   const formatLabel = (key: string) => {
     const result = key.replace(/([A-Z])/g, " $1");
@@ -121,13 +133,43 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
   const Field = ({ label, value }: { label: string, value: any}) => (
     value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
       <div className="flex flex-col sm:flex-row sm:items-start">
-          <div className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</div>
-          <div className="text-foreground font-mono break-words uppercase flex-1">{renderSimpleValue(value)}</div>
+        <div className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</div>
+        <div className="text-foreground font-mono break-words uppercase flex-1 text-left">{renderSimpleValue(value)}</div>
       </div>
     ) : null
   );
 
   const occurrenceCode = formTitle.match(/\(([^)]+)\)/)?.[1] || formTitle.split(' ')[0] || "Relatório";
+
+  const handleShare = () => {
+    let text = `*${formTitle.toUpperCase()}*\n\n`;
+
+    const sections: { title: string, fields: (keyof z.infer<typeof formSchema>)[] }[] = [
+        { title: 'Informações Gerais', fields: ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'tipoObra', 'qraResponsavel', 'baixaFrequencia', 'qtrInicio', 'qtrTermino', 'qthInicio', 'qthTermino'] },
+        { title: 'Outras Informações', fields: ['observacoes', 'auxilios'] }
+    ];
+
+    sections.forEach(section => {
+        let sectionText = '';
+        section.fields.forEach(key => {
+            // @ts-ignore
+            const value = data[key];
+            if (value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0)) {
+                sectionText += `*${formatLabel(key).toUpperCase()}:* ${renderSimpleValue(value)}\n`;
+            }
+        });
+        if(sectionText) {
+            text += `*${section.title.toUpperCase()}*\n${sectionText}\n`;
+        }
+    });
+
+    if (numeroOcorrencia) {
+      text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n`;
+    }
+
+    const encodedText = encodeURIComponent(text.trim());
+    window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
+  };
 
   return (
     <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
@@ -140,7 +182,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
             <div className="space-y-6">
                 <Card>
                     <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
-                    <CardContent className="text-xl space-y-4">
+                    <CardContent className="text-xl space-y-4 pt-6">
                         <Field label="rodovia" value={data.rodovia} />
                         <Field label="ocorrencia" value={data.ocorrencia} />
                         <Field label="qth" value={data.qth} />
@@ -155,18 +197,34 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         <Field label="qthTermino" value={data.qthTermino} />
                     </CardContent>
                 </Card>
-                <Card className="mt-6">
+                <Card>
                     <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
-                    <CardContent className="text-xl space-y-4">
+                    <CardContent className="text-xl space-y-4 pt-6">
                         <Field label="observacoes" value={data.observacoes} />
                         <Field label="auxilios" value={data.auxilios} />
                     </CardContent>
                 </Card>
+                <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
+                    <CardHeader>
+                        <CardTitle className="text-white text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Input
+                            value={numeroOcorrencia}
+                            onChange={(e) => setNumeroOcorrencia(e.target.value.toUpperCase())}
+                            placeholder={isMobile ? 'INSIRA O NÚMERO' : 'INSIRA O NÚMERO DA OCORRÊNCIA'}
+                            className="text-center text-2xl font-bold h-16 bg-background border-primary focus-visible:ring-primary"
+                        />
+                    </CardContent>
+                </Card>
             </div>
         </ScrollArea>
-        <DialogFooter className="mt-4 pt-4 border-t">
+        <DialogFooter className="mt-4 flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4 border-t">
           <Button variant="outline" onClick={onClose}>Editar</Button>
-          <Button onClick={() => onSave(data)}>Confirmar e Salvar</Button>
+          <Button onClick={handleShare} className="bg-green-600 hover:bg-green-700" disabled={!numeroOcorrencia}>
+            <Share2 className="mr-2 h-5 w-5"/> Compartilhar
+          </Button>
+          <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -175,7 +233,9 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
 export default function OcorrenciaTO32Page() {
   const { toast } = useToast();
+  const router = useRouter();
   const [previewData, setPreviewData] = React.useState<z.infer<typeof formSchema> | null>(null);
+  const [editingId, setEditingId] = React.useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -197,18 +257,76 @@ export default function OcorrenciaTO32Page() {
     },
   });
 
+  React.useEffect(() => {
+    try {
+        const editDataString = localStorage.getItem('editOcorrenciaData');
+        if (editDataString) {
+            const editData = JSON.parse(editDataString);
+            if(editData.formPath === '/ocorrencias/to32') {
+                const reportToLoad = editData.fullReport;
+                
+                Object.keys(reportToLoad).forEach(key => {
+                    if (reportToLoad[key] === 'NILL') {
+                        reportToLoad[key] = '';
+                    }
+                });
+
+                form.reset(reportToLoad);
+                setEditingId(editData.id);
+                localStorage.removeItem('editOcorrenciaData');
+            }
+        }
+    } catch(e) {
+        console.error("Error reading edit data from localStorage", e);
+        localStorage.removeItem('editOcorrenciaData');
+    }
+  }, [form]);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     const processedValues = fillEmptyWithNill(values);
     setPreviewData(processedValues);
   }
 
-  function handleSave(data: z.infer<typeof formSchema>) {
-    console.log("Saving data:", data);
-    toast({
-      title: 'Formulário Enviado',
-      description: 'Ocorrência TO32 registrada com sucesso!',
-    });
-    setPreviewData(null);
+  function handleSave(data: any) {
+    try {
+        const savedOcorrencias = JSON.parse(localStorage.getItem('ocorrencias_v2') || '[]');
+        const formTitle = "ROÇADA MANUAL / MECANIZADA (TO32)";
+
+        const ocorrenciaData = {
+            id: editingId || new Date().toISOString(),
+            codOcorrencia: data.ocorrencia,
+            type: formTitle,
+            rodovia: data.rodovia,
+            km: data.qth,
+            timestamp: new Date().toLocaleString('pt-BR'),
+            status: 'Finalizada' as const,
+            fullReport: data,
+            numeroOcorrencia: data.numeroOcorrencia,
+            formPath: '/ocorrencias/to32'
+        };
+
+        let updatedOcorrencias;
+        if (editingId) {
+            updatedOcorrencias = savedOcorrencias.map((o: any) => o.id === editingId ? ocorrenciaData : o);
+             toast({ title: 'Ocorrência Atualizada', description: 'Ocorrência atualizada com sucesso!' });
+        } else {
+            updatedOcorrencias = [...savedOcorrencias, ocorrenciaData];
+            toast({ title: 'Formulário Enviado', description: 'Ocorrência registrada com sucesso!' });
+        }
+        
+        localStorage.setItem('ocorrencias_v2', JSON.stringify(updatedOcorrencias));
+        
+        setPreviewData(null);
+        router.push('/ocorrencias');
+
+    } catch (e) {
+        console.error("Could not save to localStorage", e);
+        toast({
+          variant: "destructive",
+          title: 'Erro ao Salvar',
+          description: 'Não foi possível salvar a ocorrência.',
+        });
+    }
   }
 
   return (
@@ -243,7 +361,7 @@ export default function OcorrenciaTO32Page() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Rodovia</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione a rodovia" />
@@ -294,7 +412,7 @@ export default function OcorrenciaTO32Page() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Sentido</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione o sentido" />
@@ -317,7 +435,7 @@ export default function OcorrenciaTO32Page() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Local/Área</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione o local/área" />
