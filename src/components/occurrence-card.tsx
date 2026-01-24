@@ -40,6 +40,8 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
       router.push('/ocorrencias/to09');
     } else if (occurrence.id === '12') { // This is TO 11
       router.push('/ocorrencias/to11');
+    } else if (occurrence.id === '13') { // This is TO 12
+      router.push('/ocorrencias/to12');
     } else if (occurrence.id === '14') { // This is TO 15
       router.push('/ocorrencias/to15');
     } else if (occurrence.id === '16') { // This is TO 17
