@@ -178,11 +178,11 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
           <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
         </DialogHeader>
         <ScrollArea className="flex-1 pr-6 -mr-6">
-            <div className="space-y-4">
+            <div className="space-y-6">
                 <Card>
                     <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-xl">
+                        <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-xl">
                             <Field label="rodovia" value={data.rodovia} />
                             <Field label="ocorrencia" value={data.ocorrencia} />
                             <Field label="tipoPanes" value={data.tipoPanes} />
@@ -197,7 +197,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                     <Card key={index}>
                         <CardHeader><CardTitle>Dados do Veículo {index + 1}</CardTitle></CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-xl">
+                            <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-xl">
                                 {Object.entries(vehicle).map(([key, value]) => <Field key={key} label={key} value={value} />)}
                             </div>
                         </CardContent>
@@ -207,7 +207,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                 <Card>
                     <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-xl">
+                        <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-xl">
                             <Field label="vtrApoio" value={data.vtrApoio} />
                             {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
                             <Field label="danoPatrimonio" value={data.danoPatrimonio} />
