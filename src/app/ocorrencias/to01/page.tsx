@@ -120,7 +120,16 @@ const fillEmptyWithNill = (data: any): any => {
 };
 
 const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null; onClose: () => void; onSave: (data: any) => void; formTitle: string; }) => {
+  const [numeroOcorrencia, setNumeroOcorrencia] = React.useState('');
   if (!data) return null;
+
+  const handleSaveClick = () => {
+    const dataToSave = {
+        ...data,
+        numeroOcorrencia: numeroOcorrencia || 'NILL',
+    };
+    onSave(dataToSave);
+  };
 
   const formatLabel = (key: string) => {
     const result = key.replace(/([A-Z])/g, " $1");
@@ -133,16 +142,20 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     }
     if (Array.isArray(value)) {
         if (value.length === 0) return 'NILL';
-        return value.join(', ').toUpperCase();
+        const paneLabels = value.map(id => {
+            const found = tiposPane.find(p => p.id === id);
+            return found ? found.label.split(' - ')[1] : id;
+        });
+        return paneLabels.join(', ').toUpperCase();
     }
     return String(value).toUpperCase();
   }
 
   const Field = ({ label, value }: { label: string, value: any}) => (
     value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
-      <div className="flex flex-col sm:flex-row sm:items-baseline">
-          <span className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</span>
-          <span className="text-foreground font-mono break-words">{renderSimpleValue(value)}</span>
+      <div className="flex items-baseline">
+          <div className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</div>
+          <div className="text-foreground font-mono break-words uppercase">{renderSimpleValue(value)}</div>
       </div>
     ) : null
   );
@@ -152,49 +165,69 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
   return (
     <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
-        <DialogHeader className="text-center">
+        <DialogHeader className="text-center pt-6">
           <DialogTitle className="text-3xl font-bold">{`Pré-visualização (${occurrenceCode})`}</DialogTitle>
           <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-1 pr-6 -mr-6">
+        <ScrollArea className="flex-1 pr-6 -mr-6 mt-4">
             <div className="space-y-6">
                 <Card>
                     <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
-                    <CardContent className="text-xl space-y-4">
-                        <Field label="rodovia" value={data.rodovia} />
-                        <Field label="ocorrencia" value={data.ocorrencia} />
-                        <Field label="tipoPanes" value={data.tipoPanes} />
-                        <Field label="qth" value={data.qth} />
-                        <Field label="sentido" value={data.sentido} />
-                        <Field label="localArea" value={data.localArea} />
+                    <CardContent>
+                        <div className="space-y-4 text-xl">
+                            <Field label="rodovia" value={data.rodovia} />
+                            <Field label="ocorrencia" value={data.ocorrencia} />
+                            <Field label="tipoPanes" value={data.tipoPanes} />
+                            <Field label="qth" value={data.qth} />
+                            <Field label="sentido" value={data.sentido} />
+                            <Field label="localArea" value={data.localArea} />
+                        </div>
                     </CardContent>
                 </Card>
 
                 {data.vehicles && data.vehicles.length > 0 && data.vehicles.map((vehicle: any, index: number) => (
                     <Card key={index}>
                         <CardHeader><CardTitle>Dados do Veículo {index + 1}</CardTitle></CardHeader>
-                        <CardContent className="text-xl space-y-4">
-                            {Object.entries(vehicle).map(([key, value]) => <Field key={key} label={key} value={value} />)}
+                        <CardContent>
+                            <div className="space-y-4 text-xl">
+                                {Object.entries(vehicle).map(([key, value]) => <Field key={key} label={key} value={value} />)}
+                            </div>
                         </CardContent>
                     </Card>
                 ))}
 
                 <Card>
                     <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
-                    <CardContent className="text-xl space-y-4">
-                        <Field label="vtrApoio" value={data.vtrApoio} />
-                        {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
-                        <Field label="danoPatrimonio" value={data.danoPatrimonio} />
-                        {data.danoPatrimonio && <Field label="danoPatrimonioDescricao" value={data.danoPatrimonioDescricao} />}
-                        <Field label="observacoes" value={data.observacoes} />
-                        <Field label="auxilios" value={data.auxilios} />
+                    <CardContent>
+                        <div className="space-y-4 text-xl">
+                            <Field label="vtrApoio" value={data.vtrApoio} />
+                            {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
+                            <Field label="danoPatrimonio" value={data.danoPatrimonio} />
+                            {data.danoPatrimonio && <Field label="danoPatrimonioDescricao" value={data.danoPatrimonioDescricao} />}
+                            <Field label="observacoes" value={data.observacoes} />
+                            <Field label="auxilios" value={data.auxilios} />
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
+                    <CardHeader>
+                        <CardTitle className="text-primary text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Input
+                            value={numeroOcorrencia}
+                            onChange={(e) => setNumeroOcorrencia(e.target.value.toUpperCase())}
+                            placeholder="INSIRA O NÚMERO DA OCORRÊNCIA"
+                            className="text-center text-2xl font-bold h-16 bg-background border-primary focus-visible:ring-primary"
+                        />
                     </CardContent>
                 </Card>
             </div>
         </ScrollArea>
         <DialogFooter className="mt-4 pt-4 border-t">
           <Button variant="outline" onClick={onClose}>Editar</Button>
-          <Button onClick={() => onSave(data)}>Confirmar e Salvar</Button>
+          <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -348,6 +381,7 @@ export default function OcorrenciaTO01Page() {
                                               field.onChange(newValue);
                                           }}
                                           className="text-xl"
+                                          onSelect={(e) => e.preventDefault()}
                                       >
                                           {item.label}
                                       </DropdownMenuCheckboxItem>
