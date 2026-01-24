@@ -43,6 +43,8 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from '@/lib/utils';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const materialSchema = z.object({
   nome: z.string().min(1, "Nome do material é obrigatório."),
@@ -170,6 +172,84 @@ const formSchema = z.object({
 });
 
 type FormValues = z.infer<typeof formSchema>;
+
+const fillEmptyWithNill = (data: any): any => {
+    if (Array.isArray(data)) {
+        if (data.length === 0) return 'NILL';
+        return data.map(item => fillEmptyWithNill(item));
+    }
+    if (data && typeof data === 'object') {
+        const newObj: {[key: string]: any} = {};
+        Object.keys(data).forEach(key => {
+            newObj[key] = fillEmptyWithNill(data[key]);
+        });
+        return newObj;
+    }
+    if (data === '' || data === undefined || data === null) {
+        return 'NILL';
+    }
+    return data;
+};
+
+const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null; onClose: () => void; onSave: (data: any) => void; formTitle: string; }) => {
+  if (!data) return null;
+
+  const formatLabel = (key: string) => {
+    const result = key.replace(/([A-Z])/g, " $1");
+    return result.charAt(0).toUpperCase() + result.slice(1);
+  };
+
+  const renderValue = (value: any): React.ReactNode => {
+    if (typeof value === 'boolean') {
+      return value ? 'Sim' : 'Não';
+    }
+    if (Array.isArray(value)) {
+      if (value.length === 0) return 'NILL';
+      const isObjectArray = typeof value[0] === 'object' && value[0] !== null;
+      if (isObjectArray) {
+        return value.map((item, index) => (
+          <div key={index} className="mt-2 pl-4 border-l">
+            <h4 className="font-semibold text-md mb-1">Item {index + 1}</h4>
+            {Object.entries(item).map(([k, v]) => (
+              <div key={k}>
+                <span className="font-semibold text-muted-foreground">{formatLabel(k)}: </span>
+                {renderValue(v)}
+              </div>
+            ))}
+          </div>
+        ));
+      }
+      return value.join(', ');
+    }
+    return String(value);
+  }
+
+  return (
+    <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle>Pré-visualização: {formTitle}</DialogTitle>
+          <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
+        </DialogHeader>
+        <ScrollArea className="flex-1 pr-6 -mr-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-base">
+                {Object.entries(data).map(([key, value]) => (
+                    <div key={key} className="flex flex-col">
+                        <span className="font-semibold text-muted-foreground">{formatLabel(key)}</span>
+                        <div className="text-foreground break-words">{renderValue(value)}</div>
+                    </div>
+                ))}
+            </div>
+        </ScrollArea>
+        <DialogFooter className="mt-4 pt-4 border-t">
+          <Button variant="outline" onClick={onClose}>Editar</Button>
+          <Button onClick={() => onSave(data)}>Confirmar e Salvar</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 
 function CheckboxGroupField({ control, name, label, options }: { control: Control<FormValues>, name: keyof FormValues, label: string, options: { id: string, label: string }[] }) {
     return (
@@ -302,6 +382,7 @@ function GlasgowScale({ control }: { control: Control<FormValues> }) {
 
 export default function QudResgatePage() {
   const { toast } = useToast();
+  const [previewData, setPreviewData] = React.useState<FormValues | null>(null);
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -405,11 +486,17 @@ export default function QudResgatePage() {
   });
 
   function onSubmit(values: FormValues) {
-    console.log(values);
+    const processedValues = fillEmptyWithNill(values);
+    setPreviewData(processedValues);
+  }
+
+  function handleSave(data: FormValues) {
+    console.log("Saving data:", data);
     toast({
       title: 'Formulário Enviado',
-      description: 'QUD RESGATE registrado com sucesso!',
+      description: 'QUD RESGATE registrada com sucesso!',
     });
+    setPreviewData(null);
   }
 
   return (
@@ -693,7 +780,7 @@ export default function QudResgatePage() {
                                 <FormField control={form.control} name="sinaisVitaisDXT" render={({ field }) => (<FormItem><FormLabel>DXT (mg/dl)</FormLabel><FormControl><Input placeholder="90" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                             </CardContent>
                         </Card>
-                        <FormField control={form.control} name="avaliacaoCraniocaudal" render={({ field }) => (<FormItem><FormLabel>Avaliação Crânio-Caudal</FormLabel><FormControl><Textarea placeholder="Ex: Nenhuma anormalidade encontrada." {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        <FormField control={form.control} name="avaliacaoCraniocaudal" render={({ field }) => (<FormItem><FormLabel>Avaliação Crânio-Caudal</FormLabel><FormControl><Textarea placeholder="Nenhuma anormalidade encontrada, vítima consciente e orientada." {...field} /></FormControl><FormMessage /></FormItem>)}/>
                     </AccordionContent>
                 </AccordionItem>
 
@@ -744,14 +831,14 @@ export default function QudResgatePage() {
                              <FormField control={form.control} name="removidoPorTerceiros" render={({ field }) => (<FormItem><FormLabel>Removido por</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="COBOM">COBOM</SelectItem><SelectItem value="SAMU">SAMU</SelectItem><SelectItem value="OUTROS">Outros</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
                         )}
                          {form.watch('conduta') === 'removido_hospital' && (
-                            <FormField control={form.control} name="removidoHospital" render={({ field }) => (<FormItem><FormLabel>Unidade Hospitalar</FormLabel><FormControl><Input placeholder="Ex: Santa Casa" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                            <FormField control={form.control} name="removidoHospital" render={({ field }) => (<FormItem><FormLabel>Unidade Hospitalar</FormLabel><FormControl><Input placeholder="Ex: Santa Casa de Misericórdia" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          )}
                         <RadioGroupField control={form.control} name="codigoConduta" label="Código" options={[
                             {value: 'vermelho', label: 'Vermelho'}, {value: 'amarelo', label: 'Amarelo'},
                             {value: 'verde', label: 'Verde'}, {value: 'azul', label: 'Azul'}, {value: 'preto', label: 'Preto'}
                         ]} orientation="horizontal" />
-                         <FormField control={form.control} name="medicoReguladorConduta" render={({ field }) => (<FormItem><FormLabel>Médico Regulador/Intervencionista</FormLabel><FormControl><Input placeholder="Ex: Dr. House" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                         <FormField control={form.control} name="medicoReceptor" render={({ field }) => (<FormItem><FormLabel>Médico Receptor</FormLabel><FormControl><Input placeholder="Ex: Dra. Grey" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                         <FormField control={form.control} name="medicoReguladorConduta" render={({ field }) => (<FormItem><FormLabel>Médico Regulador/Intervencionista</FormLabel><FormControl><Input placeholder="Ex: Dr. Gregory House" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                         <FormField control={form.control} name="medicoReceptor" render={({ field }) => (<FormItem><FormLabel>Médico Receptor</FormLabel><FormControl><Input placeholder="Ex: Dra. Meredith Grey" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          
                          <Card>
                             <CardHeader>
@@ -760,7 +847,7 @@ export default function QudResgatePage() {
                             <CardContent className="space-y-4 pt-6">
                                 {materialFields.map((item, index) => (
                                 <div key={item.id} className="flex items-end gap-2 p-2 border rounded-lg relative md:gap-4 md:p-4">
-                                    <div className="grid grid-cols-1 gap-4 flex-1">
+                                    <div className="grid grid-cols-1 gap-4 flex-1 md:grid-cols-1 md:w-full">
                                         <FormField
                                             control={form.control}
                                             name={`materiais.${index}.nome`}
@@ -811,9 +898,9 @@ export default function QudResgatePage() {
                             </CardContent>
                           </Card>
                          <FormField control={form.control} name="relatorioObservacoes" render={({ field }) => (<FormItem><FormLabel>Relatório/Observações</FormLabel><FormControl><Textarea rows={5} placeholder="Descreva o relatório e observações aqui..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                         <FormField control={form.control} name="rolValores" render={({ field }) => (<FormItem><FormLabel>Rol de Valores/Pertences</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Celular, carteira, R$ 50,00" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                         <FormField control={form.control} name="rolValores" render={({ field }) => (<FormItem><FormLabel>Rol de Valores/Pertences</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Celular, carteira com documentos e R$ 50,00" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          <FormField control={form.control} name="responsavelValores" render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input placeholder="Nome do responsável" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                         <FormField control={form.control} name="equipamentosRetidos" render={({ field }) => (<FormItem><FormLabel>Equipamentos/Materiais Retidos</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Colar cervical, prancha rígida" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                         <FormField control={form.control} name="equipamentosRetidos" render={({ field }) => (<FormItem><FormLabel>Equipamentos/Materiais Retidos</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Colar cervical, prancha rígida..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          <FormField control={form.control} name="responsavelEquipamentos" render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input placeholder="Nome do responsável" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                     </AccordionContent>
                  </AccordionItem>
@@ -848,6 +935,7 @@ export default function QudResgatePage() {
           <Button type="submit" size="lg" className="w-full">Gerar Relatório</Button>
         </form>
       </Form>
+      <PreviewDialog data={previewData} onClose={() => setPreviewData(null)} onSave={handleSave} formTitle="QUD RESGATE" />
     </div>
   );
 }
