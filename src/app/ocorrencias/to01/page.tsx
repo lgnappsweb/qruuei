@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFieldArray } from 'react-hook-form';
 import * as z from 'zod';
 import Link from 'next/link';
-import { ArrowLeft, PlusCircle, Trash2 } from 'lucide-react';
+import { ArrowLeft, PlusCircle, Share2, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import * as React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -167,11 +167,62 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
   const occurrenceCode = formTitle.match(/\(([^)]+)\)/)?.[1] || formTitle.split(' ')[0] || "Relatório";
 
+  const handleShare = () => {
+    let text = `*${formTitle.toUpperCase()}*\n\n`;
+    if (numeroOcorrencia) {
+      text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n\n`;
+    }
+
+    const formatSectionForShare = (sectionTitle: string, fields: object) => {
+      let sectionText = '';
+      for (const [key, value] of Object.entries(fields)) {
+        if ((key === 'vtrApoioDescricao' && !data.vtrApoio) || (key === 'danoPatrimonioDescricao' && !data.danoPatrimonio)) continue;
+
+        const processedValue = renderSimpleValue(value);
+        if (processedValue && processedValue !== 'NILL' && processedValue !== '') {
+          sectionText += `*${formatLabel(key).toUpperCase()}:* ${processedValue}\n`;
+        }
+      }
+      if (sectionText) {
+        text += `*${sectionTitle.toUpperCase()}*\n${sectionText}\n`;
+      }
+    };
+
+    const generalFields = {
+      rodovia: data.rodovia,
+      ocorrencia: data.ocorrencia,
+      tipoPanes: data.tipoPanes,
+      qth: data.qth,
+      sentido: data.sentido,
+      localArea: data.localArea,
+    };
+    formatSectionForShare('Informações Gerais', generalFields);
+
+    if (Array.isArray(data.vehicles) && data.vehicles.length > 0) {
+      data.vehicles.forEach((vehicle, index) => {
+        formatSectionForShare(`Dados do Veículo ${index + 1}`, vehicle);
+      });
+    }
+
+    const otherFields = {
+      vtrApoio: data.vtrApoio,
+      vtrApoioDescricao: data.vtrApoioDescricao,
+      danoPatrimonio: data.danoPatrimonio,
+      danoPatrimonioDescricao: data.danoPatrimonioDescricao,
+      observacoes: data.observacoes,
+      auxilios: data.auxilios,
+    };
+    formatSectionForShare('Outras Informações', otherFields);
+
+    const encodedText = encodeURIComponent(text.trim());
+    window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
+  };
+
   return (
     <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
         <DialogHeader className="text-center pt-6">
-          <DialogTitle className="text-3xl font-bold">{`Pré-visualização (${occurrenceCode})`}</DialogTitle>
+          <DialogTitle className="text-3xl font-bold text-center">{`Pré-visualização (${occurrenceCode})`}</DialogTitle>
           <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
         </DialogHeader>
         <ScrollArea className="flex-1 pr-6 -mr-6 mt-4">
@@ -179,16 +230,13 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                 <Card>
                     <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
                     <CardContent className="pt-6 space-y-4 text-xl">
-                        <Field label="rodovia" value={data.rodovia} />
-                        <Field label="ocorrencia" value={data.ocorrencia} />
-                        <Field label="tipoPanes" value={data.tipoPanes} />
-                        <Field label="qth" value={data.qth} />
-                        <Field label="sentido" value={data.sentido} />
-                        <Field label="localArea" value={data.localArea} />
+                       {Object.entries({rodovia: data.rodovia, ocorrencia: data.ocorrencia, tipoPanes: data.tipoPanes, qth: data.qth, sentido: data.sentido, localArea: data.localArea}).map(([key, value]) => (
+                          <Field key={key} label={key} value={value} />
+                        ))}
                     </CardContent>
                 </Card>
 
-                {Array.isArray(data.vehicles) && data.vehicles.length > 0 && data.vehicles.map((vehicle: any, index: number) => (
+                {data.vehicles && Array.isArray(data.vehicles) && data.vehicles.map((vehicle: any, index: number) => (
                     <Card key={index} className="mt-6">
                         <CardHeader><CardTitle>Dados do Veículo {index + 1}</CardTitle></CardHeader>
                         <CardContent className="pt-6 space-y-4 text-xl">
@@ -224,8 +272,12 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                 </Card>
             </div>
         </ScrollArea>
-        <DialogFooter className="mt-4 pt-4 border-t">
+        <DialogFooter className="mt-4 flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4 border-t">
           <Button variant="outline" onClick={onClose}>Editar</Button>
+          <Button onClick={handleShare} className="bg-green-600 hover:bg-green-700">
+            <Share2 className="mr-2 h-5 w-5"/>
+            Compartilhar
+          </Button>
           <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
         </DialogFooter>
       </DialogContent>
