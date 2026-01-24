@@ -6,7 +6,7 @@ import * as z from 'zod';
 import Link from 'next/link';
 import { ArrowLeft, PlusCircle, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-
+import * as React from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -39,6 +39,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const auxilios = [
   { id: 'PR01', label: 'PR01 - Atendimento inicial' },
@@ -86,11 +88,11 @@ const vehicleSchema = z.object({
 });
 
 const formSchema = z.object({
-  rodovia: z.string().min(1, 'Selecione a rodovia.'),
-  ocorrencia: z.string(),
-  qth: z.string().min(1, 'O QTH é obrigatório.'),
-  sentido: z.string().min(1, 'Selecione o sentido.'),
-  localArea: z.string().min(1, 'Selecione o local/área.'),
+  rodovia: z.string().optional(),
+  ocorrencia: z.string().optional(),
+  qth: z.string().optional(),
+  sentido: z.string().optional(),
+  localArea: z.string().optional(),
   vehicles: z.array(vehicleSchema).optional(),
   vtrApoio: z.boolean().default(false),
   vtrApoioDescricao: z.string().optional(),
@@ -100,8 +102,134 @@ const formSchema = z.object({
   auxilios: z.string().optional(),
 });
 
+
+const fillEmptyWithNill = (data: any): any => {
+    if (Array.isArray(data)) {
+        if (data.length === 0) return 'NILL';
+        return data.map(item => fillEmptyWithNill(item));
+    }
+    if (data && typeof data === 'object') {
+        const newObj: {[key: string]: any} = {};
+        Object.keys(data).forEach(key => {
+            newObj[key] = fillEmptyWithNill(data[key]);
+        });
+        return newObj;
+    }
+    if (data === '' || data === undefined || data === null) {
+        return 'NILL';
+    }
+    return data;
+};
+
+const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null; onClose: () => void; onSave: (data: any) => void; formTitle: string; }) => {
+  const [numeroOcorrencia, setNumeroOcorrencia] = React.useState('');
+  if (!data) return null;
+
+  const handleSaveClick = () => {
+    const dataToSave = {
+        ...data,
+        numeroOcorrencia: numeroOcorrencia || 'NILL',
+    };
+    onSave(dataToSave);
+  };
+
+  const formatLabel = (key: string) => {
+    const result = key.replace(/([A-Z])/g, " $1");
+    return result.charAt(0).toUpperCase() + result.slice(1);
+  };
+
+  const renderSimpleValue = (value: any): string => {
+     if (typeof value === 'boolean') {
+      return value ? 'SIM' : 'NÃO';
+    }
+    if (Array.isArray(value)) {
+        if (value.length === 0) return 'NILL';
+        return value.join(', ').toUpperCase();
+    }
+    return String(value).toUpperCase();
+  }
+
+  const Field = ({ label, value }: { label: string, value: any}) => (
+    value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
+      <div className="flex flex-col sm:flex-row sm:items-start">
+          <div className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</div>
+          <div className="text-foreground font-mono break-words uppercase flex-1">{renderSimpleValue(value)}</div>
+      </div>
+    ) : null
+  );
+
+  const occurrenceCode = formTitle.match(/\(([^)]+)\)/)?.[1] || formTitle.split(' ')[0] || "Relatório";
+
+  return (
+    <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+        <DialogHeader className="text-center pt-6">
+          <DialogTitle className="text-3xl font-bold">{`Pré-visualização (${occurrenceCode})`}</DialogTitle>
+          <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
+        </DialogHeader>
+        <ScrollArea className="flex-1 pr-6 -mr-6 mt-4">
+            <div className="space-y-6">
+                <Card>
+                    <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
+                    <CardContent className="text-xl space-y-4">
+                        <Field label="rodovia" value={data.rodovia} />
+                        <Field label="ocorrencia" value={data.ocorrencia} />
+                        <Field label="qth" value={data.qth} />
+                        <Field label="sentido" value={data.sentido} />
+                        <Field label="localArea" value={data.localArea} />
+                    </CardContent>
+                </Card>
+
+                {data.vehicles && data.vehicles.length > 0 && data.vehicles.map((vehicle: any, index: number) => (
+                    <Card key={index} className="mt-6">
+                        <CardHeader><CardTitle>Dados do Veículo {index + 1}</CardTitle></CardHeader>
+                        <CardContent className="text-xl space-y-4">
+                            {Object.entries(vehicle).map(([key, value]) => <Field key={key} label={key} value={value} />)}
+                        </CardContent>
+                    </Card>
+                ))}
+
+                <Card className="mt-6">
+                    <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
+                    <CardContent className="text-xl space-y-4">
+                        <Field label="vtrApoio" value={data.vtrApoio} />
+                        {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
+                        <Field label="danoPatrimonio" value={data.danoPatrimonio} />
+                        {data.danoPatrimonio && <Field label="danoPatrimonioDescricao" value={data.danoPatrimonioDescricao} />}
+                        <Field label="observacoes" value={data.observacoes} />
+                        <Field label="auxilios" value={data.auxilios} />
+                    </CardContent>
+                </Card>
+
+                <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
+                    <CardHeader>
+                        <CardTitle className="text-primary text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Input
+                            value={numeroOcorrencia}
+                            onChange={(e) => setNumeroOcorrencia(e.target.value.toUpperCase())}
+                            placeholder="INSIRA O NÚMERO DA OCORRÊNCIA"
+                            className="text-center text-2xl font-bold h-16 bg-background border-primary focus-visible:ring-primary"
+                        />
+                    </CardContent>
+                </Card>
+            </div>
+        </ScrollArea>
+        <DialogFooter className="mt-4 pt-4 border-t">
+          <Button variant="outline" onClick={onClose}>Editar</Button>
+          <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+
 export default function OcorrenciaTO15FaixaDeDominioPage() {
   const { toast } = useToast();
+  const [previewData, setPreviewData] = React.useState<z.infer<typeof formSchema> | null>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -126,11 +254,17 @@ export default function OcorrenciaTO15FaixaDeDominioPage() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    const processedValues = fillEmptyWithNill(values);
+    setPreviewData(processedValues);
+  }
+
+  function handleSave(data: z.infer<typeof formSchema>) {
+    console.log("Saving data:", data);
     toast({
       title: 'Formulário Enviado',
       description: 'Ocorrência TO15 registrada com sucesso!',
     });
+    setPreviewData(null);
   }
 
   return (
@@ -509,6 +643,7 @@ export default function OcorrenciaTO15FaixaDeDominioPage() {
           <Button type="submit" size="lg" className="w-full">Gerar Relatório</Button>
         </form>
       </Form>
+       <PreviewDialog data={previewData} onClose={() => setPreviewData(null)} onSave={handleSave} formTitle="VERIFICAÇÃO FAIXA DE DOMÍNIO (TO15)" />
     </div>
   );
 }

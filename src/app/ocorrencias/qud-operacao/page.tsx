@@ -107,12 +107,12 @@ const vehicleSchema = z.object({
 });
 
 const formSchema = z.object({
-  rodovia: z.string().min(1, 'Selecione a rodovia.'),
-  ocorrencia: z.string().min(1, "Selecione a ocorrência."),
+  rodovia: z.string().optional(),
+  ocorrencia: z.string().optional(),
   tipoPanes: z.array(z.string()).optional(),
-  qth: z.string().min(1, 'O QTH é obrigatório.'),
-  sentido: z.string().min(1, 'Selecione o sentido.'),
-  localArea: z.string().min(1, 'Selecione o local/área.'),
+  qth: z.string().optional(),
+  sentido: z.string().optional(),
+  localArea: z.string().optional(),
   vehicles: z.array(vehicleSchema).optional(),
   vtrApoio: z.boolean().default(false),
   vtrApoioDescricao: z.string().optional(),
@@ -174,10 +174,10 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
   const Field = ({ label, value }: { label: string, value: any}) => (
     value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
-      <div className="flex items-baseline">
-          <div className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</div>
-          <div className="text-foreground font-mono break-words uppercase">{renderSimpleValue(value)}</div>
-      </div>
+        <div className="flex flex-col sm:flex-row sm:items-start">
+            <div className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</div>
+            <div className="text-foreground font-mono break-words uppercase flex-1">{renderSimpleValue(value)}</div>
+        </div>
     ) : null
   );
 
@@ -194,40 +194,34 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
             <div className="space-y-6">
                 <Card>
                     <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
-                    <CardContent>
-                        <div className="space-y-4 text-xl">
-                            <Field label="rodovia" value={data.rodovia} />
-                            <Field label="ocorrencia" value={data.ocorrencia} />
-                            <Field label="tipoPanes" value={data.tipoPanes} />
-                            <Field label="qth" value={data.qth} />
-                            <Field label="sentido" value={data.sentido} />
-                            <Field label="localArea" value={data.localArea} />
-                        </div>
+                    <CardContent className="text-xl space-y-4">
+                        <Field label="rodovia" value={data.rodovia} />
+                        <Field label="ocorrencia" value={data.ocorrencia} />
+                        <Field label="tipoPanes" value={data.tipoPanes} />
+                        <Field label="qth" value={data.qth} />
+                        <Field label="sentido" value={data.sentido} />
+                        <Field label="localArea" value={data.localArea} />
                     </CardContent>
                 </Card>
 
                 {data.vehicles && data.vehicles.length > 0 && data.vehicles.map((vehicle: any, index: number) => (
-                    <Card key={index}>
+                    <Card key={index} className="mt-6">
                         <CardHeader><CardTitle>Dados do Veículo {index + 1}</CardTitle></CardHeader>
-                        <CardContent>
-                            <div className="space-y-4 text-xl">
-                                {Object.entries(vehicle).map(([key, value]) => <Field key={key} label={key} value={value} />)}
-                            </div>
+                        <CardContent className="text-xl space-y-4">
+                            {Object.entries(vehicle).map(([key, value]) => <Field key={key} label={key} value={value} />)}
                         </CardContent>
                     </Card>
                 ))}
 
-                <Card>
+                <Card className="mt-6">
                     <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
-                    <CardContent>
-                        <div className="space-y-4 text-xl">
-                            <Field label="vtrApoio" value={data.vtrApoio} />
-                            {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
-                            <Field label="danoPatrimonio" value={data.danoPatrimonio} />
-                            {data.danoPatrimonio && <Field label="danoPatrimonioDescricao" value={data.danoPatrimonioDescricao} />}
-                            <Field label="observacoes" value={data.observacoes} />
-                            <Field label="auxilios" value={data.auxilios} />
-                        </div>
+                    <CardContent className="text-xl space-y-4">
+                        <Field label="vtrApoio" value={data.vtrApoio} />
+                        {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
+                        <Field label="danoPatrimonio" value={data.danoPatrimonio} />
+                        {data.danoPatrimonio && <Field label="danoPatrimonioDescricao" value={data.danoPatrimonioDescricao} />}
+                        <Field label="observacoes" value={data.observacoes} />
+                        <Field label="auxilios" value={data.auxilios} />
                     </CardContent>
                 </Card>
 
@@ -394,7 +388,10 @@ export default function QudOperacaoPage() {
                                               field.onChange(newValue);
                                           }}
                                           className="text-xl"
-                                          onSelect={(e) => e.preventDefault()}
+                                          onSelect={(e) => {
+                                            e.preventDefault();
+                                            (e.currentTarget as HTMLDivElement).parentElement?.parentElement?.dispatchEvent(new Event('mouseleave'));
+                                          }}
                                       >
                                           {item.label}
                                       </DropdownMenuCheckboxItem>

@@ -53,15 +53,15 @@ const auxilios = [
 
 const formSchema = z.object({
   // Informações Gerais
-  rodovia: z.string().min(1, 'Selecione a rodovia.'),
-  ocorrencia: z.string(),
-  qth: z.string().min(1, 'O QTH é obrigatório.'),
-  sentido: z.string().min(1, 'Selecione o sentido.'),
-  localArea: z.string().min(1, 'Selecione o local/área.'),
+  rodovia: z.string().optional(),
+  ocorrencia: z.string().optional(),
+  qth: z.string().optional(),
+  sentido: z.string().optional(),
+  localArea: z.string().optional(),
   qthInicio: z.string().optional(),
   qthTermino: z.string().optional(),
   dimensoes: z.string().optional(),
-  quantidade: z.string().min(1, 'A quantidade é obrigatória.'),
+  quantidade: z.string().optional(),
 
   // Outras Informações
   vtrApoio: z.boolean().default(false),
@@ -109,49 +109,45 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
   const Field = ({ label, value }: { label: string, value: any}) => (
     value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
-      <>
-          <div className="font-semibold text-muted-foreground text-left">{formatLabel(label)}:</div>
-          <div className="text-foreground break-words font-mono uppercase">{renderSimpleValue(value)}</div>
-      </>
+      <div className="flex flex-col sm:flex-row sm:items-start">
+          <div className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</div>
+          <div className="text-foreground font-mono break-words uppercase flex-1">{renderSimpleValue(value)}</div>
+      </div>
     ) : null
   );
-
+  
   const occurrenceCode = formTitle.match(/\(([^)]+)\)/)?.[1] || formTitle.split(' ')[0] || "Relatório";
 
   return (
     <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
-        <DialogHeader className="text-center">
+        <DialogHeader className="text-center pt-6">
           <DialogTitle className="text-3xl font-bold">Pré-visualização ({occurrenceCode})</DialogTitle>
           <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-1 pr-6 -mr-6">
+        <ScrollArea className="flex-1 pr-6 -mr-6 mt-4">
             <div className="space-y-6">
                 <Card>
                     <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
-                    <CardContent>
-                        <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
-                            <Field label="rodovia" value={data.rodovia} />
-                            <Field label="ocorrencia" value={data.ocorrencia} />
-                            <Field label="qth" value={data.qth} />
-                            <Field label="sentido" value={data.sentido} />
-                            <Field label="localArea" value={data.localArea} />
-                            <Field label="qthInicio" value={data.qthInicio} />
-                            <Field label="qthTermino" value={data.qthTermino} />
-                            <Field label="dimensoes" value={data.dimensoes} />
-                            <Field label="quantidade" value={data.quantidade} />
-                        </div>
+                    <CardContent className="text-xl space-y-4">
+                        <Field label="rodovia" value={data.rodovia} />
+                        <Field label="ocorrencia" value={data.ocorrencia} />
+                        <Field label="qth" value={data.qth} />
+                        <Field label="sentido" value={data.sentido} />
+                        <Field label="localArea" value={data.localArea} />
+                        <Field label="qthInicio" value={data.qthInicio} />
+                        <Field label="qthTermino" value={data.qthTermino} />
+                        <Field label="dimensoes" value={data.dimensoes} />
+                        <Field label="quantidade" value={data.quantidade} />
                     </CardContent>
                 </Card>
-                <Card>
+                <Card className="mt-6">
                     <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
-                    <CardContent>
-                        <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
-                            <Field label="vtrApoio" value={data.vtrApoio} />
-                            {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
-                            <Field label="observacoes" value={data.observacoes} />
-                            <Field label="auxilios" value={data.auxilios} />
-                        </div>
+                    <CardContent className="text-xl space-y-4">
+                        <Field label="vtrApoio" value={data.vtrApoio} />
+                        {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
+                        <Field label="observacoes" value={data.observacoes} />
+                        <Field label="auxilios" value={data.auxilios} />
                     </CardContent>
                 </Card>
             </div>
