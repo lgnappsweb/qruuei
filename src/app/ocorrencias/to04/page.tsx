@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { ArrowLeft, PlusCircle, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import * as React from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -125,6 +126,7 @@ const fillEmptyWithNill = (data: any): any => {
 
 const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null; onClose: () => void; onSave: (data: any) => void; formTitle: string; }) => {
     const [numeroOcorrencia, setNumeroOcorrencia] = React.useState('');
+    const isMobile = useIsMobile();
   if (!data) return null;
 
   const handleSaveClick = () => {
@@ -154,8 +156,8 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
   const Field = ({ label, value }: { label: string, value: any}) => (
     value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
       <div className="flex flex-col sm:flex-row sm:items-start">
-        <span className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</span>
-        <span className="text-foreground font-mono break-words uppercase flex-1 text-left">{renderSimpleValue(value)}</span>
+        <div className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</div>
+        <div className="text-foreground font-mono break-words uppercase flex-1 text-left">{renderSimpleValue(value)}</div>
       </div>
     ) : null
   );
@@ -173,7 +175,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
             <div className="space-y-6">
                 <Card>
                     <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
-                    <CardContent className="text-xl space-y-4">
+                    <CardContent className="pt-6 space-y-4 text-xl">
                         <Field label="rodovia" value={data.rodovia} />
                         <Field label="ocorrencia" value={data.ocorrencia} />
                         <Field label="tipoPanes" value={data.tipoPanes} />
@@ -186,7 +188,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                 {data.vehicles && Array.isArray(data.vehicles) && data.vehicles.map((vehicle: any, index: number) => (
                     <Card key={index} className="mt-6">
                         <CardHeader><CardTitle>Dados do Veículo {index + 1}</CardTitle></CardHeader>
-                        <CardContent className="text-xl space-y-4">
+                        <CardContent className="pt-6 space-y-4 text-xl">
                             {Object.entries(vehicle).map(([key, value]) => <Field key={key} label={key} value={value} />)}
                         </CardContent>
                     </Card>
@@ -194,7 +196,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
                 <Card className="mt-6">
                     <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
-                    <CardContent className="text-xl space-y-4">
+                    <CardContent className="pt-6 space-y-4 text-xl">
                         <Field label="vtrApoio" value={data.vtrApoio} />
                         {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
                         <Field label="danoPatrimonio" value={data.danoPatrimonio} />
@@ -205,13 +207,13 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                 </Card>
                  <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
                     <CardHeader>
-                        <CardTitle className="text-foreground text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
+                        <CardTitle className="text-white text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <Input
                             value={numeroOcorrencia}
                             onChange={(e) => setNumeroOcorrencia(e.target.value.toUpperCase())}
-                            placeholder="INSIRA O NÚMERO DA OCORRÊNCIA"
+                            placeholder={isMobile ? 'INSIRA O NÚMERO' : 'INSIRA O NÚMERO DA OCORRÊNCIA'}
                             className="text-center text-2xl font-bold h-16 bg-background border-primary focus-visible:ring-primary"
                         />
                     </CardContent>

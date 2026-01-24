@@ -225,8 +225,8 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     const Field = ({ label, value }: { label: string, value: any}) => (
       value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
          <div className="flex flex-col sm:flex-row sm:items-start">
-            <span className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</span>
-            <span className="text-foreground font-mono break-words uppercase flex-1 text-left">{renderSimpleValue(value)}</span>
+            <div className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</div>
+            <div className="text-foreground font-mono break-words uppercase flex-1 text-left">{renderSimpleValue(value)}</div>
         </div>
       ) : null
     );
@@ -302,7 +302,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                                 <Input
                                     value={numeroOcorrencia}
                                     onChange={(e) => setNumeroOcorrencia(e.target.value.toUpperCase())}
-                                    placeholder={isMobile ? 'insira o numero' : 'INSIRA O NÚMERO DA OCORRÊNCIA'}
+                                    placeholder={isMobile ? 'INSIRA O NÚMERO' : 'INSIRA O NÚMERO DA OCORRÊNCIA'}
                                     className="text-center text-2xl font-bold h-16 bg-background border-primary focus-visible:ring-primary"
                                 />
                             </CardContent>
