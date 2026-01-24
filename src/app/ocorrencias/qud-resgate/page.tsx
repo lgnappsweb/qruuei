@@ -192,62 +192,105 @@ const fillEmptyWithNill = (data: any): any => {
 };
 
 const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null; onClose: () => void; onSave: (data: any) => void; formTitle: string; }) => {
-  if (!data) return null;
+    if (!data) return null;
 
-  const formatLabel = (key: string) => {
-    const result = key.replace(/([A-Z])/g, " $1");
-    return result.charAt(0).toUpperCase() + result.slice(1);
-  };
+    const formatLabel = (key: string) => {
+        const result = key.replace(/([A-Z])/g, " $1");
+        return result.charAt(0).toUpperCase() + result.slice(1);
+    };
 
-  const renderValue = (value: any): React.ReactNode => {
-    if (typeof value === 'boolean') {
-      return value ? 'Sim' : 'Não';
+    const renderSimpleValue = (value: any): string => {
+        if (typeof value === 'boolean') {
+        return value ? 'SIM' : 'NÃO';
+        }
+        if (Array.isArray(value)) {
+            if (value.length === 0) return 'NILL';
+            return value.join(', ').toUpperCase();
+        }
+        return String(value).toUpperCase();
     }
-    if (Array.isArray(value)) {
-      if (value.length === 0) return 'NILL';
-      const isObjectArray = typeof value[0] === 'object' && value[0] !== null;
-      if (isObjectArray) {
-        return value.map((item, index) => (
-          <div key={index} className="mt-2 pl-4 border-l">
-            <h4 className="font-semibold text-md mb-1">Item {index + 1}</h4>
-            {Object.entries(item).map(([k, v]) => (
-              <div key={k}>
-                <span className="font-semibold text-muted-foreground">{formatLabel(k)}: </span>
-                {renderValue(v)}
-              </div>
-            ))}
-          </div>
-        ));
-      }
-      return value.join(', ');
-    }
-    return String(value);
-  }
 
-  return (
-    <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
-        <DialogHeader>
-          <DialogTitle>Pré-visualização: {formTitle}</DialogTitle>
-          <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
-        </DialogHeader>
-        <ScrollArea className="flex-1 pr-6 -mr-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-base">
-                {Object.entries(data).map(([key, value]) => (
-                    <div key={key} className="flex flex-col">
-                        <span className="font-semibold text-muted-foreground">{formatLabel(key)}</span>
-                        <div className="text-foreground break-words">{renderValue(value)}</div>
+    const Field = ({ label, value }: { label: string, value: any}) => (
+        value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
+            <>
+                <div className="font-semibold text-muted-foreground text-left">{formatLabel(label)}:</div>
+                <div className="text-foreground break-words font-mono uppercase">{renderSimpleValue(value)}</div>
+            </>
+        ) : null
+    );
+
+    const MaterialItem = ({ item, index }: { item: any, index: number }) => (
+        <Card key={index} className="mt-4">
+            <CardHeader><CardTitle>Material {index + 1}</CardTitle></CardHeader>
+            <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-xl">
+                    <Field label="nome" value={item.nome} />
+                    <Field label="quantidade" value={item.quantidade} />
+                </div>
+            </CardContent>
+        </Card>
+    )
+
+    const occurrenceCode = formTitle.match(/\(([^)]+)\)/)?.[1] || formTitle.split(' ')[0] || "Relatório";
+
+    const sections: {title: string, fields: (keyof FormValues)[]}[] = [
+        { title: "Dados Operacionais", fields: ['equipe', 'medicoRegulador', 'data', 'condutor', 'resgatista1', 'resgatista2', 'acionamento', 'chegadaLocal', 'numOcorrencia', 'rodovia', 'km', 'sentido', 'saidaLocal', 'saidaHospital', 'chegadaHospital', 'chegadaBSO']},
+        { title: "Dados Cadastrais do Usuário", fields: ['nomeUsuario', 'sexo', 'idade', 'dn', 'tel', 'cpf', 'rg', 'endereco', 'acompanhante', 'posicaoVeiculo']},
+        { title: "Evento e Cinemática", fields: ['tipoEvento', 'eventoTrauma', 'eventoTraumaOutros', 'eventoClinico', 'eventoClinicoOutros', 'condicoesSeguranca', 'condicoesSegurancaOutros', 'cinematicaVeiculo', 'cinematicaPlaca', 'condicaoInicial']},
+        { title: "Avaliação Primária (XABCDE)", fields: ['hemorragiaExsanguinante', 'viasAereas', 'viasAereasObstruidasPor', 'ventilacao', 'detalhesVentilacao', 'pulso', 'pele', 'perfusao', 'sangramentoAtivo', 'glasgowInicial', 'pupilas', 'fotorreagentes', 'exposicao', 'hipotermia', 'lesoesAparentes']},
+        { title: "Avaliação Secundária e Sinais Vitais", fields: ['alergias', 'medicamentosEmUso', 'comorbidades', 'ultimaRefeicao', 'sinaisVitaisPA', 'sinaisVitaisFC', 'sinaisVitaisFR', 'sinaisVitaisSatO2', 'sinaisVitaisTAX', 'sinaisVitaisDXT', 'avaliacaoCraniocaudal']},
+        { title: "Glasgow e Procedimentos", fields: ['glasgowOcular', 'glasgowVerbal', 'glasgowMotora', 'imobilizacao', 'pranchamento', 'procedimentos', 'procedimentosOutros']},
+        { title: "Desfecho e Observações", fields: ['rolValores', 'responsavelValores', 'equipamentosRetidos', 'responsavelEquipamentos', 'conduta', 'removidoPorTerceiros', 'removidoHospital', 'medicoReguladorConduta', 'codigoConduta', 'medicoReceptor', 'relatorioObservacoes']},
+    ];
+
+    const termoRecusaFields = ['termoRecusaNome', 'termoRecusaCPF', 'termoRecusaRG', 'termoRecusaEndereco', 'termoRecusaResponsavelPor', 'termoRecusaParentesco', 'termoRecusaTestemunha1', 'termoRecusaTestemunha2'];
+
+    return (
+        <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
+            <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+                <DialogHeader className="text-center">
+                    <DialogTitle className="text-3xl">Pré-visualização ({occurrenceCode})</DialogTitle>
+                    <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
+                </DialogHeader>
+                <ScrollArea className="flex-1 pr-6 -mr-6">
+                    <div className="space-y-4">
+                        {sections.map(section => (
+                            <Card key={section.title}>
+                                <CardHeader><CardTitle>{section.title}</CardTitle></CardHeader>
+                                <CardContent>
+                                    <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-xl">
+                                        {section.fields.map(key => <Field key={String(key)} label={String(key)} value={data[key]} />)}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+
+                        { (data.conduta === 'recusa_atendimento' || data.conduta === 'recusa_remocao') &&
+                            <Card className="border-destructive">
+                                <CardHeader><CardTitle className="text-destructive">Termo de Recusa</CardTitle></CardHeader>
+                                <CardContent>
+                                    <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-xl">
+                                        {termoRecusaFields.map(key => <Field key={key} label={key} value={data[key]} />)}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        }
+
+                        {data.materiais && data.materiais.length > 0 && data.materiais[0] !== "NILL" && (
+                            <Card>
+                                <CardHeader><CardTitle>Consumo de Materiais</CardTitle></CardHeader>
+                                <CardContent>{data.materiais.map((item: any, index: number) => <MaterialItem key={index} item={item} index={index} />)}</CardContent>
+                            </Card>
+                        )}
                     </div>
-                ))}
-            </div>
-        </ScrollArea>
-        <DialogFooter className="mt-4 pt-4 border-t">
-          <Button variant="outline" onClick={onClose}>Editar</Button>
-          <Button onClick={() => onSave(data)}>Confirmar e Salvar</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
+                </ScrollArea>
+                <DialogFooter className="mt-4 pt-4 border-t">
+                    <Button variant="outline" onClick={onClose}>Editar</Button>
+                    <Button onClick={() => onSave(data)}>Confirmar e Salvar</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    );
 };
 
 
@@ -850,7 +893,7 @@ export default function QudResgatePage() {
                             <CardContent className="space-y-4 pt-6">
                                 {materialFields.map((item, index) => (
                                 <div key={item.id} className="flex items-end gap-2 p-2 border rounded-lg relative md:gap-4 md:p-4">
-                                    <div className="grid grid-cols-1 gap-4 flex-1 md:w-full">
+                                    <div className="grid grid-cols-1 gap-4 flex-1">
                                         <FormField
                                             control={form.control}
                                             name={`materiais.${index}.nome`}
@@ -939,7 +982,7 @@ export default function QudResgatePage() {
           <Button type="submit" size="lg" className="w-full">Gerar Relatório</Button>
         </form>
       </Form>
-      <PreviewDialog data={previewData} onClose={() => setPreviewData(null)} onSave={handleSave} formTitle="ATENDIMENTO A FUNCIONÁRIO (TO16)" />
+      <PreviewDialog data={previewData} onClose={() => setPreviewData(null)} onSave={handleSave} formTitle="QUD RESGATE" />
     </div>
   );
 }
