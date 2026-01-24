@@ -666,10 +666,10 @@ export default function QudResgatePage() {
                         <Card>
                             <CardHeader><CardTitle>S.A.M.P.L.E.</CardTitle></CardHeader>
                             <CardContent className="space-y-4">
-                                <FormField control={form.control} name="alergias" render={({ field }) => (<FormItem><FormLabel>Alergias</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                <FormField control={form.control} name="medicamentosEmUso" render={({ field }) => (<FormItem><FormLabel>Medicamentos em Uso</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                <FormField control={form.control} name="comorbidades" render={({ field }) => (<FormItem><FormLabel>Comorbidades / Gestação</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                <FormField control={form.control} name="ultimaRefeicao" render={({ field }) => (<FormItem><FormLabel>Última Refeição / Jejum</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={form.control} name="alergias" render={({ field }) => (<FormItem><FormLabel>Alergias</FormLabel><FormControl><Input placeholder="Nega alergias / Dipirona" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={form.control} name="medicamentosEmUso" render={({ field }) => (<FormItem><FormLabel>Medicamentos em Uso</FormLabel><FormControl><Input placeholder="Nega uso / Losartana" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={form.control} name="comorbidades" render={({ field }) => (<FormItem><FormLabel>Comorbidades / Gestação</FormLabel><FormControl><Input placeholder="Nega comorbidades / HAS" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={form.control} name="ultimaRefeicao" render={({ field }) => (<FormItem><FormLabel>Última Refeição / Jejum</FormLabel><FormControl><Input placeholder="Há 2 horas" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                             </CardContent>
                         </Card>
                         <Card>
