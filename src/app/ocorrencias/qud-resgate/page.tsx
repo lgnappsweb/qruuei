@@ -159,6 +159,9 @@ const formSchema = z.object({
   // MATERIAIS E OBSERVAÇÕES
   materiais: z.string().optional(),
   relatorioObservacoes: z.string().optional(),
+}).refine(data => data.tipoEvento !== undefined, {
+    message: "Selecione o tipo de evento.",
+    path: ["tipoEvento"],
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -559,9 +562,12 @@ export default function QudResgatePage() {
                                         { id: 'acidente', label: 'Acidente Automobilístico' },
                                         { id: 'queimadura', label: 'Queimadura' },
                                         { id: 'atropelamento', label: 'Atropelamento' },
-                                        { id: 'queda', label: 'Queda de Altura' }
+                                        { id: 'queda', label: 'Queda de Altura' },
+                                        { id: 'outros', label: 'Outros' }
                                     ]}/>
-                                    <FormField control={form.control} name="eventoTraumaOutros" render={({ field }) => (<FormItem><FormLabel>Outros (Trauma)</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                     {form.watch('eventoTrauma')?.includes('outros') &&
+                                        <FormField control={form.control} name="eventoTraumaOutros" render={({ field }) => (<FormItem><FormLabel>Outros (Trauma)</FormLabel><FormControl><Input placeholder="Descreva o trauma" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                     }
                                 </CardContent>
                             </Card>
                         )}
@@ -575,8 +581,11 @@ export default function QudResgatePage() {
                                         { id: 'parto', label: 'Assistência ao Parto' },
                                         { id: 'convulsao', label: 'Convulsão' },
                                         { id: 'psiquiatrico', label: 'Distúrbio Psiquiátrico' },
+                                        { id: 'outros', label: 'Outros' }
                                     ]}/>
-                                    <FormField control={form.control} name="eventoClinicoOutros" render={({ field }) => (<FormItem><FormLabel>Outros (Clínico)</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                    {form.watch('eventoClinico')?.includes('outros') &&
+                                        <FormField control={form.control} name="eventoClinicoOutros" render={({ field }) => (<FormItem><FormLabel>Outros (Clínico)</FormLabel><FormControl><Input placeholder="Descreva o atendimento" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                    }
                                 </CardContent>
                             </Card>
                         )}
@@ -586,11 +595,14 @@ export default function QudResgatePage() {
                             { id: 'cadeirinha', label: 'Cadeirinha' },
                             { id: 'airbag', label: 'Air Bag' },
                             { id: 'capacete', label: 'Capacete' },
+                            { id: 'outros', label: 'Outros' },
                         ]}/>
-                        <FormField control={form.control} name="condicoesSegurancaOutros" render={({ field }) => (<FormItem><FormLabel>Outras Condições</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        {form.watch('condicoesSeguranca')?.includes('outros') &&
+                            <FormField control={form.control} name="condicoesSegurancaOutros" render={({ field }) => (<FormItem><FormLabel>Outras Condições</FormLabel><FormControl><Input placeholder="Descreva outras condições" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        }
                         
                         <FormField control={form.control} name="cinematicaVeiculo" render={({ field }) => (<FormItem><FormLabel>Veículo (Cinemática)</FormLabel><FormControl><Input placeholder="Ex: Moto, Carro, Caminhão..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                        <FormField control={form.control} name="cinematicaPlaca" render={({ field }) => (<FormItem><FormLabel>Placa</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        <FormField control={form.control} name="cinematicaPlaca" render={({ field }) => (<FormItem><FormLabel>Placa</FormLabel><FormControl><Input placeholder="Ex: ABC-1234" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                         
                         <CheckboxGroupField control={form.control} name="condicaoInicial" label="Condição Inicial" options={[
                             { id: 'alerta', label: 'Alerta' },
