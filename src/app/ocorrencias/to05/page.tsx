@@ -4,7 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFieldArray } from 'react-hook-form';
 import * as z from 'zod';
 import Link from 'next/link';
-import { ArrowLeft, PlusCircle, Trash2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft, PlusCircle, Share2, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import * as React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -106,12 +107,11 @@ const formSchema = z.object({
 
 const fillEmptyWithNill = (data: any): any => {
     if (Array.isArray(data)) {
-        if (data.length === 0) return 'NILL';
-        // Check if it's an array of objects (vehicles)
+        if (data.length === 0 && !Object.keys(vehicleSchema.shape).includes(data.toString())) return 'NILL';
         if (typeof data[0] === 'object' && data[0] !== null) {
           return data.map(item => fillEmptyWithNill(item));
         }
-        return data; // Keep array of strings as is
+        return data;
     }
     if (data && typeof data === 'object') {
         const newObj: {[key: string]: any} = {};
@@ -166,6 +166,57 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
   const occurrenceCode = formTitle.match(/\(([^)]+)\)/)?.[1] || formTitle.split(' ')[0] || "Relatório";
 
+  const handleShare = () => {
+    let text = `*${formTitle.toUpperCase()}*\n\n`;
+    if (numeroOcorrencia) {
+      text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n\n`;
+    }
+
+    const formatSectionForShare = (sectionTitle: string, fields: object) => {
+      let sectionText = '';
+      for (const [key, value] of Object.entries(fields)) {
+        if ((key === 'vtrApoioDescricao' && !data.vtrApoio) || (key === 'danoPatrimonioDescricao' && !data.danoPatrimonio)) continue;
+
+        const processedValue = renderSimpleValue(value);
+        if (processedValue && processedValue !== 'NILL' && processedValue !== '') {
+          sectionText += `*${formatLabel(key).toUpperCase()}:* ${processedValue}\n`;
+        }
+      }
+      if (sectionText) {
+        text += `*${sectionTitle.toUpperCase()}*\n${sectionText}\n`;
+      }
+    };
+
+    const generalFields = {
+      rodovia: data.rodovia,
+      ocorrencia: data.ocorrencia,
+      tipoPanes: data.tipoPanes,
+      qth: data.qth,
+      sentido: data.sentido,
+      localArea: data.localArea,
+    };
+    formatSectionForShare('Informações Gerais', generalFields);
+
+    if (Array.isArray(data.vehicles) && data.vehicles.length > 0) {
+      data.vehicles.forEach((vehicle, index) => {
+        formatSectionForShare(`Dados do Veículo ${index + 1}`, vehicle);
+      });
+    }
+
+    const otherFields = {
+      vtrApoio: data.vtrApoio,
+      vtrApoioDescricao: data.vtrApoioDescricao,
+      danoPatrimonio: data.danoPatrimonio,
+      danoPatrimonioDescricao: data.danoPatrimonioDescricao,
+      observacoes: data.observacoes,
+      auxilios: data.auxilios,
+    };
+    formatSectionForShare('Outras Informações', otherFields);
+
+    const encodedText = encodeURIComponent(text.trim());
+    window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
+  };
+
   return (
     <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
@@ -187,7 +238,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                     </CardContent>
                 </Card>
 
-                {data.vehicles && Array.isArray(data.vehicles) && data.vehicles.map((vehicle: any, index: number) => (
+                {Array.isArray(data.vehicles) && data.vehicles.map((vehicle: any, index: number) => (
                     <Card key={index} className="mt-6">
                         <CardHeader><CardTitle>Dados do Veículo {index + 1}</CardTitle></CardHeader>
                         <CardContent className="pt-6 space-y-4 text-xl">
@@ -222,8 +273,11 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                 </Card>
             </div>
         </ScrollArea>
-        <DialogFooter className="mt-4 pt-4 border-t">
+        <DialogFooter className="mt-4 flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4 border-t">
           <Button variant="outline" onClick={onClose}>Editar</Button>
+          <Button onClick={handleShare} className="bg-green-600 hover:bg-green-700">
+            <Share2 className="mr-2 h-5 w-5"/> Compartilhar
+          </Button>
           <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
         </DialogFooter>
       </DialogContent>
@@ -234,7 +288,9 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
 export default function OcorrenciaTO05Page() {
   const { toast } = useToast();
+  const router = useRouter();
   const [previewData, setPreviewData] = React.useState<z.infer<typeof formSchema> | null>(null);
+  const [editingId, setEditingId] = React.useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -255,6 +311,53 @@ export default function OcorrenciaTO05Page() {
     },
   });
 
+  React.useEffect(() => {
+    try {
+        const editDataString = localStorage.getItem('editOcorrenciaData');
+        if (editDataString) {
+            const editData = JSON.parse(editDataString);
+            if(editData.formPath === '/ocorrencias/to05') {
+                const reportToLoad = editData.fullReport;
+                
+                const arrayFields = ['vehicles', 'tipoPanes'];
+                const booleanFields = ['vtrApoio', 'danoPatrimonio'];
+
+                Object.keys(reportToLoad).forEach(key => {
+                    if (reportToLoad[key] === 'NILL') {
+                        if (arrayFields.includes(key)) {
+                            reportToLoad[key] = [];
+                        } else if (booleanFields.includes(key)) {
+                            reportToLoad[key] = false;
+                        } else {
+                            reportToLoad[key] = '';
+                        }
+                    }
+                });
+
+                if(Array.isArray(reportToLoad.vehicles)) {
+                    reportToLoad.vehicles = reportToLoad.vehicles.map((vehicle: any) => {
+                        const newVehicle = {...vehicle};
+                        Object.keys(newVehicle).forEach(key => {
+                            if (newVehicle[key] === 'NILL') {
+                                newVehicle[key] = '';
+                            }
+                        });
+                        return newVehicle;
+                    });
+                }
+
+                form.reset(reportToLoad);
+                setEditingId(editData.id);
+                localStorage.removeItem('editOcorrenciaData');
+            }
+        }
+    } catch(e) {
+        console.error("Error reading edit data from localStorage", e);
+        localStorage.removeItem('editOcorrenciaData');
+    }
+  }, [form]);
+
+
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "vehicles",
@@ -265,13 +368,46 @@ export default function OcorrenciaTO05Page() {
     setPreviewData(processedValues);
   }
 
-  function handleSave(data: z.infer<typeof formSchema>) {
-    console.log("Saving data:", data);
-    toast({
-      title: 'Formulário Enviado',
-      description: 'Ocorrência TO05 registrada com sucesso!',
-    });
-    setPreviewData(null);
+  function handleSave(data: any) {
+    try {
+        const savedOcorrencias = JSON.parse(localStorage.getItem('ocorrencias_v2') || '[]');
+        const formTitle = "INCÊNDIO EM VEÍCULOS (TO05)";
+
+        const ocorrenciaData = {
+            id: editingId || new Date().toISOString(),
+            codOcorrencia: data.ocorrencia,
+            type: formTitle,
+            rodovia: data.rodovia,
+            km: data.qth,
+            timestamp: new Date().toLocaleString('pt-BR'),
+            status: 'Finalizada' as const,
+            fullReport: data,
+            numeroOcorrencia: data.numeroOcorrencia,
+            formPath: '/ocorrencias/to05'
+        };
+
+        let updatedOcorrencias;
+        if (editingId) {
+            updatedOcorrencias = savedOcorrencias.map((o: any) => o.id === editingId ? ocorrenciaData : o);
+             toast({ title: 'Ocorrência Atualizada', description: 'Ocorrência atualizada com sucesso!' });
+        } else {
+            updatedOcorrencias = [...savedOcorrencias, ocorrenciaData];
+            toast({ title: 'Formulário Enviado', description: 'Ocorrência registrada com sucesso!' });
+        }
+        
+        localStorage.setItem('ocorrencias_v2', JSON.stringify(updatedOcorrencias));
+        
+        setPreviewData(null);
+        router.push('/ocorrencias');
+
+    } catch (e) {
+        console.error("Could not save to localStorage", e);
+        toast({
+          variant: "destructive",
+          title: 'Erro ao Salvar',
+          description: 'Não foi possível salvar a ocorrência.',
+        });
+    }
   }
 
 
@@ -307,7 +443,7 @@ export default function OcorrenciaTO05Page() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Rodovia</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione a rodovia" />
@@ -330,7 +466,7 @@ export default function OcorrenciaTO05Page() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Ocorrência</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione a ocorrência" />
@@ -381,7 +517,6 @@ export default function OcorrenciaTO05Page() {
                                           className="text-xl"
                                            onSelect={(e) => {
                                             e.preventDefault();
-                                            (e.currentTarget as HTMLDivElement).parentElement?.parentElement?.dispatchEvent(new Event('mouseleave'));
                                           }}
                                       >
                                           {item.label}
@@ -416,7 +551,7 @@ export default function OcorrenciaTO05Page() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Sentido</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione o sentido" />
@@ -439,7 +574,7 @@ export default function OcorrenciaTO05Page() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Local/Área</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione o local/área" />
@@ -483,7 +618,7 @@ export default function OcorrenciaTO05Page() {
                         render={({ field }) => (
                             <FormItem>
                             <FormLabel>Tipo de Veículo</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select onValueChange={field.onChange} value={field.value}>
                                 <FormControl>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Selecione o tipo" />
@@ -510,7 +645,7 @@ export default function OcorrenciaTO05Page() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Estado do Pneu</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Selecione o estado do pneu" />

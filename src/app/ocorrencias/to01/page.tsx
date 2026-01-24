@@ -105,7 +105,7 @@ const formSchema = z.object({
 
 const fillEmptyWithNill = (data: any): any => {
     if (Array.isArray(data)) {
-        if (data.length === 0) return 'NILL';
+        if (data.length === 0 && !Object.keys(vehicleSchema.shape).includes(data.toString())) return 'NILL';
         if (typeof data[0] === 'object' && data[0] !== null) {
           return data.map(item => fillEmptyWithNill(item));
         }
@@ -318,7 +318,36 @@ export default function OcorrenciaTO01Page() {
         if (editDataString) {
             const editData = JSON.parse(editDataString);
             if(editData.formPath === '/ocorrencias/to01') {
-                form.reset(editData.fullReport);
+                const reportToLoad = editData.fullReport;
+                
+                const arrayFields = ['vehicles', 'tipoPanes'];
+                const booleanFields = ['vtrApoio', 'danoPatrimonio'];
+
+                Object.keys(reportToLoad).forEach(key => {
+                    if (reportToLoad[key] === 'NILL') {
+                        if (arrayFields.includes(key)) {
+                            reportToLoad[key] = [];
+                        } else if (booleanFields.includes(key)) {
+                            reportToLoad[key] = false;
+                        } else {
+                            reportToLoad[key] = '';
+                        }
+                    }
+                });
+
+                if(Array.isArray(reportToLoad.vehicles)) {
+                    reportToLoad.vehicles = reportToLoad.vehicles.map((vehicle: any) => {
+                        const newVehicle = {...vehicle};
+                        Object.keys(newVehicle).forEach(key => {
+                            if (newVehicle[key] === 'NILL') {
+                                newVehicle[key] = '';
+                            }
+                        });
+                        return newVehicle;
+                    });
+                }
+
+                form.reset(reportToLoad);
                 setEditingId(editData.id);
                 localStorage.removeItem('editOcorrenciaData');
             }
@@ -487,7 +516,6 @@ export default function OcorrenciaTO01Page() {
                                           className="text-xl"
                                           onSelect={(e) => {
                                             e.preventDefault();
-                                            (e.currentTarget as HTMLDivElement).parentElement?.parentElement?.dispatchEvent(new Event('mouseleave'));
                                           }}
                                       >
                                           {item.label}
