@@ -43,29 +43,29 @@ const vehicleFieldOrder = ['marca', 'modelo', 'ano', 'cor', 'placa', 'cidadeEmpl
 const vehicleWithPersonalDataFieldOrder = [...vehicleFieldOrder, 'cpf', 'rg', 'endereco', 'numero', 'bairro', 'cidade'];
 
 const fieldOrders: Record<string, string[]> = {
-    '/ocorrencias/to01': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to01': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', '---VEHICLES---', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
     '/ocorrencias/to02': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'qthInicio', 'qthTermino', 'proporcaoMetros', 'areaTotal', 'vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'],
     '/ocorrencias/to03': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'animal', 'quantidade', 'situacao', 'entornoNorte', 'entornoNorteOutros', 'entornoSul', 'entornoSulOutros', 'pista', 'acostamento', 'tracado', 'perfil', 'destinacaoAnimal', 'qthDestinacao', 'vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'],
-    '/ocorrencias/to04': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
-    '/ocorrencias/to05': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
-    '/ocorrencias/to06': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to04': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', '---VEHICLES---', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to05': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', '---VEHICLES---', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to06': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', '---VEHICLES---', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
     '/ocorrencias/to07': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'tipoObjeto', 'quantidade', 'destinacaoObjeto', 'qthDestinacao', 'vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'],
     '/ocorrencias/to09': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'tipoObra', 'qraResponsavel', 'baixaFrequencia', 'qtrInicio', 'qtrTermino', 'qthInicio', 'qthTermino', 'auxilios', 'observacoes'],
-    '/ocorrencias/to11': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to11': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', '---VEHICLES---', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
     '/ocorrencias/to12': ['equipe', 'medicoRegulador', 'data', 'condutor', 'resgatista1', 'resgatista2', 'acionamento', 'chegadaLocal', 'numOcorrencia', 'rodovia', 'km', 'sentido', 'saidaLocal', 'saidaHospital', 'chegadaHospital', 'chegadaBSO', 'nomeUsuario', 'sexo', 'idade', 'dn', 'tel', 'cpf', 'rg', 'endereco', 'acompanhante', 'posicaoVeiculo', 'eventoClinico', 'eventoClinicoOutros', 'condicaoInicial', 'hemorragiaExsanguinante', 'viasAereas', 'viasAereasObstruidasPor', 'ventilacao', 'detalhesVentilacao', 'pulso', 'pele', 'perfusao', 'sangramentoAtivo', 'glasgowInicial', 'pupilas', 'fotorreagentes', 'exposicao', 'hipotermia', 'lesoesAparentes', 'alergias', 'medicamentosEmUso', 'comorbidades', 'ultimaRefeicao', 'sinaisVitaisPA', 'sinaisVitaisFC', 'sinaisVitaisFR', 'sinaisVitaisSatO2', 'sinaisVitaisTAX', 'sinaisVitaisDXT', 'avaliacaoCraniocaudal', 'glasgowOcular', 'glasgowVerbal', 'glasgowMotora', 'imobilizacao', 'pranchamento', 'procedimentos', 'procedimentosOutros', 'rolValores', 'responsavelValores', 'equipamentosRetidos', 'responsavelEquipamentos', 'conduta', 'removidoPorTerceiros', 'removidoHospital', 'medicoReguladorConduta', 'codigoConduta', 'medicoReceptor', 'termoRecusaNome', 'termoRecusaCPF', 'termoRecusaRG', 'termoRecusaEndereco', 'termoRecusaResponsavelPor', 'termoRecusaParentesco', 'termoRecusaTestemunha1', 'termoRecusaTestemunha2', 'materiais', 'relatorioObservacoes'],
-    '/ocorrencias/to15/faixa-de-dominio': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to15/faixa-de-dominio': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', '---VEHICLES---', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
     '/ocorrencias/to16': ['equipe', 'medicoRegulador', 'data', 'condutor', 'resgatista1', 'resgatista2', 'acionamento', 'chegadaLocal', 'numOcorrencia', 'rodovia', 'km', 'sentido', 'saidaLocal', 'saidaHospital', 'chegadaHospital', 'chegadaBSO', 'nomeUsuario', 'sexo', 'idade', 'dn', 'tel', 'cpf', 'rg', 'endereco', 'acompanhante', 'posicaoVeiculo', 'eventoClinico', 'eventoClinicoOutros', 'condicaoInicial', 'hemorragiaExsanguinante', 'viasAereas', 'viasAereasObstruidasPor', 'ventilacao', 'detalhesVentilacao', 'pulso', 'pele', 'perfusao', 'sangramentoAtivo', 'glasgowInicial', 'pupilas', 'fotorreagentes', 'exposicao', 'hipotermia', 'lesoesAparentes', 'alergias', 'medicamentosEmUso', 'comorbidades', 'ultimaRefeicao', 'sinaisVitaisPA', 'sinaisVitaisFC', 'sinaisVitaisFR', 'sinaisVitaisSatO2', 'sinaisVitaisTAX', 'sinaisVitaisDXT', 'avaliacaoCraniocaudal', 'glasgowOcular', 'glasgowVerbal', 'glasgowMotora', 'imobilizacao', 'pranchamento', 'procedimentos', 'procedimentosOutros', 'rolValores', 'responsavelValores', 'equipamentosRetidos', 'responsavelEquipamentos', 'conduta', 'removidoPorTerceiros', 'removidoHospital', 'medicoReguladorConduta', 'codigoConduta', 'medicoReceptor', 'termoRecusaNome', 'termoRecusaCPF', 'termoRecusaRG', 'termoRecusaEndereco', 'termoRecusaResponsavelPor', 'termoRecusaParentesco', 'termoRecusaTestemunha1', 'termoRecusaTestemunha2', 'materiais', 'relatorioObservacoes'],
     '/ocorrencias/to17': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'],
-    '/ocorrencias/to19': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to19': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', '---VEHICLES---', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
     '/ocorrencias/to32': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'tipoObra', 'qraResponsavel', 'baixaFrequencia', 'qtrInicio', 'qtrTermino', 'qthInicio', 'qthTermino', 'auxilios', 'observacoes'],
-    '/ocorrencias/to33': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to33': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', '---VEHICLES---', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
     '/ocorrencias/to34': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'qthInicio', 'qthTermino', 'dimensoes', 'quantidade', 'vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'],
     '/ocorrencias/to35': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'qthInicio', 'qthTermino', 'extensao', 'vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'],
     '/ocorrencias/to37': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'tipoPlaca', 'acao', 'nomePlaca', 'quantidade', 'vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'],
     '/ocorrencias/to38': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'tipoPropaganda', 'tipoPropagandaOutros', 'acao', 'mensagem', 'quantidade', 'vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'],
-    '/ocorrencias/to39': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/to39': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', '---VEHICLES---', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
     '/ocorrencias/to50': ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'tipoServico', 'qraResponsavel', 'baixaFrequencia', 'rg', 'cpf', 'qtrInicio', 'qtrTermino', 'auxilios', 'observacoes'],
-    '/ocorrencias/qud-operacao': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
+    '/ocorrencias/qud-operacao': ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', '---VEHICLES---', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'],
     '/ocorrencias/qud-resgate': ['equipe', 'medicoRegulador', 'data', 'condutor', 'resgatista1', 'resgatista2', 'acionamento', 'chegadaLocal', 'numOcorrencia', 'rodovia', 'km', 'sentido', 'saidaLocal', 'saidaHospital', 'chegadaHospital', 'chegadaBSO', 'nomeUsuario', 'sexo', 'idade', 'dn', 'tel', 'cpf', 'rg', 'endereco', 'acompanhante', 'posicaoVeiculo', 'tipoEvento', 'eventoTrauma', 'eventoTraumaOutros', 'eventoClinico', 'eventoClinicoOutros', 'condicoesSeguranca', 'condicoesSegurancaOutros', 'cinematicaVeiculo', 'cinematicaPlaca', 'condicaoInicial', 'hemorragiaExsanguinante', 'viasAereas', 'viasAereasObstruidasPor', 'ventilacao', 'detalhesVentilacao', 'pulso', 'pele', 'perfusao', 'sangramentoAtivo', 'glasgowInicial', 'pupilas', 'fotorreagentes', 'exposicao', 'hipotermia', 'lesoesAparentes', 'alergias', 'medicamentosEmUso', 'comorbidades', 'ultimaRefeicao', 'sinaisVitaisPA', 'sinaisVitaisFC', 'sinaisVitaisFR', 'sinaisVitaisSatO2', 'sinaisVitaisTAX', 'sinaisVitaisDXT', 'avaliacaoCraniocaudal', 'glasgowOcular', 'glasgowVerbal', 'glasgowMotora', 'imobilizacao', 'pranchamento', 'procedimentos', 'procedimentosOutros', 'rolValores', 'responsavelValores', 'equipamentosRetidos', 'responsavelEquipamentos', 'conduta', 'removidoPorTerceiros', 'removidoHospital', 'medicoReguladorConduta', 'codigoConduta', 'medicoReceptor', 'termoRecusaNome', 'termoRecusaCPF', 'termoRecusaRG', 'termoRecusaEndereco', 'termoRecusaResponsavelPor', 'termoRecusaParentesco', 'termoRecusaTestemunha1', 'termoRecusaTestemunha2', 'materiais', 'relatorioObservacoes'],
     '/ocorrencias/tracado-de-pista': ['rodovia', 'qthExato', 'sentido', 'faixaInterditada', 'provavelCinematica', 'provavelCinematicaOutros', 'veiculos', 'quantidadeVitimas', 'potencialGravidadePrevia', 'recursosAdicionaisPrevia', 'cinematica', 'cinematicaOutros', 'energia', 'avarias', 'posicaoVeiculo', 'quantidadeVitimasConfirmacao', 'potencialGravidadeAbordagem', 'cod61_62', 'recursosAdicionaisConfirmacao', 'recursosAdicionaisConfirmacaoOutros', 'condicoesMeteorologicas', 'condicaoVisibilidade', 'condicoesEspeciais', 'condicoesEspeciaisOutros', 'condicoesSinalizacao', 'condicoesSinalizacaoOutros', 'tipoPista', 'tracadoPista', 'perfil', 'obrasNaPista', 'condicaoPista', 'obstaculoCanteiroCentral', 'obstaculoCanteiroCentralOutros', 'obstaculoAcostamento', 'obstaculoAcostamentoOutros', 'obrasNoAcostamento', 'estadoConservacao', 'intersecoesPista', 'deficienciaObras', 'deficienciaObrasOutros', 'obrasDeArte', 'local', 'sinalizacaoVertical', 'sinalizacaoHorizontal', 'sinalizacaoSemaforo'],
 };
@@ -81,11 +81,11 @@ const ReportField = ({ fieldKey, value }: { fieldKey: string; value: any; }) => 
     }
     if (Array.isArray(val)) {
         if (fieldKey === 'tipoPanes') {
-            return val.map(id => tiposPane.find(p => p.id === id)?.label.split(' - ')[1] || id).join(', ');
+            return val.map(id => tiposPane.find(p => p.id === id)?.label.split(' - ')[1] || id).join(', ').toUpperCase();
         }
-      return val.join(', ');
+      return val.join(', ').toUpperCase();
     }
-    return String(val);
+    return String(val).toUpperCase();
   };
 
   return (
@@ -262,19 +262,21 @@ export default function OcorrenciasPage() {
                       <div className="space-y-2 text-sm text-muted-foreground max-h-96 overflow-y-auto">
                          <h4 className="font-semibold text-base text-foreground mb-2">Relatório Completo:</h4>
                             {fieldOrder.map(key => {
+                                if (key === '---VEHICLES---') {
+                                    return Array.isArray(ocorrencia.fullReport.vehicles) && ocorrencia.fullReport.vehicles.map((vehicle: any, index: number) => (
+                                        <div key={index} className="pt-2 mt-2 border-t">
+                                            <h5 className="font-semibold text-foreground">Veículo {index + 1}</h5>
+                                            {vehicleOrder.map(vKey => {
+                                                if (!(vKey in vehicle)) return null;
+                                                return <ReportField key={`${index}-${vKey}`} fieldKey={vKey} value={vehicle[vKey]} />;
+                                            })}
+                                        </div>
+                                    ));
+                                }
+
                                 if (key === 'vehicles' || !(key in ocorrencia.fullReport)) return null;
                                 return <ReportField key={key} fieldKey={key} value={ocorrencia.fullReport[key]} />;
                             })}
-
-                            {Array.isArray(ocorrencia.fullReport.vehicles) && ocorrencia.fullReport.vehicles.map((vehicle: any, index: number) => (
-                                <div key={index} className="pt-2 mt-2 border-t">
-                                    <h5 className="font-semibold text-foreground">Veículo {index + 1}</h5>
-                                    {vehicleOrder.map(key => {
-                                        if (!(key in vehicle)) return null;
-                                        return <ReportField key={`${index}-${key}`} fieldKey={key} value={vehicle[key]} />;
-                                    })}
-                                </div>
-                            ))}
                       </div>
                   </CardContent>
                   <CardFooter className="flex gap-2 border-t pt-4 mt-auto">
