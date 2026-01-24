@@ -759,7 +759,7 @@ export default function QudResgatePage() {
                             </CardHeader>
                             <CardContent className="space-y-4 pt-6">
                                 {materialFields.map((item, index) => (
-                                <div key={item.id} className="flex items-end gap-4 p-4 border rounded-lg relative">
+                                <div key={item.id} className="flex items-end gap-2 p-2 border rounded-lg relative md:gap-4 md:p-4">
                                     <div className="grid grid-cols-1 gap-4 flex-1">
                                         <FormField
                                             control={form.control}
