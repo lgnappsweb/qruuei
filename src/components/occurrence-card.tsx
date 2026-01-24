@@ -44,6 +44,8 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
       router.push('/ocorrencias/to12');
     } else if (occurrence.id === '14') { // This is TO 15
       router.push('/ocorrencias/to15');
+    } else if (occurrence.id === '15') { // This is TO 16
+      router.push('/ocorrencias/to16');
     } else if (occurrence.id === '16') { // This is TO 17
       router.push('/ocorrencias/to17');
     } else if (occurrence.id === '17') { // This is TO 19
