@@ -113,7 +113,7 @@ const formSchema = z.object({
 
 const fillEmptyWithNill = (data: any): any => {
     if (Array.isArray(data)) {
-        if (data.length === 0 && !Object.keys(vehicleSchema.shape).includes(data.toString())) return 'NILL';
+        if (data.length === 0) return 'NILL';
         if (typeof data[0] === 'object' && data[0] !== null) {
           return data.map(item => fillEmptyWithNill(item));
         }
@@ -150,12 +150,15 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     return result.charAt(0).toUpperCase() + result.slice(1);
   };
 
-  const renderSimpleValue = (value: any): string => {
+  const renderSimpleValue = (value: any, key: string): string => {
      if (typeof value === 'boolean') {
       return value ? 'SIM' : 'NÃO';
     }
     if (Array.isArray(value)) {
         if (value.length === 0) return 'NILL';
+        if (key === 'tipoPanes') {
+          return value.join(', ').toUpperCase();
+        }
         return value.join(', ').toUpperCase();
     }
     return String(value).toUpperCase();
@@ -165,7 +168,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
       <div className="flex flex-col sm:flex-row sm:items-start">
         <div className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</div>
-        <div className="text-foreground font-mono break-words uppercase flex-1 text-left">{renderSimpleValue(value)}</div>
+        <div className="text-foreground font-mono break-words uppercase flex-1 text-left">{renderSimpleValue(value, label)}</div>
       </div>
     ) : null
   );
@@ -183,7 +186,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
       for (const [key, value] of Object.entries(fields)) {
         if ((key === 'vtrApoioDescricao' && !data.vtrApoio) || (key === 'danoPatrimonioDescricao' && !data.danoPatrimonio)) continue;
 
-        const processedValue = renderSimpleValue(value);
+        const processedValue = renderSimpleValue(value, key);
         if (processedValue && processedValue !== 'NILL' && processedValue !== '') {
           sectionText += `*${formatLabel(key).toUpperCase()}:* ${processedValue}\n`;
         }
@@ -204,7 +207,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     formatSectionForShare('Informações Gerais', generalFields);
 
     if (Array.isArray(data.vehicles) && data.vehicles.length > 0) {
-      data.vehicles.forEach((vehicle, index) => {
+      data.vehicles.forEach((vehicle: any, index: number) => {
         formatSectionForShare(`Dados do Veículo ${index + 1}`, vehicle);
       });
     }
