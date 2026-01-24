@@ -148,32 +148,23 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     return result.charAt(0).toUpperCase() + result.slice(1);
   };
 
-  const renderValue = (value: any): React.ReactNode => {
-    if (typeof value === 'boolean') {
+  const renderSimpleValue = (value: any): string => {
+     if (typeof value === 'boolean') {
       return value ? 'SIM' : 'NÃO';
     }
     if (Array.isArray(value)) {
-      if (value.length === 0) return 'NILL';
-      const isObjectArray = typeof value[0] === 'object' && value[0] !== null;
-      if (isObjectArray) {
-        return value.map((item, index) => (
-          <div key={index} className="mt-4 pl-4 col-span-full">
-            <h4 className="font-bold text-xl mb-2 border-b">Item {index + 1}</h4>
-            <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 text-lg">
-                {Object.entries(item).map(([k, v]) => (
-                  <React.Fragment key={k}>
-                    <div className="font-semibold text-muted-foreground text-right">{formatLabel(k)}:</div>
-                    <div className="text-foreground break-words font-mono uppercase">{renderValue(v)}</div>
-                  </React.Fragment>
-                ))}
-            </div>
-          </div>
-        ));
-      }
-      return String(value.join(', ')).toUpperCase();
+        if (value.length === 0) return 'NILL';
+        return value.join(', ').toUpperCase();
     }
     return String(value).toUpperCase();
   }
+
+  const Field = ({ label, value }: { label: string, value: any}) => (
+    <>
+        <div className="font-semibold text-muted-foreground text-right">{formatLabel(label)}:</div>
+        <div className="text-foreground break-words font-mono uppercase">{renderSimpleValue(value)}</div>
+    </>
+  );
 
   const occurrenceCode = formTitle.match(/\(([^)]+)\)/)?.[1] || formTitle.split(' ')[0] || "Relatório";
 
@@ -184,26 +175,45 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
           <DialogTitle className="text-2xl">Pré-visualização ({occurrenceCode})</DialogTitle>
           <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-1 pr-6 -mr-6">
-            <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-lg">
-                {Object.entries(data).map(([key, value]) => {
-                     const isObjectArray = Array.isArray(value) && value.length > 0 && typeof value[0] === 'object';
-                     if (isObjectArray) {
-                        return (
-                             <div key={key} className="col-span-full">
-                                <h3 className="font-bold text-2xl mt-6 mb-2 border-b">{formatLabel(key)}</h3>
-                                {renderValue(value)}
-                            </div>
-                        )
-                     }
-                     return (
-                        <React.Fragment key={key}>
-                            <div className="font-semibold text-muted-foreground text-right">{formatLabel(key)}:</div>
-                            <div className="text-foreground break-words font-mono uppercase">{renderValue(value)}</div>
-                        </React.Fragment>
-                     )
-                })}
-            </div>
+        <ScrollArea className="flex-1 pr-6 -mr-6 space-y-6">
+            <Card>
+                <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
+                <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-lg">
+                        <Field label="rodovia" value={data.rodovia} />
+                        <Field label="ocorrencia" value={data.ocorrencia} />
+                        <Field label="tipoPanes" value={data.tipoPanes} />
+                        <Field label="qth" value={data.qth} />
+                        <Field label="sentido" value={data.sentido} />
+                        <Field label="localArea" value={data.localArea} />
+                    </div>
+                </CardContent>
+            </Card>
+
+            {data.vehicles && data.vehicles.length > 0 && data.vehicles.map((vehicle: any, index: number) => (
+                <Card key={index}>
+                    <CardHeader><CardTitle>Dados do Veículo {index + 1}</CardTitle></CardHeader>
+                    <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-lg">
+                            {Object.entries(vehicle).map(([key, value]) => <Field key={key} label={key} value={value} />)}
+                        </div>
+                    </CardContent>
+                </Card>
+            ))}
+
+            <Card>
+                 <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
+                <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-lg">
+                        <Field label="vtrApoio" value={data.vtrApoio} />
+                        {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
+                        <Field label="danoPatrimonio" value={data.danoPatrimonio} />
+                        {data.danoPatrimonio && <Field label="danoPatrimonioDescricao" value={data.danoPatrimonioDescricao} />}
+                        <Field label="observacoes" value={data.observacoes} />
+                        <Field label="auxilios" value={data.auxilios} />
+                    </div>
+                </CardContent>
+            </Card>
         </ScrollArea>
         <DialogFooter className="mt-4 pt-4 border-t">
           <Button variant="outline" onClick={onClose}>Editar</Button>
