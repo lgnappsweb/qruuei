@@ -6,6 +6,7 @@ import * as z from 'zod';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -38,6 +39,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const auxilios = [
     { id: 'PR08', label: 'PR08 - Verificação da sinalização de obras' },
@@ -78,8 +81,106 @@ const formSchema = z.object({
   observacoes: z.string().optional(),
 });
 
+const fillEmptyWithNill = (data: any): any => {
+    if (Array.isArray(data)) {
+        if (data.length === 0) return 'NILL';
+        return data.map(item => fillEmptyWithNill(item));
+    }
+    if (data && typeof data === 'object') {
+        const newObj: {[key: string]: any} = {};
+        Object.keys(data).forEach(key => {
+            newObj[key] = fillEmptyWithNill(data[key]);
+        });
+        return newObj;
+    }
+    if (data === '' || data === undefined || data === null) {
+        return 'NILL';
+    }
+    return data;
+};
+
+const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null; onClose: () => void; onSave: (data: any) => void; formTitle: string; }) => {
+  if (!data) return null;
+
+  const formatLabel = (key: string) => {
+    const result = key.replace(/([A-Z])/g, " $1");
+    return result.charAt(0).toUpperCase() + result.slice(1);
+  };
+
+  const renderSimpleValue = (value: any): string => {
+     if (typeof value === 'boolean') {
+      return value ? 'SIM' : 'NÃO';
+    }
+    if (Array.isArray(value)) {
+        if (value.length === 0) return 'NILL';
+        return value.join(', ').toUpperCase();
+    }
+    return String(value).toUpperCase();
+  }
+
+  const Field = ({ label, value }: { label: string, value: any}) => (
+    value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
+      <div className="text-xl break-words">
+          <span className="font-semibold text-muted-foreground mr-2">{formatLabel(label)}:</span>
+          <span className="text-foreground font-mono">{renderSimpleValue(value)}</span>
+      </div>
+    ) : null
+  );
+
+  const occurrenceCode = formTitle.match(/\(([^)]+)\)/)?.[1] || formTitle.split(' ')[0] || "Relatório";
+
+  return (
+    <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+        <DialogHeader className="text-center">
+          <DialogTitle className="text-3xl font-bold">{`Pré-visualização (${occurrenceCode})`}</DialogTitle>
+          <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
+        </DialogHeader>
+        <ScrollArea className="flex-1 pr-6 -mr-6">
+            <div className="space-y-6">
+                <Card>
+                    <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
+                    <CardContent>
+                        <div className="space-y-4">
+                            <Field label="rodovia" value={data.rodovia} />
+                            <Field label="ocorrencia" value={data.ocorrencia} />
+                            <Field label="qth" value={data.qth} />
+                            <Field label="sentido" value={data.sentido} />
+                            <Field label="localArea" value={data.localArea} />
+                            <Field label="tipoObra" value={data.tipoObra} />
+                            <Field label="qraResponsavel" value={data.qraResponsavel} />
+                            <Field label="baixaFrequencia" value={data.baixaFrequencia} />
+                            <Field label="qtrInicio" value={data.qtrInicio} />
+                            <Field label="qtrTermino" value={data.qtrTermino} />
+                            <Field label="qthInicio" value={data.qthInicio} />
+                            <Field label="qthTermino" value={data.qthTermino} />
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
+                    <CardContent>
+                        <div className="space-y-4">
+                            <Field label="observacoes" value={data.observacoes} />
+                            <Field label="auxilios" value={data.auxilios} />
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        </ScrollArea>
+        <DialogFooter className="mt-4 pt-4 border-t">
+          <Button variant="outline" onClick={onClose}>Editar</Button>
+          <Button onClick={() => onSave(data)}>Confirmar e Salvar</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 export default function OcorrenciaTO09Page() {
   const { toast } = useToast();
+  const [previewData, setPreviewData] = React.useState<z.infer<typeof formSchema> | null>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -101,11 +202,17 @@ export default function OcorrenciaTO09Page() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    const processedValues = fillEmptyWithNill(values);
+    setPreviewData(processedValues);
+  }
+
+  function handleSave(data: z.infer<typeof formSchema>) {
+    console.log("Saving data:", data);
     toast({
       title: 'Formulário Enviado',
       description: 'Ocorrência TO09 registrada com sucesso!',
     });
+    setPreviewData(null);
   }
 
   return (
@@ -409,6 +516,7 @@ export default function OcorrenciaTO09Page() {
           <Button type="submit" size="lg" className="w-full">Gerar Relatório</Button>
         </form>
       </Form>
+      <PreviewDialog data={previewData} onClose={() => setPreviewData(null)} onSave={handleSave} formTitle="OBRAS NA RODOVIA/CONSERVAÇÃO DE ROTINA (TO09)" />
     </div>
   );
 }

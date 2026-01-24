@@ -211,19 +211,19 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     }
 
     const Field = ({ label, value }: { label: string, value: any}) => (
-        value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
-            <>
-                <div className="font-semibold text-muted-foreground text-left">{formatLabel(label)}:</div>
-                <div className="text-foreground break-words font-mono uppercase">{renderSimpleValue(value)}</div>
-            </>
-        ) : null
+      value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
+        <div className="text-xl break-words">
+            <span className="font-semibold text-muted-foreground mr-2">{formatLabel(label)}:</span>
+            <span className="text-foreground font-mono">{renderSimpleValue(value)}</span>
+        </div>
+      ) : null
     );
 
     const MaterialItem = ({ item, index }: { item: any, index: number }) => (
         <Card key={index} className="mt-4">
             <CardHeader><CardTitle>Material {index + 1}</CardTitle></CardHeader>
             <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-xl">
+                <div className="space-y-4">
                     <Field label="nome" value={item.nome} />
                     <Field label="quantidade" value={item.quantidade} />
                 </div>
@@ -249,16 +249,16 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
         <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
                 <DialogHeader className="text-center">
-                    <DialogTitle className="text-3xl">Pré-visualização ({occurrenceCode})</DialogTitle>
+                    <DialogTitle className="text-3xl font-bold">{`Pré-visualização (${occurrenceCode})`}</DialogTitle>
                     <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
                 </DialogHeader>
                 <ScrollArea className="flex-1 pr-6 -mr-6">
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                         {sections.map(section => (
                             <Card key={section.title}>
                                 <CardHeader><CardTitle>{section.title}</CardTitle></CardHeader>
                                 <CardContent>
-                                    <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-xl">
+                                    <div className="space-y-4">
                                         {section.fields.map(key => <Field key={String(key)} label={String(key)} value={data[key]} />)}
                                     </div>
                                 </CardContent>
@@ -269,7 +269,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                             <Card className="border-destructive">
                                 <CardHeader><CardTitle className="text-destructive">Termo de Recusa</CardTitle></CardHeader>
                                 <CardContent>
-                                    <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-xl">
+                                    <div className="space-y-4">
                                         {termoRecusaFields.map(key => <Field key={key} label={key} value={data[key]} />)}
                                     </div>
                                 </CardContent>

@@ -148,10 +148,10 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
   const Field = ({ label, value }: { label: string, value: any}) => (
     value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
-      <>
-          <div className="font-semibold text-muted-foreground text-left">{formatLabel(label)}:</div>
-          <div className="text-foreground break-words font-mono uppercase">{renderSimpleValue(value)}</div>
-      </>
+      <div className="text-xl break-words">
+          <span className="font-semibold text-muted-foreground mr-2">{formatLabel(label)}:</span>
+          <span className="text-foreground font-mono">{renderSimpleValue(value)}</span>
+      </div>
     ) : null
   );
 
@@ -161,7 +161,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
         <DialogHeader className="text-center">
-          <DialogTitle className="text-3xl font-bold">Pré-visualização ({occurrenceCode})</DialogTitle>
+          <DialogTitle className="text-3xl font-bold">{`Pré-visualização (${occurrenceCode})`}</DialogTitle>
           <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
         </DialogHeader>
         <ScrollArea className="flex-1 pr-6 -mr-6">
@@ -169,7 +169,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                 <Card>
                     <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
+                        <div className="space-y-4">
                             <Field label="rodovia" value={data.rodovia} />
                             <Field label="ocorrencia" value={data.ocorrencia} />
                             <Field label="tipoPanes" value={data.tipoPanes} />
@@ -184,7 +184,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                     <Card key={index}>
                         <CardHeader><CardTitle>Dados do Veículo {index + 1}</CardTitle></CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
+                            <div className="space-y-4">
                                 {Object.entries(vehicle).map(([key, value]) => <Field key={key} label={key} value={value} />)}
                             </div>
                         </CardContent>
@@ -194,7 +194,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                 <Card>
                     <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-4 items-baseline text-xl">
+                        <div className="space-y-4">
                             <Field label="vtrApoio" value={data.vtrApoio} />
                             {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
                             <Field label="danoPatrimonio" value={data.danoPatrimonio} />
