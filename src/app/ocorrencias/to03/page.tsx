@@ -138,9 +138,9 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
   const Field = ({ label, value }: { label: string, value: any}) => (
     value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
-      <div className="text-xl break-words">
-          <span className="font-semibold text-muted-foreground mr-2">{formatLabel(label)}:</span>
-          <span className="text-foreground font-mono">{renderSimpleValue(value)}</span>
+      <div className="flex flex-col sm:flex-row sm:items-baseline">
+          <span className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</span>
+          <span className="text-foreground font-mono break-words">{renderSimpleValue(value)}</span>
       </div>
     ) : null
   );
@@ -158,52 +158,44 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
             <div className="space-y-6">
                 <Card>
                     <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            <Field label="rodovia" value={data.rodovia} />
-                            <Field label="ocorrencia" value={data.ocorrencia} />
-                            <Field label="qth" value={data.qth} />
-                            <Field label="sentido" value={data.sentido} />
-                            <Field label="localArea" value={data.localArea} />
-                            <Field label="animal" value={data.animal} />
-                            <Field label="quantidade" value={data.quantidade} />
-                            <Field label="situacao" value={data.situacao} />
-                        </div>
+                    <CardContent className="text-xl space-y-4">
+                        <Field label="rodovia" value={data.rodovia} />
+                        <Field label="ocorrencia" value={data.ocorrencia} />
+                        <Field label="qth" value={data.qth} />
+                        <Field label="sentido" value={data.sentido} />
+                        <Field label="localArea" value={data.localArea} />
+                        <Field label="animal" value={data.animal} />
+                        <Field label="quantidade" value={data.quantidade} />
+                        <Field label="situacao" value={data.situacao} />
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader><CardTitle>Características do Entorno</CardTitle></CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            <Field label="entornoNorte" value={data.entornoNorte} />
-                            {data.entornoNorte === 'Outros' && <Field label="entornoNorteOutros" value={data.entornoNorteOutros} />}
-                            <Field label="entornoSul" value={data.entornoSul} />
-                            {data.entornoSul === 'Outros' && <Field label="entornoSulOutros" value={data.entornoSulOutros} />}
-                        </div>
+                    <CardContent className="text-xl space-y-4">
+                        <Field label="entornoNorte" value={data.entornoNorte} />
+                        {data.entornoNorte === 'Outros' && <Field label="entornoNorteOutros" value={data.entornoNorteOutros} />}
+                        <Field label="entornoSul" value={data.entornoSul} />
+                        {data.entornoSul === 'Outros' && <Field label="entornoSulOutros" value={data.entornoSulOutros} />}
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader><CardTitle>Traçado da Pista</CardTitle></CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            <Field label="pista" value={data.pista} />
-                            <Field label="acostamento" value={data.acostamento} />
-                            <Field label="tracado" value={data.tracado} />
-                            <Field label="perfil" value={data.perfil} />
-                        </div>
+                    <CardContent className="text-xl space-y-4">
+                        <Field label="pista" value={data.pista} />
+                        <Field label="acostamento" value={data.acostamento} />
+                        <Field label="tracado" value={data.tracado} />
+                        <Field label="perfil" value={data.perfil} />
                     </CardContent>
                 </Card>
                  <Card>
                     <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            <Field label="destinacaoAnimal" value={data.destinacaoAnimal} />
-                            <Field label="qthDestinacao" value={data.qthDestinacao} />
-                            <Field label="vtrApoio" value={data.vtrApoio} />
-                            {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
-                            <Field label="observacoes" value={data.observacoes} />
-                            <Field label="auxilios" value={data.auxilios} />
-                        </div>
+                    <CardContent className="text-xl space-y-4">
+                        <Field label="destinacaoAnimal" value={data.destinacaoAnimal} />
+                        <Field label="qthDestinacao" value={data.qthDestinacao} />
+                        <Field label="vtrApoio" value={data.vtrApoio} />
+                        {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
+                        <Field label="observacoes" value={data.observacoes} />
+                        <Field label="auxilios" value={data.auxilios} />
                     </CardContent>
                 </Card>
             </div>
@@ -670,7 +662,6 @@ export default function OcorrenciaTO03Page() {
                                                     : field.value?.filter(value => value !== item.id);
                                                 field.onChange(newValue);
                                             }}
-                                            onSelect={e => e.preventDefault()}
                                             className="text-xl"
                                         >
                                             {item.label}

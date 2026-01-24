@@ -148,9 +148,9 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
   const Field = ({ label, value }: { label: string, value: any}) => (
     value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
-      <div className="text-xl break-words">
-          <span className="font-semibold text-muted-foreground mr-2">{formatLabel(label)}:</span>
-          <span className="text-foreground font-mono">{renderSimpleValue(value)}</span>
+      <div className="flex flex-col sm:flex-row sm:items-baseline">
+          <span className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</span>
+          <span className="text-foreground font-mono break-words">{renderSimpleValue(value)}</span>
       </div>
     ) : null
   );
@@ -168,40 +168,34 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
             <div className="space-y-6">
                 <Card>
                     <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            <Field label="rodovia" value={data.rodovia} />
-                            <Field label="ocorrencia" value={data.ocorrencia} />
-                            <Field label="tipoPanes" value={data.tipoPanes} />
-                            <Field label="qth" value={data.qth} />
-                            <Field label="sentido" value={data.sentido} />
-                            <Field label="localArea" value={data.localArea} />
-                        </div>
+                    <CardContent className="text-xl space-y-4">
+                        <Field label="rodovia" value={data.rodovia} />
+                        <Field label="ocorrencia" value={data.ocorrencia} />
+                        <Field label="tipoPanes" value={data.tipoPanes} />
+                        <Field label="qth" value={data.qth} />
+                        <Field label="sentido" value={data.sentido} />
+                        <Field label="localArea" value={data.localArea} />
                     </CardContent>
                 </Card>
 
                 {data.vehicles && data.vehicles.length > 0 && data.vehicles.map((vehicle: any, index: number) => (
                     <Card key={index}>
                         <CardHeader><CardTitle>Dados do Veículo {index + 1}</CardTitle></CardHeader>
-                        <CardContent>
-                            <div className="space-y-4">
-                                {Object.entries(vehicle).map(([key, value]) => <Field key={key} label={key} value={value} />)}
-                            </div>
+                        <CardContent className="text-xl space-y-4">
+                            {Object.entries(vehicle).map(([key, value]) => <Field key={key} label={key} value={value} />)}
                         </CardContent>
                     </Card>
                 ))}
 
                 <Card>
                     <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            <Field label="vtrApoio" value={data.vtrApoio} />
-                            {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
-                            <Field label="danoPatrimonio" value={data.danoPatrimonio} />
-                            {data.danoPatrimonio && <Field label="danoPatrimonioDescricao" value={data.danoPatrimonioDescricao} />}
-                            <Field label="observacoes" value={data.observacoes} />
-                            <Field label="auxilios" value={data.auxilios} />
-                        </div>
+                    <CardContent className="text-xl space-y-4">
+                        <Field label="vtrApoio" value={data.vtrApoio} />
+                        {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
+                        <Field label="danoPatrimonio" value={data.danoPatrimonio} />
+                        {data.danoPatrimonio && <Field label="danoPatrimonioDescricao" value={data.danoPatrimonioDescricao} />}
+                        <Field label="observacoes" value={data.observacoes} />
+                        <Field label="auxilios" value={data.auxilios} />
                     </CardContent>
                 </Card>
             </div>
@@ -362,7 +356,6 @@ export default function OcorrenciaTO06Page() {
                                                   : field.value?.filter(value => value !== item.id);
                                               field.onChange(newValue);
                                           }}
-                                          onSelect={e => e.preventDefault()}
                                           className="text-xl"
                                       >
                                           {item.label}
