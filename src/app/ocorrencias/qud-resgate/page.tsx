@@ -1,10 +1,10 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, Control, useWatch } from 'react-hook-form';
+import { useForm, Control, useWatch, useFieldArray } from 'react-hook-form';
 import * as z from 'zod';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, PlusCircle, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import * as React from 'react';
 
@@ -43,6 +43,11 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from '@/lib/utils';
+
+const materialSchema = z.object({
+  nome: z.string().min(1, "Nome do material é obrigatório."),
+  quantidade: z.string().min(1, "Quantidade é obrigatória."),
+});
 
 const formSchema = z.object({
   // DADOS OPERACIONAIS
@@ -157,7 +162,7 @@ const formSchema = z.object({
   termoRecusaTestemunha2: z.string().optional(),
   
   // MATERIAIS E OBSERVAÇÕES
-  materiais: z.string().optional(),
+  materiais: z.array(materialSchema).optional(),
   relatorioObservacoes: z.string().optional(),
 }).refine(data => data.tipoEvento !== undefined, {
     message: "Selecione o tipo de evento.",
@@ -387,12 +392,17 @@ export default function QudResgatePage() {
       termoRecusaParentesco: '',
       termoRecusaTestemunha1: '',
       termoRecusaTestemunha2: '',
-      materiais: '',
+      materiais: [],
       relatorioObservacoes: '',
     },
   });
 
   const watchConduta = useWatch({ control: form.control, name: 'conduta'});
+
+  const { fields: materialFields, append: appendMaterial, remove: removeMaterial } = useFieldArray({
+    control: form.control,
+    name: "materiais",
+  });
 
   function onSubmit(values: FormValues) {
     console.log(values);
@@ -743,8 +753,64 @@ export default function QudResgatePage() {
                          <FormField control={form.control} name="medicoReguladorConduta" render={({ field }) => (<FormItem><FormLabel>Médico Regulador/Intervencionista</FormLabel><FormControl><Input placeholder="Ex: Dr. House" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          <FormField control={form.control} name="medicoReceptor" render={({ field }) => (<FormItem><FormLabel>Médico Receptor</FormLabel><FormControl><Input placeholder="Ex: Dra. Grey" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          
+                         <Card>
+                            <CardHeader>
+                                <CardTitle>Consumo de Materiais</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4 pt-6">
+                                {materialFields.map((item, index) => (
+                                <div key={item.id} className="flex items-end gap-4 p-4 border rounded-lg relative">
+                                    <div className="grid grid-cols-2 gap-4 flex-1">
+                                        <FormField
+                                            control={form.control}
+                                            name={`materiais.${index}.nome`}
+                                            render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Material</FormLabel>
+                                                <FormControl>
+                                                <Input placeholder="Ex: Gaze" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name={`materiais.${index}.quantidade`}
+                                            render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Quantidade</FormLabel>
+                                                <FormControl>
+                                                <Input type="number" placeholder="Ex: 10" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                    <Button
+                                        type="button"
+                                        variant="destructive"
+                                        size="icon"
+                                        onClick={() => removeMaterial(index)}
+                                    >
+                                        <Trash2 className="h-5 w-5" />
+                                        <span className="sr-only">Remover Material</span>
+                                    </Button>
+                                </div>
+                                ))}
+                                <Button
+                                type="button"
+                                variant="outline"
+                                className="w-full"
+                                onClick={() => appendMaterial({ nome: '', quantidade: '' })}
+                                >
+                                <PlusCircle className="mr-2 h-5 w-5" />
+                                Adicionar Material
+                                </Button>
+                            </CardContent>
+                          </Card>
                          <FormField control={form.control} name="relatorioObservacoes" render={({ field }) => (<FormItem><FormLabel>Relatório/Observações</FormLabel><FormControl><Textarea rows={5} placeholder="Descreva o relatório e observações aqui..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                         <FormField control={form.control} name="materiais" render={({ field }) => (<FormItem><FormLabel>Consumo de Materiais</FormLabel><FormControl><Textarea rows={4} placeholder="MATERIAL - QUANTIDADE&#10;Ex: Gaze - 10" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          <FormField control={form.control} name="rolValores" render={({ field }) => (<FormItem><FormLabel>Rol de Valores/Pertences</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Celular, carteira, R$ 50,00" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          <FormField control={form.control} name="responsavelValores" render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input placeholder="Nome do responsável" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          <FormField control={form.control} name="equipamentosRetidos" render={({ field }) => (<FormItem><FormLabel>Equipamentos/Materiais Retidos</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Colar cervical, prancha rígida" {...field} /></FormControl><FormMessage /></FormItem>)}/>
