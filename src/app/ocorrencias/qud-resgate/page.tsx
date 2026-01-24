@@ -683,7 +683,7 @@ export default function QudResgatePage() {
                                 <FormField control={form.control} name="sinaisVitaisDXT" render={({ field }) => (<FormItem><FormLabel>DXT (mg/dl)</FormLabel><FormControl><Input placeholder="90" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                             </CardContent>
                         </Card>
-                        <FormField control={form.control} name="avaliacaoCraniocaudal" render={({ field }) => (<FormItem><FormLabel>Avaliação Crânio-Caudal</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        <FormField control={form.control} name="avaliacaoCraniocaudal" render={({ field }) => (<FormItem><FormLabel>Avaliação Crânio-Caudal</FormLabel><FormControl><Textarea placeholder="Ex: Nenhuma anormalidade encontrada." {...field} /></FormControl><FormMessage /></FormItem>)}/>
                     </AccordionContent>
                 </AccordionItem>
 
