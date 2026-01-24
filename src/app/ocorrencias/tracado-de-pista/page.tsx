@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Control } from 'react-hook-form';
 import * as z from 'zod';
@@ -33,6 +34,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { cn } from '@/lib/utils';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 
 const formSchema = z.object({
@@ -207,8 +209,127 @@ const formOptions = {
     sinalizacaoSemaforo: [{ value: 'Funciona', label: 'Funciona' }, { value: 'Não funciona', label: 'Não funciona' }, { value: 'Funciona com defeito', label: 'Funciona com defeito' }, { value: 'Inexistente', label: 'Inexistente' }]
 };
 
+function PreviewDialog({ data, onClose, onSave }: { data: FormValues | null; onClose: () => void; onSave: (data: FormValues) => void; }) {
+  if (!data) return null;
+
+  const renderSection = (title: string, fields: Record<string, any>) => {
+    const entries = Object.entries(fields).filter(
+      ([, value]) => value && (!Array.isArray(value) || value.length > 0)
+    );
+    if (entries.length === 0) return null;
+
+    const formatLabel = (key: string) => {
+      const result = key.replace(/([A-Z])/g, " $1");
+      return result.charAt(0).toUpperCase() + result.slice(1);
+    };
+
+    return (
+      <div key={title}>
+        <h3 className="text-xl font-bold mt-4 mb-2 border-b pb-1">{title}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 text-base">
+          {entries.map(([key, value]) => (
+            <div key={key} className="flex flex-col">
+              <span className="font-semibold text-muted-foreground">
+                {formatLabel(key)}
+              </span>
+              <span className="text-foreground">
+                {Array.isArray(value) ? value.join(", ") : String(value)}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const sections = {
+    "PRÉVIA": {
+      rodovia: data.rodovia,
+      qthExato: data.qthExato,
+      sentido: data.sentido,
+      faixaInterditada: data.faixaInterditada,
+      provavelCinematica: data.provavelCinematica,
+      provavelCinematicaOutros: data.provavelCinematicaOutros,
+      veiculos: data.veiculos,
+      quantidadeVitimas: data.quantidadeVitimas,
+      potencialGravidadePrevia: data.potencialGravidadePrevia,
+      recursosAdicionaisPrevia: data.recursosAdicionaisPrevia,
+    },
+    "CONFIRMAÇÃO DA PRÉVIA": {
+      cinematica: data.cinematica,
+      cinematicaOutros: data.cinematicaOutros,
+      energia: data.energia,
+      avarias: data.avarias,
+      posicaoVeiculo: data.posicaoVeiculo,
+      quantidadeVitimasConfirmacao: data.quantidadeVitimasConfirmacao,
+      potencialGravidadeAbordagem: data.potencialGravidadeAbordagem,
+      cod61_62: data.cod61_62,
+      recursosAdicionaisConfirmacao: data.recursosAdicionaisConfirmacao,
+      recursosAdicionaisConfirmacaoOutros: data.recursosAdicionaisConfirmacaoOutros,
+    },
+    "CONDIÇÃO": {
+      condicoesMeteorologicas: data.condicoesMeteorologicas,
+      condicaoVisibilidade: data.condicaoVisibilidade,
+      condicoesEspeciais: data.condicoesEspeciais,
+      condicoesEspeciaisOutros: data.condicoesEspeciaisOutros,
+      condicoesSinalizacao: data.condicoesSinalizacao,
+      condicoesSinalizacaoOutros: data.condicoesSinalizacaoOutros,
+    },
+    "PISTA": {
+      tipoPista: data.tipoPista,
+      tracadoPista: data.tracadoPista,
+      perfil: data.perfil,
+      obrasNaPista: data.obrasNaPista,
+      condicaoPista: data.condicaoPista,
+      obstaculoCanteiroCentral: data.obstaculoCanteiroCentral,
+      obstaculoCanteiroCentralOutros: data.obstaculoCanteiroCentralOutros,
+      obstaculoAcostamento: data.obstaculoAcostamento,
+      obstaculoAcostamentoOutros: data.obstaculoAcostamentoOutros,
+      obrasNoAcostamento: data.obrasNoAcostamento,
+      estadoConservacao: data.estadoConservacao,
+      intersecoesPista: data.intersecoesPista,
+      deficienciaObras: data.deficienciaObras,
+      deficienciaObrasOutros: data.deficienciaObrasOutros,
+      obrasDeArte: data.obrasDeArte,
+      local: data.local,
+    },
+    "SINALIZAÇÃO": {
+      sinalizacaoVertical: data.sinalizacaoVertical,
+      sinalizacaoHorizontal: data.sinalizacaoHorizontal,
+      sinalizacaoSemaforo: data.sinalizacaoSemaforo,
+    },
+  };
+
+  return (
+    <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle>Pré-visualização do Relatório</DialogTitle>
+          <DialogDescription>
+            Confira os dados do relatório antes de salvar.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="overflow-y-auto pr-6 -mr-6 flex-1">
+          {Object.entries(sections).map(([title, fields]) =>
+            renderSection(title, fields)
+          )}
+        </div>
+        <DialogFooter className="mt-4">
+          <Button variant="outline" onClick={onClose}>
+            Editar
+          </Button>
+          <Button onClick={() => onSave(data)}>Confirmar e Salvar</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+
 export default function TracadoDePistaPage() {
     const { toast } = useToast();
+    const [previewData, setPreviewData] = React.useState<FormValues | null>(null);
+
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -221,11 +342,16 @@ export default function TracadoDePistaPage() {
     });
 
     function onSubmit(values: FormValues) {
-        console.log(values);
+        setPreviewData(values);
+    }
+
+    function handleSave(data: FormValues) {
+        console.log("Saving data:", data);
         toast({
             title: 'Formulário Enviado',
             description: 'Relatório de Traçado de Pista gerado com sucesso!',
         });
+        setPreviewData(null);
     }
 
     return (
@@ -358,6 +484,7 @@ export default function TracadoDePistaPage() {
                     <Button type="submit" size="lg" className="w-full">Gerar Relatório</Button>
                 </form>
             </Form>
+            <PreviewDialog data={previewData} onClose={() => setPreviewData(null)} onSave={handleSave} />
         </div>
     );
 }
