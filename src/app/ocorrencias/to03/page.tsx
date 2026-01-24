@@ -4,9 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft, Share2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import * as React from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -69,14 +71,14 @@ const destinacaoPrOptions = [
 
 const formSchema = z.object({
   // Informações Gerais
-  rodovia: z.string().min(1, 'Selecione a rodovia.'),
-  ocorrencia: z.string(),
-  qth: z.string().min(1, 'O QTH é obrigatório.'),
-  sentido: z.string().min(1, 'Selecione o sentido.'),
-  localArea: z.string().min(1, 'Selecione o local/área.'),
-  animal: z.string().min(1, 'Descreva o tipo de animal.'),
-  quantidade: z.string().min(1, 'Informe a quantidade.'),
-  situacao: z.string().min(1, 'Selecione a situação do animal.'),
+  rodovia: z.string().optional(),
+  ocorrencia: z.string().optional(),
+  qth: z.string().optional(),
+  sentido: z.string().optional(),
+  localArea: z.string().optional(),
+  animal: z.string().optional(),
+  quantidade: z.string().optional(),
+  situacao: z.string().optional(),
 
   // Características do Entorno
   entornoNorte: z.string().optional(),
@@ -118,7 +120,17 @@ const fillEmptyWithNill = (data: any): any => {
 };
 
 const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null; onClose: () => void; onSave: (data: any) => void; formTitle: string; }) => {
+  const [numeroOcorrencia, setNumeroOcorrencia] = React.useState('');
+  const isMobile = useIsMobile();
   if (!data) return null;
+
+  const handleSaveClick = () => {
+    const dataToSave = {
+        ...data,
+        numeroOcorrencia: numeroOcorrencia || 'NILL',
+    };
+    onSave(dataToSave);
+  };
 
   const formatLabel = (key: string) => {
     const result = key.replace(/([A-Z])/g, " $1");
@@ -138,27 +150,64 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
   const Field = ({ label, value }: { label: string, value: any}) => (
     value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0) ? (
-      <div className="flex flex-col sm:flex-row sm:items-baseline">
-          <span className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</span>
-          <span className="text-foreground font-mono break-words">{renderSimpleValue(value)}</span>
+      <div className="flex flex-col sm:flex-row sm:items-start">
+        <div className="font-semibold text-muted-foreground mr-2 whitespace-nowrap">{formatLabel(label)}:</div>
+        <div className="text-foreground font-mono break-words uppercase flex-1 text-left">{renderSimpleValue(value)}</div>
       </div>
     ) : null
   );
   
   const occurrenceCode = formTitle.match(/\(([^)]+)\)/)?.[1] || formTitle.split(' ')[0] || "Relatório";
 
+  const handleShare = () => {
+    let text = `*${formTitle.toUpperCase()}*\n\n`;
+    
+    const sections: { title: string, fields: (keyof z.infer<typeof formSchema>)[] }[] = [
+        { title: 'Informações Gerais', fields: ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'animal', 'quantidade', 'situacao'] },
+        { title: 'Características do Entorno', fields: ['entornoNorte', 'entornoNorteOutros', 'entornoSul', 'entornoSulOutros'] },
+        { title: 'Traçado da Pista', fields: ['pista', 'acostamento', 'tracado', 'perfil'] },
+        { title: 'Outras Informações', fields: ['destinacaoAnimal', 'qthDestinacao', 'vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'] }
+    ];
+
+    sections.forEach(section => {
+        let sectionText = '';
+        section.fields.forEach(key => {
+            // @ts-ignore
+            const value = data[key];
+             if (value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0)) {
+                if ((key === 'entornoNorteOutros' && data.entornoNorte !== 'Outros') ||
+                    (key === 'entornoSulOutros' && data.entornoSul !== 'Outros') ||
+                    (key === 'vtrApoioDescricao' && !data.vtrApoio)) {
+                    return;
+                }
+                sectionText += `*${formatLabel(key).toUpperCase()}:* ${renderSimpleValue(value)}\n`;
+            }
+        });
+        if(sectionText) {
+            text += `*${section.title.toUpperCase()}*\n${sectionText}\n`;
+        }
+    });
+
+    if (numeroOcorrencia) {
+      text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n`;
+    }
+
+    const encodedText = encodeURIComponent(text.trim());
+    window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
+  };
+
   return (
     <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
-        <DialogHeader className="text-center">
+        <DialogHeader className="text-center pt-6">
           <DialogTitle className="text-3xl font-bold">{`Pré-visualização (${occurrenceCode})`}</DialogTitle>
           <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-1 pr-6 -mr-6">
+        <ScrollArea className="flex-1 pr-6 -mr-6 mt-4">
             <div className="space-y-6">
                 <Card>
                     <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
-                    <CardContent className="text-xl space-y-4">
+                    <CardContent className="text-xl space-y-4 pt-6">
                         <Field label="rodovia" value={data.rodovia} />
                         <Field label="ocorrencia" value={data.ocorrencia} />
                         <Field label="qth" value={data.qth} />
@@ -171,7 +220,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                 </Card>
                 <Card>
                     <CardHeader><CardTitle>Características do Entorno</CardTitle></CardHeader>
-                    <CardContent className="text-xl space-y-4">
+                    <CardContent className="text-xl space-y-4 pt-6">
                         <Field label="entornoNorte" value={data.entornoNorte} />
                         {data.entornoNorte === 'Outros' && <Field label="entornoNorteOutros" value={data.entornoNorteOutros} />}
                         <Field label="entornoSul" value={data.entornoSul} />
@@ -180,7 +229,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                 </Card>
                 <Card>
                     <CardHeader><CardTitle>Traçado da Pista</CardTitle></CardHeader>
-                    <CardContent className="text-xl space-y-4">
+                    <CardContent className="text-xl space-y-4 pt-6">
                         <Field label="pista" value={data.pista} />
                         <Field label="acostamento" value={data.acostamento} />
                         <Field label="tracado" value={data.tracado} />
@@ -189,7 +238,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                 </Card>
                  <Card>
                     <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
-                    <CardContent className="text-xl space-y-4">
+                    <CardContent className="text-xl space-y-4 pt-6">
                         <Field label="destinacaoAnimal" value={data.destinacaoAnimal} />
                         <Field label="qthDestinacao" value={data.qthDestinacao} />
                         <Field label="vtrApoio" value={data.vtrApoio} />
@@ -198,11 +247,27 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         <Field label="auxilios" value={data.auxilios} />
                     </CardContent>
                 </Card>
+                <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
+                    <CardHeader>
+                        <CardTitle className="text-white text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Input
+                            value={numeroOcorrencia}
+                            onChange={(e) => setNumeroOcorrencia(e.target.value.toUpperCase())}
+                            placeholder={isMobile ? 'INSIRA O NÚMERO' : 'INSIRA O NÚMERO DA OCORRÊNCIA'}
+                            className="text-center text-2xl font-bold h-16 bg-background border-primary focus-visible:ring-primary"
+                        />
+                    </CardContent>
+                </Card>
             </div>
         </ScrollArea>
-        <DialogFooter className="mt-4 pt-4 border-t">
+        <DialogFooter className="mt-4 flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4 border-t">
           <Button variant="outline" onClick={onClose}>Editar</Button>
-          <Button onClick={() => onSave(data)}>Confirmar e Salvar</Button>
+          <Button onClick={handleShare} className="bg-green-600 hover:bg-green-700" disabled={!numeroOcorrencia}>
+            <Share2 className="mr-2 h-5 w-5"/> Compartilhar
+          </Button>
+          <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -212,7 +277,9 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
 export default function OcorrenciaTO03Page() {
   const { toast } = useToast();
+  const router = useRouter();
   const [previewData, setPreviewData] = React.useState<z.infer<typeof formSchema> | null>(null);
+  const [editingId, setEditingId] = React.useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -241,6 +308,31 @@ export default function OcorrenciaTO03Page() {
       auxilios: '',
     },
   });
+  
+  React.useEffect(() => {
+    try {
+        const editDataString = localStorage.getItem('editOcorrenciaData');
+        if (editDataString) {
+            const editData = JSON.parse(editDataString);
+            if(editData.formPath === '/ocorrencias/to03') {
+                const reportToLoad = editData.fullReport;
+                
+                Object.keys(reportToLoad).forEach(key => {
+                    if (reportToLoad[key] === 'NILL') {
+                        reportToLoad[key] = Array.isArray(form.getValues(key as keyof z.infer<typeof formSchema>)) ? [] : '';
+                    }
+                });
+
+                form.reset(reportToLoad);
+                setEditingId(editData.id);
+                localStorage.removeItem('editOcorrenciaData');
+            }
+        }
+    } catch(e) {
+        console.error("Error reading edit data from localStorage", e);
+        localStorage.removeItem('editOcorrenciaData');
+    }
+  }, [form]);
 
   const destinacaoAnimalValue = form.watch('destinacaoAnimal') ?? [];
 
@@ -249,13 +341,46 @@ export default function OcorrenciaTO03Page() {
     setPreviewData(processedValues);
   }
 
-  function handleSave(data: z.infer<typeof formSchema>) {
-    console.log("Saving data:", data);
-    toast({
-      title: 'Formulário Enviado',
-      description: 'Ocorrência TO03 registrada com sucesso!',
-    });
-    setPreviewData(null);
+  function handleSave(data: any) {
+    try {
+        const savedOcorrencias = JSON.parse(localStorage.getItem('ocorrencias_v2') || '[]');
+        const formTitle = "ANIMAL NA RODOVIA (TO03)";
+
+        const ocorrenciaData = {
+            id: editingId || new Date().toISOString(),
+            codOcorrencia: data.ocorrencia,
+            type: formTitle,
+            rodovia: data.rodovia,
+            km: data.qth,
+            timestamp: new Date().toLocaleString('pt-BR'),
+            status: 'Finalizada' as const,
+            fullReport: data,
+            numeroOcorrencia: data.numeroOcorrencia,
+            formPath: '/ocorrencias/to03'
+        };
+
+        let updatedOcorrencias;
+        if (editingId) {
+            updatedOcorrencias = savedOcorrencias.map((o: any) => o.id === editingId ? ocorrenciaData : o);
+             toast({ title: 'Ocorrência Atualizada', description: 'Ocorrência atualizada com sucesso!' });
+        } else {
+            updatedOcorrencias = [...savedOcorrencias, ocorrenciaData];
+            toast({ title: 'Formulário Enviado', description: 'Ocorrência registrada com sucesso!' });
+        }
+        
+        localStorage.setItem('ocorrencias_v2', JSON.stringify(updatedOcorrencias));
+        
+        setPreviewData(null);
+        router.push('/ocorrencias');
+
+    } catch (e) {
+        console.error("Could not save to localStorage", e);
+        toast({
+          variant: "destructive",
+          title: 'Erro ao Salvar',
+          description: 'Não foi possível salvar a ocorrência.',
+        });
+    }
   }
 
 
@@ -291,7 +416,7 @@ export default function OcorrenciaTO03Page() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Rodovia</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione a rodovia" />
@@ -342,7 +467,7 @@ export default function OcorrenciaTO03Page() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Sentido</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione o sentido" />
@@ -366,7 +491,7 @@ export default function OcorrenciaTO03Page() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Local/Área</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione o local/área" />
@@ -417,7 +542,7 @@ export default function OcorrenciaTO03Page() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Situação</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione a situação" />
@@ -449,7 +574,7 @@ export default function OcorrenciaTO03Page() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Entorno Norte</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione o entorno" />
@@ -491,7 +616,7 @@ export default function OcorrenciaTO03Page() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Entorno Sul</FormLabel>
-                       <Select onValueChange={field.onChange} defaultValue={field.value}>
+                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione o entorno" />
@@ -540,7 +665,7 @@ export default function OcorrenciaTO03Page() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Pista</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione o tipo de pista" />
@@ -563,7 +688,7 @@ export default function OcorrenciaTO03Page() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Acostamento</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione o tipo de acostamento" />
@@ -586,7 +711,7 @@ export default function OcorrenciaTO03Page() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Traçado</FormLabel>
-                     <Select onValueChange={field.onChange} defaultValue={field.value}>
+                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione o tipo de traçado" />
@@ -608,7 +733,7 @@ export default function OcorrenciaTO03Page() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Perfil</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione o perfil" />

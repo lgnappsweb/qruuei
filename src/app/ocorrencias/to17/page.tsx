@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ArrowLeft, Share2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import * as React from 'react';
@@ -131,43 +132,31 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
   
   const handleShare = () => {
     let text = `*${formTitle.toUpperCase()}*\n\n`;
-    if (numeroOcorrencia) {
-      text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n\n`;
-    }
 
-    const formatSectionForShare = (sectionTitle: string, fields: object) => {
-      let sectionText = '';
-      for (const [key, value] of Object.entries(fields)) {
-        if (value === null || value === undefined || (Array.isArray(value) && value.length === 0) || String(value).trim() === '' || value === 'NILL' ) continue;
-        if ((key === 'vtrApoioDescricao' && !data.vtrApoio)) continue;
+    const sections: { title: string, fields: (keyof z.infer<typeof formSchema>)[] }[] = [
+        { title: 'Informações Gerais', fields: ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea'] },
+        { title: 'Outras Informações', fields: ['vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'] }
+    ];
 
-        const processedValue = renderSimpleValue(value);
-        if (processedValue) {
-          sectionText += `*${formatLabel(key).toUpperCase()}:* ${processedValue}\n`;
+    sections.forEach(section => {
+        let sectionText = '';
+        section.fields.forEach(key => {
+            // @ts-ignore
+            const value = data[key];
+            if (value !== 'NILL' && value !== '' && (!Array.isArray(value) || value.length > 0)) {
+                 if (key === 'vtrApoioDescricao' && !data.vtrApoio) return;
+                sectionText += `*${formatLabel(key).toUpperCase()}:* ${renderSimpleValue(value)}\n`;
+            }
+        });
+        if(sectionText) {
+            text += `*${section.title.toUpperCase()}*\n${sectionText}\n`;
         }
-      }
-      if (sectionText) {
-        text += `*${sectionTitle.toUpperCase()}*\n${sectionText}\n`;
-      }
-    };
+    });
 
-    const generalFields = {
-      rodovia: data.rodovia,
-      ocorrencia: data.ocorrencia,
-      qth: data.qth,
-      sentido: data.sentido,
-      localArea: data.localArea,
-    };
-    formatSectionForShare('Informações Gerais', generalFields);
-
-    const otherFields = {
-      vtrApoio: data.vtrApoio,
-      vtrApoioDescricao: data.vtrApoioDescricao,
-      observacoes: data.observacoes,
-      auxilios: data.auxilios,
-    };
-    formatSectionForShare('Outras Informações', otherFields);
-
+    if (numeroOcorrencia) {
+      text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n`;
+    }
+    
     const encodedText = encodeURIComponent(text.trim());
     window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
   };
@@ -183,7 +172,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
             <div className="space-y-6">
                 <Card>
                     <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
-                    <CardContent className="text-xl space-y-4">
+                    <CardContent className="text-xl space-y-4 pt-6">
                         <Field label="rodovia" value={data.rodovia} />
                         <Field label="ocorrencia" value={data.ocorrencia} />
                         <Field label="qth" value={data.qth} />
@@ -194,7 +183,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
                 <Card className="mt-6">
                     <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
-                    <CardContent className="text-xl space-y-4">
+                    <CardContent className="text-xl space-y-4 pt-6">
                         <Field label="vtrApoio" value={data.vtrApoio} />
                         {data.vtrApoio && <Field label="vtrApoioDescricao" value={data.vtrApoioDescricao} />}
                         <Field label="observacoes" value={data.observacoes} />
@@ -232,7 +221,9 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
 export default function OcorrenciaTO17Page() {
   const { toast } = useToast();
+  const router = useRouter();
   const [previewData, setPreviewData] = React.useState<z.infer<typeof formSchema> | null>(null);
+  const [editingId, setEditingId] = React.useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -249,18 +240,76 @@ export default function OcorrenciaTO17Page() {
     },
   });
 
+  React.useEffect(() => {
+    try {
+        const editDataString = localStorage.getItem('editOcorrenciaData');
+        if (editDataString) {
+            const editData = JSON.parse(editDataString);
+            if(editData.formPath === '/ocorrencias/to17') {
+                const reportToLoad = editData.fullReport;
+                
+                Object.keys(reportToLoad).forEach(key => {
+                    if (reportToLoad[key] === 'NILL') {
+                        reportToLoad[key] = '';
+                    }
+                });
+
+                form.reset(reportToLoad);
+                setEditingId(editData.id);
+                localStorage.removeItem('editOcorrenciaData');
+            }
+        }
+    } catch(e) {
+        console.error("Error reading edit data from localStorage", e);
+        localStorage.removeItem('editOcorrenciaData');
+    }
+  }, [form]);
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     const processedValues = fillEmptyWithNill(values);
     setPreviewData(processedValues);
   }
 
-  function handleSave(data: z.infer<typeof formSchema>) {
-    console.log("Saving data:", data);
-    toast({
-      title: 'Formulário Enviado',
-      description: 'Ocorrência TO17 registrada com sucesso!',
-    });
-    setPreviewData(null);
+  function handleSave(data: any) {
+    try {
+        const savedOcorrencias = JSON.parse(localStorage.getItem('ocorrencias_v2') || '[]');
+        const formTitle = "ANDARILHO NA RODOVIA (TO17)";
+
+        const ocorrenciaData = {
+            id: editingId || new Date().toISOString(),
+            codOcorrencia: data.ocorrencia,
+            type: formTitle,
+            rodovia: data.rodovia,
+            km: data.qth,
+            timestamp: new Date().toLocaleString('pt-BR'),
+            status: 'Finalizada' as const,
+            fullReport: data,
+            numeroOcorrencia: data.numeroOcorrencia,
+            formPath: '/ocorrencias/to17'
+        };
+
+        let updatedOcorrencias;
+        if (editingId) {
+            updatedOcorrencias = savedOcorrencias.map((o: any) => o.id === editingId ? ocorrenciaData : o);
+             toast({ title: 'Ocorrência Atualizada', description: 'Ocorrência atualizada com sucesso!' });
+        } else {
+            updatedOcorrencias = [...savedOcorrencias, ocorrenciaData];
+            toast({ title: 'Formulário Enviado', description: 'Ocorrência registrada com sucesso!' });
+        }
+        
+        localStorage.setItem('ocorrencias_v2', JSON.stringify(updatedOcorrencias));
+        
+        setPreviewData(null);
+        router.push('/ocorrencias');
+
+    } catch (e) {
+        console.error("Could not save to localStorage", e);
+        toast({
+          variant: "destructive",
+          title: 'Erro ao Salvar',
+          description: 'Não foi possível salvar a ocorrência.',
+        });
+    }
   }
 
   return (
@@ -295,7 +344,7 @@ export default function OcorrenciaTO17Page() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Rodovia</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione a rodovia" />
@@ -346,7 +395,7 @@ export default function OcorrenciaTO17Page() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Sentido</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione o sentido" />
@@ -369,7 +418,7 @@ export default function OcorrenciaTO17Page() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Local/Área</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione o local/área" />

@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Control, useWatch, useFieldArray } from 'react-hook-form';
 import * as z from 'zod';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ArrowLeft, PlusCircle, Share2, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import * as React from 'react';
@@ -247,9 +248,6 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
     const handleShare = () => {
     let text = `*${formTitle.toUpperCase()}*\n\n`;
-    if (numeroOcorrencia) {
-      text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n\n`;
-    }
 
     const formatSectionForShare = (sectionTitle: string, fields: object) => {
       let sectionText = '';
@@ -284,6 +282,10 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
         text += `*Material ${index + 1}:* ${item.nome.toUpperCase()} - *Qtd:* ${item.quantidade}\n`;
       });
       text += '\n';
+    }
+
+    if (numeroOcorrencia) {
+      text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n`;
     }
 
     const encodedText = encodeURIComponent(text.trim());
@@ -486,12 +488,13 @@ function GlasgowScale({ control }: { control: Control<FormValues> }) {
 // Main page component
 export default function OcorrenciaTO12Page() {
   const { toast } = useToast();
+  const router = useRouter();
   const [previewData, setPreviewData] = React.useState<FormValues | null>(null);
+  const [editingId, setEditingId] = React.useState<string | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      // Set all default values to empty strings to avoid uncontrolled component error
       rodovia: '',
       km: '',
       sentido: '',
@@ -577,6 +580,30 @@ export default function OcorrenciaTO12Page() {
     },
   });
 
+  React.useEffect(() => {
+    try {
+        const editDataString = localStorage.getItem('editOcorrenciaData');
+        if (editDataString) {
+            const editData = JSON.parse(editDataString);
+            if(editData.formPath === '/ocorrencias/to12') {
+                const reportToLoad = editData.fullReport;
+                 Object.keys(reportToLoad).forEach(key => {
+                    if (reportToLoad[key] === 'NILL') {
+                       reportToLoad[key] = Array.isArray(form.getValues(key as keyof FormValues)) ? [] : '';
+                    }
+                });
+
+                form.reset(reportToLoad);
+                setEditingId(editData.id);
+                localStorage.removeItem('editOcorrenciaData');
+            }
+        }
+    } catch(e) {
+        console.error("Error reading edit data from localStorage", e);
+        localStorage.removeItem('editOcorrenciaData');
+    }
+  }, [form]);
+
   const watchConduta = useWatch({ control: form.control, name: 'conduta'});
 
   const { fields: materialFields, append: appendMaterial, remove: removeMaterial } = useFieldArray({
@@ -589,13 +616,46 @@ export default function OcorrenciaTO12Page() {
     setPreviewData(processedValues);
   }
 
-  function handleSave(data: FormValues) {
-    console.log("Saving data:", data);
-    toast({
-      title: 'Formulário Enviado',
-      description: 'Ocorrência TO12 (Atendimento Clínico) registrada com sucesso!',
-    });
-    setPreviewData(null);
+  function handleSave(data: any) {
+    try {
+        const savedOcorrencias = JSON.parse(localStorage.getItem('ocorrencias_v2') || '[]');
+        const formTitle = "ATENDIMENTO CLÍNICO (TO12)";
+
+        const ocorrenciaData = {
+            id: editingId || new Date().toISOString(),
+            codOcorrencia: 'TO12',
+            type: formTitle,
+            rodovia: data.rodovia,
+            km: data.km,
+            timestamp: new Date().toLocaleString('pt-BR'),
+            status: 'Finalizada' as const,
+            fullReport: data,
+            numeroOcorrencia: data.numeroOcorrencia,
+            formPath: '/ocorrencias/to12'
+        };
+
+        let updatedOcorrencias;
+        if (editingId) {
+            updatedOcorrencias = savedOcorrencias.map((o: any) => o.id === editingId ? ocorrenciaData : o);
+             toast({ title: 'Ocorrência Atualizada', description: 'Ocorrência atualizada com sucesso!' });
+        } else {
+            updatedOcorrencias = [...savedOcorrencias, ocorrenciaData];
+            toast({ title: 'Formulário Enviado', description: 'Ocorrência registrada com sucesso!' });
+        }
+        
+        localStorage.setItem('ocorrencias_v2', JSON.stringify(updatedOcorrencias));
+        
+        setPreviewData(null);
+        router.push('/ocorrencias');
+
+    } catch (e) {
+        console.error("Could not save to localStorage", e);
+        toast({
+          variant: "destructive",
+          title: 'Erro ao Salvar',
+          description: 'Não foi possível salvar a ocorrência.',
+        });
+    }
   }
 
   return (
@@ -623,7 +683,7 @@ export default function OcorrenciaTO12Page() {
                     <AccordionTrigger className="text-xl font-bold">DADOS OPERACIONAIS</AccordionTrigger>
                     <AccordionContent className="space-y-6 pt-4">
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <FormField control={form.control} name="rodovia" render={({ field }) => (<FormItem><FormLabel>Rodovia</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="MS-112">MS-112</SelectItem><SelectItem value="BR-158">BR-158</SelectItem><SelectItem value="MS-306">MS-306</SelectItem><SelectItem value="BR-436">BR-436</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
+                            <FormField control={form.control} name="rodovia" render={({ field }) => (<FormItem><FormLabel>Rodovia</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="MS-112">MS-112</SelectItem><SelectItem value="BR-158">BR-158</SelectItem><SelectItem value="MS-306">MS-306</SelectItem><SelectItem value="BR-436">BR-436</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
                             <FormField control={form.control} name="km" render={({ field }) => (<FormItem><FormLabel>KM</FormLabel><FormControl><Input placeholder="Ex: 123+400" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          </div>
                          <RadioGroupField control={form.control} name="sentido" label="Sentido" options={[{value: 'Norte', label: 'Norte'}, {value: 'Sul', label: 'Sul'}]} orientation="horizontal" />
@@ -782,7 +842,7 @@ export default function OcorrenciaTO12Page() {
                     <AccordionTrigger className="text-xl font-bold">AVALIAÇÃO PRIMÁRIA (XABCDE)</AccordionTrigger>
                     <AccordionContent className="space-y-6 pt-4">
                         <RadioGroupField control={form.control} name="hemorragiaExsanguinante" label="X - Hemorragia Exsanguinante" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal"/>
-                        <FormField control={form.control} name="viasAereas" render={({ field }) => (<FormItem><FormLabel>A - Vias Aéreas</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="pervias">Pérvias</SelectItem><SelectItem value="obstruidas">Obstruídas Por</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
+                        <FormField control={form.control} name="viasAereas" render={({ field }) => (<FormItem><FormLabel>A - Vias Aéreas</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="pervias">Pérvias</SelectItem><SelectItem value="obstruidas">Obstruídas Por</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
                         {form.watch('viasAereas') === 'obstruidas' && <FormField control={form.control} name="viasAereasObstruidasPor" render={({ field }) => (<FormItem><FormLabel>Obstruídas Por</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />}
                         
                         <RadioGroupField control={form.control} name="ventilacao" label="B - Ventilação" options={[{value: 'presente', label: 'Presente'}, {value: 'ausente', label: 'Ausente'}]} orientation="horizontal"/>
@@ -888,7 +948,7 @@ export default function OcorrenciaTO12Page() {
                             {value: 'obito_atendimento', label: 'Óbito Durante Atendimento'},
                         ]} />
                         {form.watch('conduta') === 'removido_terceiros' && (
-                             <FormField control={form.control} name="removidoPorTerceiros" render={({ field }) => (<FormItem><FormLabel>Removido por</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="COBOM">COBOM</SelectItem><SelectItem value="SAMU">SAMU</SelectItem><SelectItem value="OUTROS">Outros</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
+                             <FormField control={form.control} name="removidoPorTerceiros" render={({ field }) => (<FormItem><FormLabel>Removido por</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="COBOM">COBOM</SelectItem><SelectItem value="SAMU">SAMU</SelectItem><SelectItem value="OUTROS">Outros</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
                         )}
                          {form.watch('conduta') === 'removido_hospital' && (
                             <FormField control={form.control} name="removidoHospital" render={({ field }) => (<FormItem><FormLabel>Unidade Hospitalar</FormLabel><FormControl><Input placeholder="Ex: Santa Casa" {...field} /></FormControl><FormMessage /></FormItem>)}/>
