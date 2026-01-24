@@ -7,6 +7,7 @@ import * as z from 'zod';
 import Link from 'next/link';
 import { ArrowLeft, PlusCircle, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -149,44 +150,59 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
   const renderValue = (value: any): React.ReactNode => {
     if (typeof value === 'boolean') {
-      return value ? 'Sim' : 'Não';
+      return value ? 'SIM' : 'NÃO';
     }
     if (Array.isArray(value)) {
       if (value.length === 0) return 'NILL';
       const isObjectArray = typeof value[0] === 'object' && value[0] !== null;
       if (isObjectArray) {
         return value.map((item, index) => (
-          <div key={index} className="mt-2 pl-4 border-l">
-            <h4 className="font-semibold text-md mb-1">Item {index + 1}</h4>
-            {Object.entries(item).map(([k, v]) => (
-              <div key={k}>
-                <span className="font-semibold text-muted-foreground">{formatLabel(k)}: </span>
-                {renderValue(v)}
-              </div>
-            ))}
+          <div key={index} className="mt-4 pl-4 col-span-full">
+            <h4 className="font-bold text-xl mb-2 border-b">Item {index + 1}</h4>
+            <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 text-lg">
+                {Object.entries(item).map(([k, v]) => (
+                  <React.Fragment key={k}>
+                    <div className="font-semibold text-muted-foreground text-right">{formatLabel(k)}:</div>
+                    <div className="text-foreground break-words font-mono uppercase">{renderValue(v)}</div>
+                  </React.Fragment>
+                ))}
+            </div>
           </div>
         ));
       }
-      return value.join(', ');
+      return String(value.join(', ')).toUpperCase();
     }
-    return String(value);
+    return String(value).toUpperCase();
   }
+
+  const occurrenceCode = formTitle.match(/\(([^)]+)\)/)?.[1] || formTitle.split(' ')[0] || "Relatório";
 
   return (
     <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
-        <DialogHeader>
-          <DialogTitle>Pré-visualização: {formTitle}</DialogTitle>
+        <DialogHeader className="text-center">
+          <DialogTitle className="text-2xl">Pré-visualização ({occurrenceCode})</DialogTitle>
           <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
         </DialogHeader>
         <ScrollArea className="flex-1 pr-6 -mr-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-base">
-                {Object.entries(data).map(([key, value]) => (
-                    <div key={key} className="flex flex-col">
-                        <span className="font-semibold text-muted-foreground">{formatLabel(key)}</span>
-                        <div className="text-foreground break-words">{renderValue(value)}</div>
-                    </div>
-                ))}
+            <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-x-4 gap-y-2 items-baseline text-lg">
+                {Object.entries(data).map(([key, value]) => {
+                     const isObjectArray = Array.isArray(value) && value.length > 0 && typeof value[0] === 'object';
+                     if (isObjectArray) {
+                        return (
+                             <div key={key} className="col-span-full">
+                                <h3 className="font-bold text-2xl mt-6 mb-2 border-b">{formatLabel(key)}</h3>
+                                {renderValue(value)}
+                            </div>
+                        )
+                     }
+                     return (
+                        <React.Fragment key={key}>
+                            <div className="font-semibold text-muted-foreground text-right">{formatLabel(key)}:</div>
+                            <div className="text-foreground break-words font-mono uppercase">{renderValue(value)}</div>
+                        </React.Fragment>
+                     )
+                })}
             </div>
         </ScrollArea>
         <DialogFooter className="mt-4 pt-4 border-t">
@@ -197,6 +213,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     </Dialog>
   );
 };
+
 
 export default function QudOperacaoPage() {
   const { toast } = useToast();
