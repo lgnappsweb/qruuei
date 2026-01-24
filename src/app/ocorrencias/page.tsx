@@ -28,7 +28,39 @@ const initialOcorrencias = [
     timestamp: '26/07/2024 10:30',
     status: 'Finalizada' as 'Finalizada' | 'Em Andamento',
     codOcorrencia: 'AC01',
-    details: 'Vítima com ferimentos leves, transportada ao hospital local. Veículo removido da pista. Equipe Bravo-01 no local.'
+    details: 'Vítima com ferimentos leves, transportada ao hospital local. Veículo removido da pista. Equipe Bravo-01 no local.',
+    fullReport: {
+      'DADOS OPERACIONAIS': {
+        'Equipe': 'Bravo-01',
+        'Médico Regulador': 'Dr. Carlos',
+        'Nº Ocorrência': '2024-00123',
+        'Horários': 'Acionamento: 10:30, Chegada no Local: 10:45, Saída do Local: 11:15, Chegada no Hospital: 11:30'
+      },
+      'DADOS CADASTRAIS DO USUÁRIO': {
+        'Nome': 'João da Silva',
+        'Idade': '35',
+        'Sexo': 'Masculino',
+        'Telefone': '(67) 99999-1234',
+        'Acompanhante': 'Maria Souza (esposa)'
+      },
+      'EVENTO E CINEMÁTICA': {
+        'Tipo de Evento': 'Trauma - Acidente Automobilístico',
+        'Detalhes': 'Colisão frontal entre carro e moto.',
+        'Condição Inicial': 'Vítima (motociclista) ao solo, consciente.'
+      },
+      'AVALIAÇÃO E PROCEDIMENTOS': {
+        'Avaliação Primária': 'Vias aéreas pérvias, ventilação presente, pulso filiforme, hemorragia em membro inferior direito contida.',
+        'Glasgow': '14 (Ocular: 4, Verbal: 4, Motora: 6)',
+        'Sinais Vitais': 'PA: 110x70 mmHg, FC: 110 bpm, FR: 22 rpm, SatO2: 95%',
+        'Procedimentos': 'Imobilização com colar cervical e prancha rígida, curativo compressivo em MID, acesso venoso em MSE.'
+      },
+      'DESFECHO': {
+        'Conduta': 'Removido a Unidade Hospitalar',
+        'Hospital': 'Santa Casa de Cassilândia',
+        'Código': 'Vermelho',
+        'Observações': 'Vítima agitada, refere dor intensa em MID. Estável durante transporte.'
+      }
+    }
   },
   {
     id: '2',
@@ -126,10 +158,32 @@ export default function OcorrenciasPage() {
 
               {isExpanded && (
                 <CardContent className="border-t pt-4">
-                   <h4 className="font-semibold mb-2">Detalhes:</h4>
-                   <p className="text-sm text-muted-foreground">
-                    {ocorrencia.details}
-                  </p>
+                    {/* @ts-ignore */}
+                    {ocorrencia.fullReport ? (
+                        <div className="space-y-4">
+                            {/* @ts-ignore */}
+                            {Object.entries(ocorrencia.fullReport).map(([sectionTitle, sectionDetails]) => (
+                                <div key={sectionTitle}>
+                                    <h4 className="font-semibold mb-2 text-lg">{sectionTitle}</h4>
+                                    <div className="space-y-1 text-sm text-muted-foreground">
+                                        {/* @ts-ignore */}
+                                        {Object.entries(sectionDetails).map(([key, value]) => (
+                                            <p key={key}>
+                                                <span className="font-semibold text-foreground">{key}:</span> {String(value)}
+                                            </p>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="space-y-2">
+                           <h4 className="font-semibold mb-2">Detalhes:</h4>
+                           <p className="text-sm text-muted-foreground">
+                            {ocorrencia.details}
+                          </p>
+                        </div>
+                    )}
                 </CardContent>
               )}
 
