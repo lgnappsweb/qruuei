@@ -274,7 +274,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
         </ScrollArea>
         <DialogFooter className="mt-4 flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4 border-t">
           <Button variant="outline" onClick={onClose}>Editar</Button>
-          <Button onClick={handleShare} className="bg-green-600 hover:bg-green-700">
+          <Button onClick={handleShare} className="bg-green-600 hover:bg-green-700" disabled={!numeroOcorrencia}>
             <Share2 className="mr-2 h-5 w-5"/> Compartilhar
           </Button>
           <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>

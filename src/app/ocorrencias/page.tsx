@@ -306,7 +306,7 @@ export default function OcorrenciasPage() {
                     <Button variant="outline" size="sm" onClick={() => handleEdit(ocorrencia)}>
                       <Edit className="mr-2 h-4 w-4"/> Editar
                     </Button>
-                     <Button variant="default" size="sm" onClick={() => handleShare(ocorrencia)} className="bg-green-600 hover:bg-green-700">
+                     <Button variant="default" size="sm" onClick={() => handleShare(ocorrencia)} className="bg-green-600 hover:bg-green-700" disabled={!ocorrencia.numeroOcorrencia || ocorrencia.numeroOcorrencia === 'NILL'}>
                       <Share2 className="mr-2 h-4 w-4"/> Compartilhar
                     </Button>
                     <AlertDialog>
