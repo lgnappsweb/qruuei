@@ -155,36 +155,37 @@ export default function OcorrenciasPage() {
 
   const handleShare = (ocorrencia: Ocorrencia) => {
     let text = `*RELATÓRIO DE OCORRÊNCIA: ${ocorrencia.type.toUpperCase()}*\n\n`;
-    if (ocorrencia.numeroOcorrencia && ocorrencia.numeroOcorrencia !== 'NILL') {
-      text += `*NÚMERO DA OCORRÊNCIA:* ${ocorrencia.numeroOcorrencia.toUpperCase()}\n\n`;
+
+    const renderValue = (value: any, key: string): string => {
+        if (typeof value === 'boolean') return value ? 'SIM' : 'NÃO';
+        if (Array.isArray(value)) {
+             if (value.length === 0) return '';
+             if (key === 'tipoPanes') {
+                return value.map(id => tiposPane.find(p => p.id === id)?.label.split(' - ')[1] || id).join(', ').toUpperCase();
+             }
+             return value.join(', ').toUpperCase();
+        }
+        return String(value).toUpperCase();
     }
 
-    const renderValue = (value: any): string => {
-      if (typeof value === 'boolean') return value ? 'SIM' : 'NÃO';
-      if (Array.isArray(value)) return value.join(', ').toUpperCase();
-      return String(value).toUpperCase();
-    }
+    const fieldOrder = fieldOrders[ocorrencia.formPath] || Object.keys(ocorrencia.fullReport);
     
-    const processSection = (data: any, sectionTitle?: string) => {
-      let sectionText = '';
-      const order = fieldOrders[ocorrencia.formPath] || Object.keys(data);
-      
-      order.forEach(key => {
-        if (key === 'vehicles' || !(key in data)) return;
-        const value = data[key];
+    const vehicleMarkerIndex = fieldOrder.indexOf('---VEHICLES---');
 
-        if (value === null || value === undefined || (Array.isArray(value) && value.length === 0) || String(value).trim() === '' || value === 'NILL' ) return;
-        sectionText += `*${formatLabel(key).toUpperCase()}:* ${renderValue(value)}\n`;
-      })
+    const generalFields = vehicleMarkerIndex !== -1 ? fieldOrder.slice(0, vehicleMarkerIndex) : [...fieldOrder.filter(k => k !== 'vehicles' && k !== 'numeroOcorrencia')];
+    const otherFields = vehicleMarkerIndex !== -1 ? fieldOrder.slice(vehicleMarkerIndex + 1) : [];
 
-      if (sectionText) {
-          if(sectionTitle) text += `*${sectionTitle.toUpperCase()}*\n`;
-          text += sectionText + '\n';
-      }
-    };
-    
-    processSection(ocorrencia.fullReport);
-    
+    let generalText = '';
+    generalFields.forEach(key => {
+        if (key in ocorrencia.fullReport) {
+            const value = ocorrencia.fullReport[key];
+            if (value === null || value === undefined || (Array.isArray(value) && value.length === 0) || String(value).trim() === '' || value === 'NILL' ) return;
+            generalText += `*${formatLabel(key).toUpperCase()}:* ${renderValue(value, key)}\n`;
+        }
+    });
+    if (generalText) text += generalText + '\n';
+
+
     if (Array.isArray(ocorrencia.fullReport.vehicles) && ocorrencia.fullReport.vehicles.length > 0) {
       const vehicleOrder = ocorrencia.formPath === '/ocorrencias/qud-operacao' || ocorrencia.formPath === '/ocorrencias/to11' || ocorrencia.formPath === '/ocorrencias/to19' ? vehicleWithPersonalDataFieldOrder : vehicleFieldOrder;
       ocorrencia.fullReport.vehicles.forEach((vehicle: any, index: number) => {
@@ -193,13 +194,27 @@ export default function OcorrenciasPage() {
             if(key in vehicle) {
                  const value = vehicle[key];
                  if (value === null || value === undefined || (Array.isArray(value) && value.length === 0) || String(value).trim() === '' || value === 'NILL' ) return;
-                 vehicleText += `*${formatLabel(key).toUpperCase()}:* ${renderValue(value)}\n`;
+                 vehicleText += `*${formatLabel(key).toUpperCase()}:* ${renderValue(value, key)}\n`;
             }
         });
         if(vehicleText) {
             text += `*DADOS DO VEÍCULO ${index + 1}*\n${vehicleText}\n`;
         }
       });
+    }
+
+    let otherText = '';
+    otherFields.forEach(key => {
+        if (key in ocorrencia.fullReport) {
+            const value = ocorrencia.fullReport[key];
+            if (value === null || value === undefined || (Array.isArray(value) && value.length === 0) || String(value).trim() === '' || value === 'NILL' ) return;
+            otherText += `*${formatLabel(key).toUpperCase()}:* ${renderValue(value, key)}\n`;
+        }
+    });
+     if (otherText) text += otherText + '\n';
+
+    if (ocorrencia.numeroOcorrencia && ocorrencia.numeroOcorrencia !== 'NILL') {
+      text += `*NÚMERO DA OCORRÊNCIA:* ${ocorrencia.numeroOcorrencia.toUpperCase()}\n`;
     }
 
     const encodedText = encodeURIComponent(text.trim());
