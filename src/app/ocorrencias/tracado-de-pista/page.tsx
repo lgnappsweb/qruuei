@@ -328,6 +328,9 @@ export default function TracadoDePistaPage() {
                 <h1 className="font-condensed text-3xl font-bold tracking-tight">
                     TRAÇADO DE PISTA - ACIDENTE
                 </h1>
+                <p className="text-muted-foreground">
+                  Preencha os campos abaixo para registrar a ocorrência.
+                </p>
             </div>
 
             <Form {...form}>

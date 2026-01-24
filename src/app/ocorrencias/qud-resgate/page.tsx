@@ -512,6 +512,9 @@ export default function QudResgatePage() {
         <h1 className="font-condensed text-3xl font-bold tracking-tight">
           QUD RESGATE - ATENDIMENTO PRÉ-HOSPITALAR
         </h1>
+        <p className="text-muted-foreground">
+          Preencha os campos abaixo para registrar a ocorrência.
+        </p>
       </div>
 
       <Form {...form}>
@@ -847,7 +850,7 @@ export default function QudResgatePage() {
                             <CardContent className="space-y-4 pt-6">
                                 {materialFields.map((item, index) => (
                                 <div key={item.id} className="flex items-end gap-2 p-2 border rounded-lg relative md:gap-4 md:p-4">
-                                    <div className="grid grid-cols-1 gap-4 flex-1 md:grid-cols-1 md:w-full">
+                                    <div className="grid grid-cols-1 gap-4 flex-1 md:w-full">
                                         <FormField
                                             control={form.control}
                                             name={`materiais.${index}.nome`}
@@ -880,6 +883,7 @@ export default function QudResgatePage() {
                                         variant="destructive"
                                         size="icon"
                                         onClick={() => removeMaterial(index)}
+                                        className="mb-11"
                                     >
                                         <Trash2 className="h-5 w-5" />
                                         <span className="sr-only">Remover Material</span>
@@ -901,7 +905,7 @@ export default function QudResgatePage() {
                          <FormField control={form.control} name="rolValores" render={({ field }) => (<FormItem><FormLabel>Rol de Valores/Pertences</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Celular, carteira com documentos e R$ 50,00" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          <FormField control={form.control} name="responsavelValores" render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input placeholder="Nome do responsável" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          <FormField control={form.control} name="equipamentosRetidos" render={({ field }) => (<FormItem><FormLabel>Equipamentos/Materiais Retidos</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Colar cervical, prancha rígida..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                         <FormField control={form.control} name="responsavelEquipamentos" render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input placeholder="Nome do responsável" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                         <FormField control={form.control} name="responsavelEquipamentos" render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input placeholder="Nome do responsável" {...field} /></FormControl><FormMessage /></FormMessage>)}/>
                     </AccordionContent>
                  </AccordionItem>
 
@@ -935,7 +939,7 @@ export default function QudResgatePage() {
           <Button type="submit" size="lg" className="w-full">Gerar Relatório</Button>
         </form>
       </Form>
-      <PreviewDialog data={previewData} onClose={() => setPreviewData(null)} onSave={handleSave} formTitle="QUD RESGATE" />
+      <PreviewDialog data={previewData} onClose={() => setPreviewData(null)} onSave={handleSave} formTitle="ATENDIMENTO A FUNCIONÁRIO (TO16)" />
     </div>
   );
 }
