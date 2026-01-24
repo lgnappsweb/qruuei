@@ -277,6 +277,14 @@ export default function OcorrenciasPage() {
                                 if (key === 'vehicles' || !(key in ocorrencia.fullReport)) return null;
                                 return <ReportField key={key} fieldKey={key} value={ocorrencia.fullReport[key]} />;
                             })}
+                            {ocorrencia.numeroOcorrencia && ocorrencia.numeroOcorrencia !== 'NILL' && (
+                                <div className="pt-2 mt-2 border-t">
+                                    <p>
+                                        <span className="font-semibold text-foreground">Número da Ocorrência:</span>{' '}
+                                        {String(ocorrencia.numeroOcorrencia).toUpperCase()}
+                                    </p>
+                                </div>
+                            )}
                       </div>
                   </CardContent>
                   <CardFooter className="flex gap-2 border-t pt-4 mt-auto">
