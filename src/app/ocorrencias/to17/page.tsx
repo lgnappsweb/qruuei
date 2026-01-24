@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Share2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import * as React from 'react';
 
@@ -41,6 +41,7 @@ import {
 } from '@/components/ui/accordion';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const auxilios = [
     { id: 'PR01', label: 'PR01 - Atendimento inicial' },
@@ -90,6 +91,7 @@ const fillEmptyWithNill = (data: any): any => {
 
 const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null; onClose: () => void; onSave: (data: any) => void; formTitle: string; }) => {
   const [numeroOcorrencia, setNumeroOcorrencia] = React.useState('');
+  const isMobile = useIsMobile();
   if (!data) return null;
 
   const handleSaveClick = () => {
@@ -126,6 +128,49 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
   );
 
   const occurrenceCode = formTitle.match(/\(([^)]+)\)/)?.[1] || formTitle.split(' ')[0] || "Relatório";
+  
+  const handleShare = () => {
+    let text = `*${formTitle.toUpperCase()}*\n\n`;
+    if (numeroOcorrencia) {
+      text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n\n`;
+    }
+
+    const formatSectionForShare = (sectionTitle: string, fields: object) => {
+      let sectionText = '';
+      for (const [key, value] of Object.entries(fields)) {
+        if (value === null || value === undefined || (Array.isArray(value) && value.length === 0) || String(value).trim() === '' || value === 'NILL' ) continue;
+        if ((key === 'vtrApoioDescricao' && !data.vtrApoio)) continue;
+
+        const processedValue = renderSimpleValue(value);
+        if (processedValue) {
+          sectionText += `*${formatLabel(key).toUpperCase()}:* ${processedValue}\n`;
+        }
+      }
+      if (sectionText) {
+        text += `*${sectionTitle.toUpperCase()}*\n${sectionText}\n`;
+      }
+    };
+
+    const generalFields = {
+      rodovia: data.rodovia,
+      ocorrencia: data.ocorrencia,
+      qth: data.qth,
+      sentido: data.sentido,
+      localArea: data.localArea,
+    };
+    formatSectionForShare('Informações Gerais', generalFields);
+
+    const otherFields = {
+      vtrApoio: data.vtrApoio,
+      vtrApoioDescricao: data.vtrApoioDescricao,
+      observacoes: data.observacoes,
+      auxilios: data.auxilios,
+    };
+    formatSectionForShare('Outras Informações', otherFields);
+
+    const encodedText = encodeURIComponent(text.trim());
+    window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
+  };
 
   return (
     <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
@@ -159,21 +204,24 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
                  <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
                     <CardHeader>
-                        <CardTitle className="text-foreground text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
+                        <CardTitle className="text-white text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <Input
                             value={numeroOcorrencia}
                             onChange={(e) => setNumeroOcorrencia(e.target.value.toUpperCase())}
-                            placeholder="INSIRA O NÚMERO DA OCORRÊNCIA"
+                            placeholder={isMobile ? 'INSIRA O NÚMERO' : 'INSIRA O NÚMERO DA OCORRÊNCIA'}
                             className="text-center text-2xl font-bold h-16 bg-background border-primary focus-visible:ring-primary"
                         />
                     </CardContent>
                 </Card>
             </div>
         </ScrollArea>
-        <DialogFooter className="mt-4 pt-4 border-t">
+        <DialogFooter className="mt-4 flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4 border-t">
           <Button variant="outline" onClick={onClose}>Editar</Button>
+          <Button onClick={handleShare} className="bg-green-600 hover:bg-green-700" disabled={!numeroOcorrencia}>
+            <Share2 className="mr-2 h-5 w-5"/> Compartilhar
+          </Button>
           <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
         </DialogFooter>
       </DialogContent>

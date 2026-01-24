@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Control, useWatch, useFieldArray } from 'react-hook-form';
 import * as z from 'zod';
 import Link from 'next/link';
-import { ArrowLeft, PlusCircle, Trash2 } from 'lucide-react';
+import { ArrowLeft, PlusCircle, Share2, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import * as React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -245,6 +245,51 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
     const termoRecusaFields: (keyof FormValues)[] = ['termoRecusaNome', 'termoRecusaCPF', 'termoRecusaRG', 'termoRecusaEndereco', 'termoRecusaResponsavelPor', 'termoRecusaParentesco', 'termoRecusaTestemunha1', 'termoRecusaTestemunha2'];
 
+    const handleShare = () => {
+    let text = `*${formTitle.toUpperCase()}*\n\n`;
+    if (numeroOcorrencia) {
+      text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n\n`;
+    }
+
+    const formatSectionForShare = (sectionTitle: string, fields: object) => {
+      let sectionText = '';
+      for (const [key, value] of Object.entries(fields)) {
+        if (value === null || value === undefined || (Array.isArray(value) && value.length === 0) || String(value).trim() === '' || value === 'NILL' ) continue;
+
+        if ((key === 'eventoClinicoOutros' && !data.eventoClinico?.includes('outros')) ||
+            (key === 'viasAereasObstruidasPor' && data.viasAereas !== 'obstruidas')) continue;
+
+        const processedValue = renderSimpleValue(value);
+        if (processedValue) {
+          sectionText += `*${formatLabel(key).toUpperCase()}:* ${processedValue}\n`;
+        }
+      }
+      if (sectionText) {
+        text += `*${sectionTitle.toUpperCase()}*\n${sectionText}\n`;
+      }
+    };
+
+    sections.forEach(section => {
+        const sectionData = section.fields.reduce((acc, fieldName) => {
+            // @ts-ignore
+            acc[fieldName] = data[fieldName];
+            return acc;
+        }, {} as any);
+        formatSectionForShare(section.title, sectionData);
+    })
+
+    if (Array.isArray(data.materiais) && data.materiais.length > 0) {
+      text += '*CONSUMO DE MATERIAIS*\n';
+      data.materiais.forEach((item: any, index: number) => {
+        text += `*Material ${index + 1}:* ${item.nome.toUpperCase()} - *Qtd:* ${item.quantidade}\n`;
+      });
+      text += '\n';
+    }
+
+    const encodedText = encodeURIComponent(text.trim());
+    window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
+  };
+
     return (
         <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
@@ -297,8 +342,11 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         </Card>
                     </div>
                 </ScrollArea>
-                <DialogFooter className="mt-4 pt-4 border-t">
+                <DialogFooter className="mt-4 flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4 border-t">
                     <Button variant="outline" onClick={onClose}>Editar</Button>
+                    <Button onClick={handleShare} className="bg-green-600 hover:bg-green-700" disabled={!numeroOcorrencia}>
+                        <Share2 className="mr-2 h-5 w-5"/> Compartilhar
+                    </Button>
                     <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
                 </DialogFooter>
             </DialogContent>

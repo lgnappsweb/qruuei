@@ -170,7 +170,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     if (Array.isArray(value)) {
         if (value.length === 0) return 'NILL';
         if (key === 'tipoPanes') {
-          return value.join(', ').toUpperCase();
+          return value.map(paneId => tiposPane.find(p => p.id === paneId)?.id || paneId).join(', ').toUpperCase();
         }
         return value.join(', ').toUpperCase();
     }
@@ -296,7 +296,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
         </ScrollArea>
         <DialogFooter className="mt-4 flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4 border-t">
           <Button variant="outline" onClick={onClose}>Editar</Button>
-          <Button onClick={handleShare} className="bg-green-600 hover:bg-green-700">
+          <Button onClick={handleShare} className="bg-green-600 hover:bg-green-700" disabled={!numeroOcorrencia}>
             <Share2 className="mr-2 h-5 w-5"/>
             Compartilhar
           </Button>
