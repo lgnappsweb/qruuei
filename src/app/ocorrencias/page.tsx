@@ -80,9 +80,6 @@ const ReportField = ({ fieldKey, value }: { fieldKey: string; value: any; }) => 
       return val ? 'SIM' : 'NÃO';
     }
     if (Array.isArray(val)) {
-        if (fieldKey === 'tipoPanes') {
-            return val.map(id => tiposPane.find(p => p.id === id)?.label.split(' - ')[1] || id).join(', ').toUpperCase();
-        }
       return val.join(', ').toUpperCase();
     }
     return String(val).toUpperCase();
@@ -160,9 +157,6 @@ export default function OcorrenciasPage() {
         if (typeof value === 'boolean') return value ? 'SIM' : 'NÃO';
         if (Array.isArray(value)) {
              if (value.length === 0) return '';
-             if (key === 'tipoPanes') {
-                return value.map(id => tiposPane.find(p => p.id === id)?.label.split(' - ')[1] || id).join(', ').toUpperCase();
-             }
              return value.join(', ').toUpperCase();
         }
         return String(value).toUpperCase();

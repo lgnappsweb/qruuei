@@ -51,6 +51,7 @@ import {
 } from '@/components/ui/accordion';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { tiposPane } from '@/lib/tipos-pane';
 
 const auxilios = [
   { id: 'PR01', label: 'PR01 - Atendimento inicial' },
@@ -74,16 +75,6 @@ const auxilios = [
   { id: 'PR58', label: 'PR58 - Avaliação da Vítima' },
   { id: 'PR61', label: 'PR61 - Abordagem de vítima' },
   { id: 'PR63', label: 'PR63 - Desatolamento de Veículos' },
-] as const;
-
-const tiposPane = [
-  { id: 'TP01', label: 'TP01 - Pane Mecânica' },
-  { id: 'TP02', label: 'TP02 - Pane Elétrica' },
-  { id: 'TP03', label: 'TP03 - Pane Pneu' },
-  { id: 'TP04', label: 'TP04 - Pane Seca' },
-  { id: 'TP05', label: 'TP05 - Super Aquecimento' },
-  { id: 'TP07', label: 'TP07 - Bloqueio por Rastreador' },
-  { id: 'NILL', label: 'NILL' },
 ] as const;
 
 const vehicleSchema = z.object({
@@ -170,7 +161,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     if (Array.isArray(value)) {
         if (value.length === 0) return 'NILL';
         if (key === 'tipoPanes') {
-          return value.map(paneId => tiposPane.find(p => p.id === paneId)?.id || paneId).join(', ').toUpperCase();
+          return value.join(', ').toUpperCase();
         }
         return value.join(', ').toUpperCase();
     }
@@ -190,50 +181,62 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
   
     const handleShare = () => {
     let text = `*${formTitle.toUpperCase()}*\n\n`;
-    if (numeroOcorrencia) {
-      text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n\n`;
+
+    const renderValue = (value: any, key: string): string => {
+        if (typeof value === 'boolean') return value ? 'SIM' : 'NÃO';
+        if (Array.isArray(value)) {
+             if (value.length === 0) return '';
+             return value.join(', ').toUpperCase();
+        }
+        return String(value).toUpperCase();
     }
 
-    const formatSectionForShare = (sectionTitle: string, fields: object) => {
-      let sectionText = '';
-      for (const [key, value] of Object.entries(fields)) {
-        if ((key === 'vtrApoioDescricao' && !data.vtrApoio) || (key === 'danoPatrimonioDescricao' && !data.danoPatrimonio)) continue;
+    const generalFields = { rodovia: data.rodovia, ocorrencia: data.ocorrencia, tipoPanes: data.tipoPanes, qth: data.qth, sentido: data.sentido, localArea: data.localArea };
+    const vehicleFields = ['marca', 'modelo', 'ano', 'cor', 'placa', 'cidadeEmplacamento', 'eixos', 'tipoVeiculo', 'estadoPneu', 'tipoCarga', 'qraCondutor', 'baixaFrequencia', 'ocupantes', 'cpf', 'rg', 'endereco', 'numero', 'bairro', 'cidade'];
+    const otherFields = { vtrApoio: data.vtrApoio, vtrApoioDescricao: data.vtrApoioDescricao, danoPatrimonio: data.danoPatrimonio, danoPatrimonioDescricao: data.danoPatrimonioDescricao, observacoes: data.observacoes, auxilios: data.auxilios };
 
-        const processedValue = renderSimpleValue(value, key);
-        if (processedValue && processedValue !== 'NILL' && processedValue !== '') {
-          sectionText += `*${formatLabel(key).toUpperCase()}:* ${processedValue}\n`;
+    let generalText = '';
+    for (const [key, value] of Object.entries(generalFields)) {
+        const renderedValue = renderValue(value, key);
+        if (renderedValue && renderedValue !== 'NILL') {
+            generalText += `*${formatLabel(key).toUpperCase()}:* ${renderedValue}\n`;
         }
-      }
-      if (sectionText) {
-        text += `*${sectionTitle.toUpperCase()}*\n${sectionText}\n`;
-      }
-    };
+    }
+    if(generalText) text += generalText + '\n';
 
-    const generalFields = {
-      rodovia: data.rodovia,
-      ocorrencia: data.ocorrencia,
-      tipoPanes: data.tipoPanes,
-      qth: data.qth,
-      sentido: data.sentido,
-      localArea: data.localArea,
-    };
-    formatSectionForShare('Informações Gerais', generalFields);
 
     if (Array.isArray(data.vehicles) && data.vehicles.length > 0) {
       data.vehicles.forEach((vehicle: any, index: number) => {
-        formatSectionForShare(`Dados do Veículo ${index + 1}`, vehicle);
+        let vehicleText = '';
+        vehicleFields.forEach(key => {
+            if(key in vehicle) {
+                 const value = vehicle[key];
+                 const renderedValue = renderValue(value, key);
+                 if (renderedValue && renderedValue !== 'NILL') {
+                     vehicleText += `*${formatLabel(key).toUpperCase()}:* ${renderedValue}\n`;
+                 }
+            }
+        });
+        if(vehicleText) {
+            text += `*DADOS DO VEÍCULO ${index + 1}*\n${vehicleText}\n`;
+        }
       });
     }
 
-    const otherFields = {
-      vtrApoio: data.vtrApoio,
-      vtrApoioDescricao: data.vtrApoioDescricao,
-      danoPatrimonio: data.danoPatrimonio,
-      danoPatrimonioDescricao: data.danoPatrimonioDescricao,
-      observacoes: data.observacoes,
-      auxilios: data.auxilios,
-    };
-    formatSectionForShare('Outras Informações', otherFields);
+    let otherText = '';
+    for (const [key, value] of Object.entries(otherFields)) {
+        const renderedValue = renderValue(value, key);
+        if (renderedValue && renderedValue !== 'NILL') {
+             if (key === 'vtrApoioDescricao' && !data.vtrApoio) continue;
+             if (key === 'danoPatrimonioDescricao' && !data.danoPatrimonio) continue;
+             otherText += `*${formatLabel(key).toUpperCase()}:* ${renderedValue}\n`;
+        }
+    }
+    if (otherText) text += otherText + '\n';
+
+    if (numeroOcorrencia && numeroOcorrencia !== 'NILL') {
+      text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n`;
+    }
 
     const encodedText = encodeURIComponent(text.trim());
     window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
@@ -339,7 +342,36 @@ export default function QudOperacaoPage() {
         if (editDataString) {
             const editData = JSON.parse(editDataString);
             if(editData.formPath === '/ocorrencias/qud-operacao') {
-                form.reset(editData.fullReport);
+                const reportToLoad = editData.fullReport;
+                
+                const arrayFields = ['vehicles', 'tipoPanes'];
+                const booleanFields = ['vtrApoio', 'danoPatrimonio'];
+
+                Object.keys(reportToLoad).forEach(key => {
+                    if (reportToLoad[key] === 'NILL') {
+                        if (arrayFields.includes(key)) {
+                            reportToLoad[key] = [];
+                        } else if (booleanFields.includes(key)) {
+                            reportToLoad[key] = false;
+                        } else {
+                            reportToLoad[key] = '';
+                        }
+                    }
+                });
+
+                if(Array.isArray(reportToLoad.vehicles)) {
+                    reportToLoad.vehicles = reportToLoad.vehicles.map((vehicle: any) => {
+                        const newVehicle = {...vehicle};
+                        Object.keys(newVehicle).forEach(key => {
+                            if (newVehicle[key] === 'NILL') {
+                                newVehicle[key] = '';
+                            }
+                        });
+                        return newVehicle;
+                    });
+                }
+
+                form.reset(reportToLoad);
                 setEditingId(editData.id);
                 localStorage.removeItem('editOcorrenciaData');
             }
@@ -434,7 +466,7 @@ export default function QudOperacaoPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Rodovia</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione a rodovia" />
@@ -535,7 +567,7 @@ export default function QudOperacaoPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Sentido</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione o sentido" />
@@ -558,7 +590,7 @@ export default function QudOperacaoPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Local/Área</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione o local/área" />
@@ -604,7 +636,7 @@ export default function QudOperacaoPage() {
                         render={({ field }) => (
                             <FormItem>
                             <FormLabel>Tipo de Veículo</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select onValueChange={field.onChange} value={field.value}>
                                 <FormControl>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Selecione o tipo" />
@@ -631,7 +663,7 @@ export default function QudOperacaoPage() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Estado do Pneu</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Selecione o estado do pneu" />

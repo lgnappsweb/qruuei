@@ -5,5 +5,4 @@ export const tiposPane = [
   { id: 'TP04', label: 'TP04 - Pane Seca' },
   { id: 'TP05', label: 'TP05 - Super Aquecimento' },
   { id: 'TP07', label: 'TP07 - Bloqueio por Rastreador' },
-  { id: 'NILL', label: 'NILL' },
 ] as const;
