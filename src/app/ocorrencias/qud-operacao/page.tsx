@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFieldArray } from 'react-hook-form';
 import * as z from 'zod';
@@ -45,6 +46,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const auxilios = [
   { id: 'PR01', label: 'PR01 - Atendimento inicial' },
@@ -118,8 +121,87 @@ const formSchema = z.object({
   auxilios: z.string().optional(),
 });
 
+const fillEmptyWithNill = (data: any): any => {
+    if (Array.isArray(data)) {
+        if (data.length === 0) return 'NILL';
+        return data.map(item => fillEmptyWithNill(item));
+    }
+    if (data && typeof data === 'object') {
+        const newObj: {[key: string]: any} = {};
+        Object.keys(data).forEach(key => {
+            newObj[key] = fillEmptyWithNill(data[key]);
+        });
+        return newObj;
+    }
+    if (data === '' || data === undefined || data === null) {
+        return 'NILL';
+    }
+    return data;
+};
+
+const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null; onClose: () => void; onSave: (data: any) => void; formTitle: string; }) => {
+  if (!data) return null;
+
+  const formatLabel = (key: string) => {
+    const result = key.replace(/([A-Z])/g, " $1");
+    return result.charAt(0).toUpperCase() + result.slice(1);
+  };
+
+  const renderValue = (value: any): React.ReactNode => {
+    if (typeof value === 'boolean') {
+      return value ? 'Sim' : 'Não';
+    }
+    if (Array.isArray(value)) {
+      if (value.length === 0) return 'NILL';
+      const isObjectArray = typeof value[0] === 'object' && value[0] !== null;
+      if (isObjectArray) {
+        return value.map((item, index) => (
+          <div key={index} className="mt-2 pl-4 border-l">
+            <h4 className="font-semibold text-md mb-1">Item {index + 1}</h4>
+            {Object.entries(item).map(([k, v]) => (
+              <div key={k}>
+                <span className="font-semibold text-muted-foreground">{formatLabel(k)}: </span>
+                {renderValue(v)}
+              </div>
+            ))}
+          </div>
+        ));
+      }
+      return value.join(', ');
+    }
+    return String(value);
+  }
+
+  return (
+    <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle>Pré-visualização: {formTitle}</DialogTitle>
+          <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
+        </DialogHeader>
+        <ScrollArea className="flex-1 pr-6 -mr-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-base">
+                {Object.entries(data).map(([key, value]) => (
+                    <div key={key} className="flex flex-col">
+                        <span className="font-semibold text-muted-foreground">{formatLabel(key)}</span>
+                        <div className="text-foreground break-words">{renderValue(value)}</div>
+                    </div>
+                ))}
+            </div>
+        </ScrollArea>
+        <DialogFooter className="mt-4 pt-4 border-t">
+          <Button variant="outline" onClick={onClose}>Editar</Button>
+          <Button onClick={() => onSave(data)}>Confirmar e Salvar</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 export default function QudOperacaoPage() {
   const { toast } = useToast();
+  const [previewData, setPreviewData] = React.useState<z.infer<typeof formSchema> | null>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -145,11 +227,17 @@ export default function QudOperacaoPage() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    const processedValues = fillEmptyWithNill(values);
+    setPreviewData(processedValues);
+  }
+
+  function handleSave(data: z.infer<typeof formSchema>) {
+    console.log("Saving data:", data);
     toast({
       title: 'Formulário Enviado',
       description: 'QUD OPERAÇÃO registrada com sucesso!',
     });
+    setPreviewData(null);
   }
 
   return (
@@ -644,6 +732,7 @@ export default function QudOperacaoPage() {
           <Button type="submit" size="lg" className="w-full">Gerar Relatório</Button>
         </form>
       </Form>
+      <PreviewDialog data={previewData} onClose={() => setPreviewData(null)} onSave={handleSave} formTitle="QUD OPERAÇÃO" />
     </div>
   );
 }

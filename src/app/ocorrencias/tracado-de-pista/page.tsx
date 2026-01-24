@@ -35,7 +35,7 @@ import {
 } from '@/components/ui/accordion';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const formSchema = z.object({
   // PRÉVIA
@@ -95,6 +95,83 @@ const formSchema = z.object({
 });
 
 type FormValues = z.infer<typeof formSchema>;
+
+const fillEmptyWithNill = (data: any): any => {
+    if (Array.isArray(data)) {
+        if (data.length === 0) return 'NILL';
+        return data.map(item => fillEmptyWithNill(item));
+    }
+    if (data && typeof data === 'object') {
+        const newObj: {[key: string]: any} = {};
+        Object.keys(data).forEach(key => {
+            newObj[key] = fillEmptyWithNill(data[key]);
+        });
+        return newObj;
+    }
+    if (data === '' || data === undefined || data === null) {
+        return 'NILL';
+    }
+    return data;
+};
+
+const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null; onClose: () => void; onSave: (data: any) => void; formTitle: string; }) => {
+  if (!data) return null;
+
+  const formatLabel = (key: string) => {
+    const result = key.replace(/([A-Z])/g, " $1");
+    return result.charAt(0).toUpperCase() + result.slice(1);
+  };
+
+  const renderValue = (value: any): React.ReactNode => {
+    if (typeof value === 'boolean') {
+      return value ? 'Sim' : 'Não';
+    }
+    if (Array.isArray(value)) {
+      if (value.length === 0) return 'NILL';
+      const isObjectArray = typeof value[0] === 'object' && value[0] !== null;
+      if (isObjectArray) {
+        return value.map((item, index) => (
+          <div key={index} className="mt-2 pl-4 border-l">
+            <h4 className="font-semibold text-md mb-1">Item {index + 1}</h4>
+            {Object.entries(item).map(([k, v]) => (
+              <div key={k}>
+                <span className="font-semibold text-muted-foreground">{formatLabel(k)}: </span>
+                {renderValue(v)}
+              </div>
+            ))}
+          </div>
+        ));
+      }
+      return value.join(', ');
+    }
+    return String(value);
+  }
+
+  return (
+    <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle>Pré-visualização: {formTitle}</DialogTitle>
+          <DialogDescription>Confira os dados antes de salvar.</DialogDescription>
+        </DialogHeader>
+        <ScrollArea className="flex-1 pr-6 -mr-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-base">
+                {Object.entries(data).map(([key, value]) => (
+                    <div key={key} className="flex flex-col">
+                        <span className="font-semibold text-muted-foreground">{formatLabel(key)}</span>
+                        <div className="text-foreground break-words">{renderValue(value)}</div>
+                    </div>
+                ))}
+            </div>
+        </ScrollArea>
+        <DialogFooter className="mt-4 pt-4 border-t">
+          <Button variant="outline" onClick={onClose}>Editar</Button>
+          <Button onClick={() => onSave(data)}>Confirmar e Salvar</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 function RadioGroupField({ control, name, label, options, orientation = 'vertical' }: { control: Control<FormValues>, name: keyof FormValues, label: string, options: { value: string, label: string }[], orientation?: 'vertical' | 'horizontal' }) {
     return (
@@ -209,123 +286,6 @@ const formOptions = {
     sinalizacaoSemaforo: [{ value: 'Funciona', label: 'Funciona' }, { value: 'Não funciona', label: 'Não funciona' }, { value: 'Funciona com defeito', label: 'Funciona com defeito' }, { value: 'Inexistente', label: 'Inexistente' }]
 };
 
-function PreviewDialog({ data, onClose, onSave }: { data: FormValues | null; onClose: () => void; onSave: (data: FormValues) => void; }) {
-  if (!data) return null;
-
-  const renderSection = (title: string, fields: Record<string, any>) => {
-    const entries = Object.entries(fields).filter(
-      ([, value]) => value && (!Array.isArray(value) || value.length > 0)
-    );
-    if (entries.length === 0) return null;
-
-    const formatLabel = (key: string) => {
-      const result = key.replace(/([A-Z])/g, " $1");
-      return result.charAt(0).toUpperCase() + result.slice(1);
-    };
-
-    return (
-      <div key={title}>
-        <h3 className="text-xl font-bold mt-4 mb-2 border-b pb-1">{title}</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 text-base">
-          {entries.map(([key, value]) => (
-            <div key={key} className="flex flex-col">
-              <span className="font-semibold text-muted-foreground">
-                {formatLabel(key)}
-              </span>
-              <span className="text-foreground">
-                {Array.isArray(value) ? value.join(", ") : String(value)}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
-  const sections = {
-    "PRÉVIA": {
-      rodovia: data.rodovia,
-      qthExato: data.qthExato,
-      sentido: data.sentido,
-      faixaInterditada: data.faixaInterditada,
-      provavelCinematica: data.provavelCinematica,
-      provavelCinematicaOutros: data.provavelCinematicaOutros,
-      veiculos: data.veiculos,
-      quantidadeVitimas: data.quantidadeVitimas,
-      potencialGravidadePrevia: data.potencialGravidadePrevia,
-      recursosAdicionaisPrevia: data.recursosAdicionaisPrevia,
-    },
-    "CONFIRMAÇÃO DA PRÉVIA": {
-      cinematica: data.cinematica,
-      cinematicaOutros: data.cinematicaOutros,
-      energia: data.energia,
-      avarias: data.avarias,
-      posicaoVeiculo: data.posicaoVeiculo,
-      quantidadeVitimasConfirmacao: data.quantidadeVitimasConfirmacao,
-      potencialGravidadeAbordagem: data.potencialGravidadeAbordagem,
-      cod61_62: data.cod61_62,
-      recursosAdicionaisConfirmacao: data.recursosAdicionaisConfirmacao,
-      recursosAdicionaisConfirmacaoOutros: data.recursosAdicionaisConfirmacaoOutros,
-    },
-    "CONDIÇÃO": {
-      condicoesMeteorologicas: data.condicoesMeteorologicas,
-      condicaoVisibilidade: data.condicaoVisibilidade,
-      condicoesEspeciais: data.condicoesEspeciais,
-      condicoesEspeciaisOutros: data.condicoesEspeciaisOutros,
-      condicoesSinalizacao: data.condicoesSinalizacao,
-      condicoesSinalizacaoOutros: data.condicoesSinalizacaoOutros,
-    },
-    "PISTA": {
-      tipoPista: data.tipoPista,
-      tracadoPista: data.tracadoPista,
-      perfil: data.perfil,
-      obrasNaPista: data.obrasNaPista,
-      condicaoPista: data.condicaoPista,
-      obstaculoCanteiroCentral: data.obstaculoCanteiroCentral,
-      obstaculoCanteiroCentralOutros: data.obstaculoCanteiroCentralOutros,
-      obstaculoAcostamento: data.obstaculoAcostamento,
-      obstaculoAcostamentoOutros: data.obstaculoAcostamentoOutros,
-      obrasNoAcostamento: data.obrasNoAcostamento,
-      estadoConservacao: data.estadoConservacao,
-      intersecoesPista: data.intersecoesPista,
-      deficienciaObras: data.deficienciaObras,
-      deficienciaObrasOutros: data.deficienciaObrasOutros,
-      obrasDeArte: data.obrasDeArte,
-      local: data.local,
-    },
-    "SINALIZAÇÃO": {
-      sinalizacaoVertical: data.sinalizacaoVertical,
-      sinalizacaoHorizontal: data.sinalizacaoHorizontal,
-      sinalizacaoSemaforo: data.sinalizacaoSemaforo,
-    },
-  };
-
-  return (
-    <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
-        <DialogHeader>
-          <DialogTitle>Pré-visualização do Relatório</DialogTitle>
-          <DialogDescription>
-            Confira os dados do relatório antes de salvar.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="overflow-y-auto pr-6 -mr-6 flex-1">
-          {Object.entries(sections).map(([title, fields]) =>
-            renderSection(title, fields)
-          )}
-        </div>
-        <DialogFooter className="mt-4">
-          <Button variant="outline" onClick={onClose}>
-            Editar
-          </Button>
-          <Button onClick={() => onSave(data)}>Confirmar e Salvar</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-
 export default function TracadoDePistaPage() {
     const { toast } = useToast();
     const [previewData, setPreviewData] = React.useState<FormValues | null>(null);
@@ -342,7 +302,8 @@ export default function TracadoDePistaPage() {
     });
 
     function onSubmit(values: FormValues) {
-        setPreviewData(values);
+        const processedValues = fillEmptyWithNill(values);
+        setPreviewData(processedValues);
     }
 
     function handleSave(data: FormValues) {
@@ -484,7 +445,7 @@ export default function TracadoDePistaPage() {
                     <Button type="submit" size="lg" className="w-full">Gerar Relatório</Button>
                 </form>
             </Form>
-            <PreviewDialog data={previewData} onClose={() => setPreviewData(null)} onSave={handleSave} />
+            <PreviewDialog data={previewData} onClose={() => setPreviewData(null)} onSave={handleSave} formTitle="TRAÇADO DE PISTA - ACIDENTE" />
         </div>
     );
 }
