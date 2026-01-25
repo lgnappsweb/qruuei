@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { useUser, useAuth, useFirestore } from "@/firebase";
 import { signOut, updateProfile } from "firebase/auth";
@@ -10,9 +10,10 @@ import { doc, updateDoc } from "firebase/firestore";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { LogOut } from "lucide-react";
+import { LogOut, Sun, Moon, Laptop } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useTheme } from "next-themes";
 
 export default function AjustesPage() {
   const { user, initialising } = useUser();
@@ -21,6 +22,12 @@ export default function AjustesPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [name, setName] = useState('');
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!initialising && !user) {
@@ -61,11 +68,7 @@ export default function AjustesPage() {
     }
   };
   
-  const handleThemeChange = (checked: boolean) => {
-    console.log(checked ? "Dark theme" : "Light theme");
-  };
-
-  if (initialising || !user) {
+  if (initialising || !user || !mounted) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
@@ -120,21 +123,33 @@ export default function AjustesPage() {
           <CardDescription>Personalize a aparência do aplicativo.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center justify-between">
-            <Label htmlFor="theme-switch" className="text-lg">
-              Tema Escuro
-            </Label>
-            <Switch
-              id="theme-switch"
-              checked={true}
-              onCheckedChange={handleThemeChange}
-              aria-readonly
-              disabled
-            />
-          </div>
-           <p className="text-sm text-muted-foreground mt-2">
-              A troca de tema ainda não está disponível.
-            </p>
+          <RadioGroup 
+            value={theme} 
+            onValueChange={setTheme} 
+            className="grid grid-cols-3 gap-4"
+          >
+            <div>
+              <RadioGroupItem value="light" id="light" className="peer sr-only" />
+              <Label htmlFor="light" className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer">
+                <Sun className="h-6 w-6 mb-2" />
+                Claro
+              </Label>
+            </div>
+            <div>
+              <RadioGroupItem value="dark" id="dark" className="peer sr-only" />
+              <Label htmlFor="dark" className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer">
+                <Moon className="h-6 w-6 mb-2" />
+                Escuro
+              </Label>
+            </div>
+            <div>
+              <RadioGroupItem value="system" id="system" className="peer sr-only" />
+              <Label htmlFor="system" className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer">
+                <Laptop className="h-6 w-6 mb-2" />
+                Sistema
+              </Label>
+            </div>
+          </RadioGroup>
         </CardContent>
       </Card>
       
