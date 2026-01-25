@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, Search, HardHat, Shield, Leaf } from 'lucide-react';
+import { ArrowLeft, Search, Shield, Leaf } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
@@ -23,11 +23,11 @@ const subOccurrences = [
     enabled: true,
   },
   {
-    title: 'Formulário 3',
-    description: 'Em desenvolvimento.',
+    title: 'Danos Estruturais',
+    description: 'Danos em meio-fio, canaletas, defensas, etc.',
     icon: Shield,
-    href: '#',
-    enabled: false,
+    href: '/ocorrencias/to15/danos-estruturais',
+    enabled: true,
   },
 ];
 
