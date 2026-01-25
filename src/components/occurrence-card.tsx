@@ -81,13 +81,13 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
     <Card
       onClick={handleClick}
       className={cn(
-        "hover:bg-accent transition-all duration-200 cursor-pointer group shadow-2xl dark:shadow-none"
+        "hover:shadow-2xl transition-all duration-300 cursor-pointer group shadow-lg dark:shadow-black/25"
       )}
     >
       <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6 gap-3 h-40">
         <div
           className={cn(
-            "rounded-full p-4 transition-transform group-hover:scale-110 shadow-xl dark:shadow-none",
+            "rounded-full p-4 transition-transform group-hover:scale-110 shadow-lg group-hover:shadow-xl ring-1 ring-black/10 dark:ring-white/10",
             occurrence.color
           )}
         >
