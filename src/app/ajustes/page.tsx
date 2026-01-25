@@ -1,24 +1,33 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { useUser, useAuth } from "@/firebase";
-import { signOut } from "firebase/auth";
+import { useUser, useAuth, useFirestore } from "@/firebase";
+import { signOut, updateProfile } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { LogOut } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AjustesPage() {
   const { user, initialising } = useUser();
   const auth = useAuth();
+  const firestore = useFirestore();
   const router = useRouter();
+  const { toast } = useToast();
+  const [name, setName] = useState('');
 
   useEffect(() => {
     if (!initialising && !user) {
       router.push('/login');
+    }
+    if (user?.displayName) {
+        setName(user.displayName);
     }
   }, [user, initialising, router]);
 
@@ -27,6 +36,28 @@ export default function AjustesPage() {
       signOut(auth).then(() => {
         router.push('/login');
       });
+    }
+  };
+
+  const handleProfileUpdate = async () => {
+    if (auth?.currentUser && firestore && name.trim() !== '') {
+        try {
+            await updateProfile(auth.currentUser, { displayName: name });
+
+            const userDocRef = doc(firestore, 'users', auth.currentUser.uid);
+            await updateDoc(userDocRef, { name: name });
+
+            toast({
+                title: "Perfil atualizado!",
+                description: "Seu nome foi atualizado com sucesso.",
+            });
+        } catch (error: any) {
+            toast({
+                variant: "destructive",
+                title: "Erro ao atualizar",
+                description: error.message,
+            });
+        }
     }
   };
   
@@ -60,18 +91,27 @@ export default function AjustesPage() {
           <CardTitle>Perfil</CardTitle>
           <CardDescription>Suas informações de usuário.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-16 w-16">
+        <CardContent className="space-y-6">
+           <div className="flex items-center gap-4">
+             <Avatar className="h-16 w-16">
               <AvatarImage src={user.photoURL ?? undefined} alt={user.displayName ?? 'User'} />
-              <AvatarFallback>{user.displayName?.charAt(0) ?? 'U'}</AvatarFallback>
+              <AvatarFallback>{name.charAt(0) ?? 'U'}</AvatarFallback>
             </Avatar>
-            <div className="grid gap-1">
-              <p className="text-lg font-semibold">{user.displayName}</p>
-              <p className="text-sm text-muted-foreground">{user.email}</p>
+            <div className="grid gap-4 w-full">
+                <div>
+                    <Label htmlFor="name">Nome</Label>
+                    <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
+                </div>
+                 <div>
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" value={user.email ?? ''} disabled />
+                </div>
             </div>
           </div>
         </CardContent>
+        <CardFooter>
+            <Button onClick={handleProfileUpdate}>Salvar Alterações</Button>
+        </CardFooter>
       </Card>
 
       <Card>
