@@ -615,6 +615,417 @@ const defaultVictimValues = {
   relatorioObservacoes: '',
 };
 
+function VictimCard({ index, control, remove, victimCount }: { index: number, control: Control<FormValues>, remove: (index: number) => void, victimCount: number }) {
+  const watchConduta = useWatch({ control, name: `victims.${index}.conduta` });
+  const { fields: materialFields, append: appendMaterial, remove: removeMaterial } = useFieldArray({
+    control,
+    name: `victims.${index}.materiais`,
+  });
+
+  return (
+    <Card key={`victim-${index}`} className="border-primary border-2 mt-6">
+        <CardHeader className="flex-row items-center justify-between bg-primary text-primary-foreground">
+            <CardTitle>Vítima {index + 1}</CardTitle>
+            {victimCount > 1 && (
+                <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)}>
+                    <Trash2 className="h-5 w-5" />
+                    <span className="sr-only">Remover Vítima</span>
+                </Button>
+            )}
+        </CardHeader>
+        <CardContent className="pt-6">
+           <Accordion type="multiple" className="w-full space-y-4" defaultValue={[`v${index}-item-2`]}>
+                <AccordionItem value={`v${index}-item-2`}>
+                    <AccordionTrigger className="text-xl font-bold">DADOS CADASTRAIS DO USUÁRIO</AccordionTrigger>
+                    <AccordionContent className="space-y-6 pt-4">
+                        <FormField control={control} name={`victims.${index}.nomeUsuario`} render={({ field }) => (<FormItem><FormLabel>Nome</FormLabel><FormControl><Input placeholder="Nome completo do usuário" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <FormField control={control} name={`victims.${index}.idade`} render={({ field }) => (<FormItem><FormLabel>Idade</FormLabel><FormControl><Input type="number" placeholder="Ex: 35" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                            <FormField control={control} name={`victims.${index}.dn`} render={({ field }) => (<FormItem><FormLabel>Data Nasc.</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                            <RadioGroupField control={control} name={`victims.${index}.sexo`} label="Sexo" options={[{value: 'M', label: 'M'}, {value: 'F', label: 'F'}]} orientation="horizontal" />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <FormField
+                            name={`victims.${index}.cpf`}
+                            control={control}
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>CPF</FormLabel>
+                                <FormControl>
+                                    <Input
+                                    placeholder="000.000.000-00"
+                                    {...field}
+                                    onChange={(e) => {
+                                        const rawValue = e.target.value.replace(/\D/g, '');
+                                        let maskedValue = rawValue.substring(0, 11);
+                                        if (rawValue.length > 9) {
+                                        maskedValue = maskedValue.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                                        } else if (rawValue.length > 6) {
+                                        maskedValue = maskedValue.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+                                        } else if (rawValue.length > 3) {
+                                        maskedValue = maskedValue.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+                                        }
+                                        field.onChange(maskedValue);
+                                    }}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                            />
+                            <FormField
+                            name={`victims.${index}.rg`}
+                            control={control}
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>RG</FormLabel>
+                                <FormControl>
+                                    <Input
+                                    placeholder="00.000.000-0"
+                                    {...field}
+                                    onChange={(e) => {
+                                        const rawValue = e.target.value.replace(/\D/g, '');
+                                        let maskedValue = rawValue.substring(0, 9);
+                                        if (rawValue.length > 8) {
+                                        maskedValue = maskedValue.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/, '$1.$2.$3-$4');
+                                        } else if (rawValue.length > 5) {
+                                        maskedValue = maskedValue.replace(/(\d{2})(\d{3})(\d{1,3})/, '$1.$2.$3');
+                                        } else if (rawValue.length > 2) {
+                                        maskedValue = maskedValue.replace(/(\d{2})(\d{1,3})/, '$1.$2');
+                                        }
+                                        field.onChange(maskedValue);
+                                    }}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                            />
+                        </div>
+                        <FormField
+                        control={control}
+                        name={`victims.${index}.tel`}
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Telefone</FormLabel>
+                            <FormControl>
+                                <Input
+                                placeholder="(99) 99999-9999"
+                                {...field}
+                                onChange={(e) => {
+                                    let value = e.target.value.replace(/\D/g, "");
+                                    value = value.substring(0, 11);
+                                    if (value.length > 10) {
+                                    value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                                    } else if (value.length > 6) {
+                                    value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+                                    } else if (value.length > 2) {
+                                    value = value.replace(/(\d{2})(\d*)/, '($1) $2');
+                                    } else if (value.length > 0) {
+                                    value = `(${value}`;
+                                    }
+                                    field.onChange(value);
+                                }}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+                        <FormField control={control} name={`victims.${index}.endereco`} render={({ field }) => (<FormItem><FormLabel>Endereço</FormLabel><FormControl><Input placeholder="Rua, Av, etc." {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        <FormField control={control} name={`victims.${index}.acompanhante`} render={({ field }) => (<FormItem><FormLabel>Acompanhante</FormLabel><FormControl><Input placeholder="Nome do acompanhante" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        <FormField control={control} name={`victims.${index}.posicaoVeiculo`} render={({ field }) => (<FormItem><FormLabel>Posição no Veículo</FormLabel><FormControl><Input placeholder="Ex: Condutor, Passageiro" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                    </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value={`v${index}-item-3`}>
+                    <AccordionTrigger className="text-xl font-bold">EVENTO</AccordionTrigger>
+                    <AccordionContent className="space-y-6 pt-4">
+                        <RadioGroupField control={control} name={`victims.${index}.tipoEvento`} label="Tipo de Evento" options={[{value: 'trauma', label: 'Trauma'}, {value: 'clinico', label: 'Atendimento Clínico'}]} orientation="horizontal" />
+                        
+                        {useWatch({ control, name: `victims.${index}.tipoEvento` }) === 'trauma' && (
+                            <Card className="bg-background/50">
+                                <CardHeader><CardTitle>Trauma</CardTitle></CardHeader>
+                                <CardContent className="space-y-4">
+                                    <CheckboxGroupField control={control} name={`victims.${index}.eventoTrauma`} label="" options={[
+                                        { id: 'acidente', label: 'Acidente Automobilístico' },
+                                        { id: 'queimadura', label: 'Queimadura' },
+                                        { id: 'atropelamento', label: 'Atropelamento' },
+                                        { id: 'queda', label: 'Queda de Altura' },
+                                        { id: 'outros', label: 'Outros' }
+                                    ]}/>
+                                     {useWatch({ control, name: `victims.${index}.eventoTrauma` })?.includes('outros') &&
+                                        <FormField control={control} name={`victims.${index}.eventoTraumaOutros`} render={({ field }) => (<FormItem><FormLabel>Outros (Trauma)</FormLabel><FormControl><Input placeholder="Descreva o trauma" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                     }
+                                </CardContent>
+                            </Card>
+                        )}
+                        {useWatch({ control, name: `victims.${index}.tipoEvento` }) === 'clinico' && (
+                            <Card className="bg-background/50">
+                                <CardHeader><CardTitle>Atendimento Clínico</CardTitle></CardHeader>
+                                <CardContent className="space-y-4">
+                                     <CheckboxGroupField control={control} name={`victims.${index}.eventoClinico`} label="" options={[
+                                        { id: 'mal_subito', label: 'Mal Súbito' },
+                                        { id: 'intoxicacao', label: 'Intoxicação Exógena' },
+                                        { id: 'parto', label: 'Assistência ao Parto' },
+                                        { id: 'convulsao', label: 'Convulsão' },
+                                        { id: 'psiquiatrico', label: 'Distúrbio Psiquiátrico' },
+                                        { id: 'outros', label: 'Outros' }
+                                    ]}/>
+                                    {useWatch({ control, name: `victims.${index}.eventoClinico` })?.includes('outros') &&
+                                        <FormField control={control} name={`victims.${index}.eventoClinicoOutros`} render={({ field }) => (<FormItem><FormLabel>Outros (Clínico)</FormLabel><FormControl><Input placeholder="Descreva o atendimento" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                    }
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        <CheckboxGroupField control={control} name={`victims.${index}.condicoesSeguranca`} label="Condições de Segurança" options={[
+                            { id: 'cinto', label: 'Cinto de Segurança' },
+                            { id: 'cadeirinha', label: 'Cadeirinha' },
+                            { id: 'airbag', label: 'Air Bag' },
+                            { id: 'capacete', label: 'Capacete' },
+                            { id: 'outros', label: 'Outros' },
+                        ]}/>
+                        {useWatch({ control, name: `victims.${index}.condicoesSeguranca` })?.includes('outros') &&
+                            <FormField control={control} name={`victims.${index}.condicoesSegurancaOutros`} render={({ field }) => (<FormItem><FormLabel>Outras Condições</FormLabel><FormControl><Input placeholder="Descreva outras condições" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        }
+                        
+                        <CheckboxGroupField control={control} name={`victims.${index}.condicaoInicial`} label="Condição Inicial" options={[
+                            { id: 'alerta', label: 'Alerta' },
+                            { id: 'deambulando', label: 'Deambulando' },
+                            { id: 'verbaliza', label: 'Verbaliza' },
+                            { id: 'ao_solo', label: 'Ao Solo' },
+                            { id: 'estimulo_doloroso', label: 'Estímulo Doloroso' },
+                            { id: 'ejetado', label: 'Ejetado' },
+                            { id: 'inconsciente', label: 'Inconsciente' },
+                            { id: 'encarcerado', label: 'Encarcerado/Retido' },
+                        ]}/>
+                    </AccordionContent>
+                </AccordionItem>
+                
+                 <AccordionItem value={`v${index}-item-4`}>
+                    <AccordionTrigger className="text-xl font-bold">AVALIAÇÃO PRIMÁRIA (XABCDE)</AccordionTrigger>
+                    <AccordionContent className="space-y-6 pt-4">
+                        <RadioGroupField control={control} name={`victims.${index}.hemorragiaExsanguinante`} label="X - Hemorragia Exsanguinante" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal"/>
+                        <FormField control={control} name={`victims.${index}.viasAereas`} render={({ field }) => (<FormItem><FormLabel>A - Vias Aéreas</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="pervias">Pérvias</SelectItem><SelectItem value="obstruidas">Obstruídas Por</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
+                        {useWatch({ control, name: `victims.${index}.viasAereas` }) === 'obstruidas' && <FormField control={control} name={`victims.${index}.viasAereasObstruidasPor`} render={({ field }) => (<FormItem><FormLabel>Obstruídas Por</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />}
+                        
+                        <RadioGroupField control={control} name={`victims.${index}.ventilacao`} label="B - Ventilação" options={[{value: 'presente', label: 'Presente'}, {value: 'ausente', label: 'Ausente'}]} orientation="horizontal"/>
+                        <CheckboxGroupField control={control} name={`victims.${index}.detalhesVentilacao`} label="Detalhes da Ventilação" options={[
+                            {id: 'simetrica', label: 'Simétrica'}, {id: 'assimetrica', label: 'Assimétrica'}, {id: 'apneia', label: 'Apnéia'},
+                            {id: 'eupneia', label: 'Eupneia'}, {id: 'taquipneia', label: 'Taquipneia'}, {id: 'gasping', label: 'Gasping'}
+                        ]} />
+
+                        <Card>
+                        <CardHeader><CardTitle>C - Circulação e Hemorragias</CardTitle></CardHeader>
+                        <CardContent className="space-y-4">
+                            <CheckboxGroupField control={control} name={`victims.${index}.pulso`} label="Pulso" options={[{id: 'presente', label: 'Presente'}, {id: 'cheio', label: 'Cheio'}, {id: 'filiforme', label: 'Filiforme'}]} />
+                            <CheckboxGroupField control={control} name={`victims.${index}.pele`} label="Pele" options={[{id: 'normal', label: 'Normal'}, {id: 'fria', label: 'Fria'}, {id: 'sudorese', label: 'Sudorese'}]} />
+                            <RadioGroupField control={control} name={`victims.${index}.perfusao`} label="Perfusão" options={[{value: '<2seg', label: '< 2 Seg'}, {value: '>=2seg', label: '>= 2 Seg'}]} orientation="horizontal" />
+                            <RadioGroupField control={control} name={`victims.${index}.sangramentoAtivo`} label="Sangramento Ativo" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal" />
+                        </CardContent>
+                        </Card>
+
+                        <Card>
+                        <CardHeader><CardTitle>D - Neurológico</CardTitle></CardHeader>
+                        <CardContent className="space-y-4">
+                            <FormField control={control} name={`victims.${index}.glasgowInicial`} render={({ field }) => (<FormItem><FormLabel>Glasgow (Inicial)</FormLabel><FormControl><Input placeholder="Ex: 15" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                            <RadioGroupField control={control} name={`victims.${index}.pupilas`} label="Pupilas" options={[{value: 'isocoricas', label: 'Isocóricas'}, {value: 'anisocoricas', label: 'Anisocóricas'}]} orientation="horizontal"/>
+                            <RadioGroupField control={control} name={`victims.${index}.fotorreagentes`} label="Fotorreagentes" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal"/>
+                        </CardContent>
+                        </Card>
+
+                        <Card>
+                        <CardHeader><CardTitle>E - Exposição</CardTitle></CardHeader>
+                        <CardContent className="space-y-4">
+                            <RadioGroupField control={control} name={`victims.${index}.exposicao`} label="" options={[{value: 'sem_lesoes', label: 'Sem Lesões Aparentes'}, {value: 'lesoes_aparentes', label: 'Lesões Aparentes'}]} />
+                            <RadioGroupField control={control} name={`victims.${index}.hipotermia`} label="Hipotermia" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal"/>
+                            <FormField control={control} name={`victims.${index}.lesoesAparentes`} render={({ field }) => (<FormItem><FormLabel>Lesões Aparentes e Queixas Principais</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        </CardContent>
+                        </Card>
+                    </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value={`v${index}-item-5`}>
+                    <AccordionTrigger className="text-xl font-bold">AVALIAÇÃO SECUNDÁRIA E SINAIS VITAIS</AccordionTrigger>
+                    <AccordionContent className="space-y-6 pt-4">
+                        <Card>
+                            <CardHeader><CardTitle>S.A.M.P.L.E.</CardTitle></CardHeader>
+                            <CardContent className="space-y-4">
+                                <FormField control={control} name={`victims.${index}.alergias`} render={({ field }) => (<FormItem><FormLabel>Alergias</FormLabel><FormControl><Input placeholder="Nega alergias / Dipirona" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={control} name={`victims.${index}.medicamentosEmUso`} render={({ field }) => (<FormItem><FormLabel>Medicamentos em Uso</FormLabel><FormControl><Input placeholder="Nega uso / Losartana" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={control} name={`victims.${index}.comorbidades`} render={({ field }) => (<FormItem><FormLabel>Comorbidades / Gestação</FormLabel><FormControl><Input placeholder="Nega comorbidades / HAS" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={control} name={`victims.${index}.ultimaRefeicao`} render={({ field }) => (<FormItem><FormLabel>Última Refeição / Jejum</FormLabel><FormControl><Input placeholder="Há 2 horas" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader><CardTitle>Sinais Vitais</CardTitle></CardHeader>
+                            <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                                <FormField control={control} name={`victims.${index}.sinaisVitaisPA`} render={({ field }) => (<FormItem><FormLabel>PA (mmHg)</FormLabel><FormControl><Input placeholder="120x80" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={control} name={`victims.${index}.sinaisVitaisFC`} render={({ field }) => (<FormItem><FormLabel>FC (bpm)</FormLabel><FormControl><Input placeholder="80" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={control} name={`victims.${index}.sinaisVitaisFR`} render={({ field }) => (<FormItem><FormLabel>FR (rpm)</FormLabel><FormControl><Input placeholder="16" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={control} name={`victims.${index}.sinaisVitaisSatO2`} render={({ field }) => (<FormItem><FormLabel>Sat O² (%)</FormLabel><FormControl><Input placeholder="98" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={control} name={`victims.${index}.sinaisVitaisTAX`} render={({ field }) => (<FormItem><FormLabel>TAX (°C)</FormLabel><FormControl><Input placeholder="36.5" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={control} name={`victims.${index}.sinaisVitaisDXT`} render={({ field }) => (<FormItem><FormLabel>DXT (mg/dl)</FormLabel><FormControl><Input placeholder="90" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                            </CardContent>
+                        </Card>
+                        <FormField control={control} name={`victims.${index}.avaliacaoCraniocaudal`} render={({ field }) => (<FormItem><FormLabel>Avaliação Crânio-Caudal</FormLabel><FormControl><Textarea placeholder="Nenhuma anormalidade encontrada, vítima consciente e orientada." {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                    </AccordionContent>
+                </AccordionItem>
+                 
+                <AccordionItem value={`v${index}-item-6`}>
+                    <AccordionTrigger className="text-xl font-bold">GLASGOW E PROCEDIMENTOS</AccordionTrigger>
+                    <AccordionContent className="space-y-6 pt-4">
+                        <GlasgowScale control={control} index={index}/>
+                        <Card>
+                            <CardHeader><CardTitle>Imobilização</CardTitle></CardHeader>
+                            <CardContent className="space-y-4">
+                                <RadioGroupField control={control} name={`victims.${index}.pranchamento`} label="Pranchamento" options={[
+                                    {value: 'decubito', label: 'Decúbito'}, {value: 'em_pe', label: 'Em Pé'}
+                                ]}/>
+                                <CheckboxGroupField control={control} name={`victims.${index}.imobilizacao`} label="" options={[
+                                    {id: 'colar', label: 'Colar Cervical'},
+                                    {id: 'ked', label: 'Extricação com KED'},
+                                    {id: 'terezarautek', label: 'Extricação com Tereza/Rautek'},
+                                    {id: 'desencarceramento', label: 'Desencarceramento'},
+                                    {id: 'retirada_capacete', label: 'Retirada de Capacete'},
+                                    {id: 'imob_mse', label: 'Imobilização de MSE'},
+                                    {id: 'imob_msd', label: 'Imobilização de MSD'},
+                                    {id: 'imob_mie', label: 'Imobilização de MIE'},
+                                    {id: 'imob_mid', label: 'Imobilização de MID'},
+                                    {id: 'imob_pelve', label: 'Imobilização de Pelve'},
+                                ]} />
+                            </CardContent>
+                        </Card>
+                        <CheckboxGroupField control={control} name={`victims.${index}.procedimentos`} label="Procedimentos Realizados" options={[
+                            {id: 'desobstrucao', label: 'Desobstrução de Vias Aéreas'}, {id: 'canula', label: 'Cânula de Guedel'}, {id: 'oxigenio', label: 'Oxigênio (Máscara/Cateter)'},
+                            {id: 'ambu', label: 'Ventilação com AMBU'}, {id: 'dea', label: 'DEA'}, {id: 'rcp', label: 'RCP'},
+                            {id: 'torniquete', label: 'Torniquete'}, {id: 'curativo', label: 'Curativo Oclusivo/Compressivo'}, {id: 'sinais_vitais', label: 'Aferição de Sinais Vitais'},
+                            {id: 'oximetria', label: 'Oximetria de Pulso'}, {id: 'resgate_altura', label: 'Resgate em Altura'}, {id: 'orientacoes', label: 'Orientações'}
+                        ]} />
+                        <FormField control={control} name={`victims.${index}.procedimentosOutros`} render={({ field }) => (<FormItem><FormLabel>Outros Procedimentos</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                    </AccordionContent>
+                </AccordionItem>
+                 
+                <AccordionItem value={`v${index}-item-7`}>
+                    <AccordionTrigger className="text-xl font-bold">DESFECHO E OBSERVAÇÕES</AccordionTrigger>
+                    <AccordionContent className="space-y-6 pt-4">
+                        <RadioGroupField control={control} name={`victims.${index}.conduta`} label="Conduta" options={[
+                            {value: 'liberacao', label: 'Liberação no Local c/ Orientações'}, {value: 'recusa_atendimento', label: 'Recusa Atendimento'},
+                            {value: 'recusa_remocao', label: 'Recusa Remoção'}, {value: 'removido_terceiros', label: 'Removido por Terceiros'},
+                            {value: 'removido_hospital', label: 'Removido a Unidade Hospitalar'}, {value: 'obito_local', label: 'Vítima em Óbito'},
+                            {value: 'obito_atendimento', label: 'Óbito Durante Atendimento'},
+                        ]} />
+                        {useWatch({ control, name: `victims.${index}.conduta` }) === 'removido_terceiros' && (
+                            <FormField control={control} name={`victims.${index}.removidoPorTerceiros`} render={({ field }) => (<FormItem><FormLabel>Removido por</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="COBOM">COBOM</SelectItem><SelectItem value="SAMU">SAMU</SelectItem><SelectItem value="OUTROS">Outros</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
+                        )}
+                        {useWatch({ control, name: `victims.${index}.conduta` }) === 'removido_hospital' && (
+                            <FormField control={control} name={`victims.${index}.removidoHospital`} render={({ field }) => (<FormItem><FormLabel>Unidade Hospitalar</FormLabel><FormControl><Input placeholder="Ex: Santa Casa de Misericórdia" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        )}
+                        <RadioGroupField control={control} name={`victims.${index}.codigoConduta`} label="Código" options={[
+                            {value: 'vermelho', label: 'Vermelho'}, {value: 'amarelo', label: 'Amarelo'},
+                            {value: 'verde', label: 'Verde'}, {value: 'azul', label: 'Azul'}, {value: 'preto', label: 'Preto'}
+                        ]} orientation="horizontal" />
+                        <FormField control={control} name={`victims.${index}.medicoReguladorConduta`} render={({ field }) => (<FormItem><FormLabel>Médico Regulador/Intervencionista</FormLabel><FormControl><Input placeholder="Ex: Dr. Gregory House" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        <FormField control={control} name={`victims.${index}.medicoReceptor`} render={({ field }) => (<FormItem><FormLabel>Médico Receptor</FormLabel><FormControl><Input placeholder="Ex: Dra. Meredith Grey" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Consumo de Materiais</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4 pt-6">
+                                {materialFields.map((item, materialIndex) => (
+                                <div key={item.id} className="flex items-end gap-2 p-2 border rounded-lg relative md:gap-4 md:p-4">
+                                    <div className="grid grid-cols-1 gap-4 flex-1 md:flex-initial md:w-full">
+                                        <FormField
+                                            control={control}
+                                            name={`victims.${index}.materiais.${materialIndex}.nome`}
+                                            render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Material</FormLabel>
+                                                <FormControl>
+                                                <Input placeholder="Ex: Gaze" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={control}
+                                            name={`victims.${index}.materiais.${materialIndex}.quantidade`}
+                                            render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Quantidade</FormLabel>
+                                                <FormControl>
+                                                <Input type="number" placeholder="Ex: 10" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                    <Button
+                                        type="button"
+                                        variant="destructive"
+                                        size="icon"
+                                        onClick={() => removeMaterial(materialIndex)}
+                                        className="mb-11"
+                                    >
+                                        <Trash2 className="h-5 w-5" />
+                                        <span className="sr-only">Remover Material</span>
+                                    </Button>
+                                </div>
+                                ))}
+                                <Button
+                                type="button"
+                                variant="outline"
+                                className="w-full"
+                                onClick={() => appendMaterial({ nome: '', quantidade: '' })}
+                                >
+                                <PlusCircle className="mr-2 h-5 w-5" />
+                                Adicionar Material
+                                </Button>
+                            </CardContent>
+                        </Card>
+                        <FormField control={control} name={`victims.${index}.relatorioObservacoes`} render={({ field }) => (<FormItem><FormLabel>Relatório/Observações</FormLabel><FormControl><Textarea rows={5} placeholder="Descreva o relatório e observações aqui..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        <FormField control={control} name={`victims.${index}.rolValores`} render={({ field }) => (<FormItem><FormLabel>Rol de Valores/Pertences</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Celular, carteira com documentos e R$ 50,00" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        <FormField control={control} name={`victims.${index}.responsavelValores`} render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input placeholder="Nome do responsável" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        <FormField control={control} name={`victims.${index}.equipamentosRetidos`} render={({ field }) => (<FormItem><FormLabel>Equipamentos/Materiais Retidos</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Colar cervical, prancha rígida..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        <FormField control={control} name={`victims.${index}.responsavelEquipamentos`} render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input placeholder="Nome do responsável" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                    </AccordionContent>
+                </AccordionItem>
+
+                {(watchConduta === 'recusa_atendimento' || watchConduta === 'recusa_remocao') && (
+                    <AccordionItem value={`v${index}-item-8`}>
+                        <AccordionTrigger className="text-xl font-bold text-destructive">TERMO DE RECUSA</AccordionTrigger>
+                        <AccordionContent className="space-y-6 pt-4">
+                            <Card className="border-destructive">
+                                <CardContent className="pt-6 space-y-4">
+                                <p className="text-base text-muted-foreground">
+                                    EU, <FormField control={control} name={`victims.${index}.termoRecusaNome`} render={({ field }) => (<Input className="inline-block w-auto" placeholder="NOME" {...field} />)} />,
+                                    PORTADOR DO CPF <FormField control={control} name={`victims.${index}.termoRecusaCPF`} render={({ field }) => (<Input className="inline-block w-auto" placeholder="CPF" {...field} />)} />
+                                    RG: <FormField control={control} name={`victims.${index}.termoRecusaRG`} render={({ field }) => (<Input className="inline-block w-auto" placeholder="RG" {...field} />)} />,
+                                    RESIDENTE NO ENDEREÇO: <FormField control={control} name={`victims.${index}.termoRecusaEndereco`} render={({ field }) => (<Input placeholder="Endereço" {...field} />)} />,
+                                    EM PLENA CONSCIÊNCIA DOS MEUS ATOS E ORIENTADO PELA EQUIPE DE RESGATE, DECLARO PARA TODOS OS FINS QUE RECUSO O ATENDIMENTO PRÉ - HOSPITALAR DA WAY BRASIL, ASSUMINDO TODA RESPONSABILIDADE POR QUALQUER PREJUÍZO A MINHA SAÚDE E INTEGRIDADE FÍSICA OU A DE
+                                    <FormField control={control} name={`victims.${index}.termoRecusaResponsavelPor`} render={({ field }) => (<Input className="inline-block w-auto mx-2" placeholder="NOME" {...field} />)} />
+                                    DE QUEM SOU <FormField control={control} name={`victims.${index}.termoRecusaParentesco`} render={({ field }) => (<Input className="inline-block w-auto" placeholder="GRAU DE PARENTESCO" {...field} />)} />, NA CONDIÇÃO DE SEU RESPONSÁVEL.
+                                </p>
+                                <FormField control={control} name={`victims.${index}.termoRecusaTestemunha1`} render={({ field }) => (<FormItem><FormLabel>Testemunha 1</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <FormField control={control} name={`victims.${index}.termoRecusaTestemunha2`} render={({ field }) => (<FormItem><FormLabel>Testemunha 2</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                <p className="text-center pt-4">_________________________________________</p>
+                                <p className="text-center font-semibold">Assinatura da Vítima/Responsável</p>
+                                </CardContent>
+                            </Card>
+                        </AccordionContent>
+                    </AccordionItem>
+                )}
+           </Accordion>
+        </CardContent>
+    </Card>
+  );
+}
+
+
 // Main page component
 export default function QudResgatePage() {
   const { toast } = useToast();
@@ -786,415 +1197,15 @@ export default function QudResgatePage() {
                 </AccordionItem>
             </Accordion>
 
-            {victimFields.map((field, index) => {
-               const watchConduta = form.watch(`victims.${index}.conduta`);
-               const { fields: materialFields, append: appendMaterial, remove: removeMaterial } = useFieldArray({
-                 control: form.control,
-                 name: `victims.${index}.materiais`,
-               });
-
-               return (
-                <Card key={field.id} className="border-primary border-2 mt-6">
-                    <CardHeader className="flex-row items-center justify-between bg-primary text-primary-foreground">
-                        <CardTitle>Vítima {index + 1}</CardTitle>
-                        {victimFields.length > 1 && (
-                            <Button type="button" variant="destructive" size="icon" onClick={() => removeVictim(index)}>
-                                <Trash2 className="h-5 w-5" />
-                                <span className="sr-only">Remover Vítima</span>
-                            </Button>
-                        )}
-                    </CardHeader>
-                    <CardContent className="pt-6">
-                       <Accordion type="multiple" className="w-full space-y-4" defaultValue={[`v${index}-item-2`]}>
-                            <AccordionItem value={`v${index}-item-2`}>
-                                <AccordionTrigger className="text-xl font-bold">DADOS CADASTRAIS DO USUÁRIO</AccordionTrigger>
-                                <AccordionContent className="space-y-6 pt-4">
-                                    <FormField control={form.control} name={`victims.${index}.nomeUsuario`} render={({ field }) => (<FormItem><FormLabel>Nome</FormLabel><FormControl><Input placeholder="Nome completo do usuário" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                        <FormField control={form.control} name={`victims.${index}.idade`} render={({ field }) => (<FormItem><FormLabel>Idade</FormLabel><FormControl><Input type="number" placeholder="Ex: 35" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                        <FormField control={form.control} name={`victims.${index}.dn`} render={({ field }) => (<FormItem><FormLabel>Data Nasc.</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                        <RadioGroupField control={form.control} name={`victims.${index}.sexo`} label="Sexo" options={[{value: 'M', label: 'M'}, {value: 'F', label: 'F'}]} orientation="horizontal" />
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <FormField
-                                        name={`victims.${index}.cpf`}
-                                        control={form.control}
-                                        render={({ field }) => (
-                                            <FormItem>
-                                            <FormLabel>CPF</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                placeholder="000.000.000-00"
-                                                {...field}
-                                                onChange={(e) => {
-                                                    const rawValue = e.target.value.replace(/\D/g, '');
-                                                    let maskedValue = rawValue.substring(0, 11);
-                                                    if (rawValue.length > 9) {
-                                                    maskedValue = maskedValue.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-                                                    } else if (rawValue.length > 6) {
-                                                    maskedValue = maskedValue.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
-                                                    } else if (rawValue.length > 3) {
-                                                    maskedValue = maskedValue.replace(/(\d{3})(\d{1,3})/, '$1.$2');
-                                                    }
-                                                    field.onChange(maskedValue);
-                                                }}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                            </FormItem>
-                                        )}
-                                        />
-                                        <FormField
-                                        name={`victims.${index}.rg`}
-                                        control={form.control}
-                                        render={({ field }) => (
-                                            <FormItem>
-                                            <FormLabel>RG</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                placeholder="00.000.000-0"
-                                                {...field}
-                                                onChange={(e) => {
-                                                    const rawValue = e.target.value.replace(/\D/g, '');
-                                                    let maskedValue = rawValue.substring(0, 9);
-                                                    if (rawValue.length > 8) {
-                                                    maskedValue = maskedValue.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/, '$1.$2.$3-$4');
-                                                    } else if (rawValue.length > 5) {
-                                                    maskedValue = maskedValue.replace(/(\d{2})(\d{3})(\d{1,3})/, '$1.$2.$3');
-                                                    } else if (rawValue.length > 2) {
-                                                    maskedValue = maskedValue.replace(/(\d{2})(\d{1,3})/, '$1.$2');
-                                                    }
-                                                    field.onChange(maskedValue);
-                                                }}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                            </FormItem>
-                                        )}
-                                        />
-                                    </div>
-                                    <FormField
-                                    control={form.control}
-                                    name={`victims.${index}.tel`}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                        <FormLabel>Telefone</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                            placeholder="(99) 99999-9999"
-                                            {...field}
-                                            onChange={(e) => {
-                                                let value = e.target.value.replace(/\D/g, "");
-                                                value = value.substring(0, 11);
-                                                if (value.length > 10) {
-                                                value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-                                                } else if (value.length > 6) {
-                                                value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-                                                } else if (value.length > 2) {
-                                                value = value.replace(/(\d{2})(\d*)/, '($1) $2');
-                                                } else if (value.length > 0) {
-                                                value = `(${value}`;
-                                                }
-                                                field.onChange(value);
-                                            }}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                        </FormItem>
-                                    )}
-                                    />
-                                    <FormField control={form.control} name={`victims.${index}.endereco`} render={({ field }) => (<FormItem><FormLabel>Endereço</FormLabel><FormControl><Input placeholder="Rua, Av, etc." {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                    <FormField control={form.control} name={`victims.${index}.acompanhante`} render={({ field }) => (<FormItem><FormLabel>Acompanhante</FormLabel><FormControl><Input placeholder="Nome do acompanhante" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                    <FormField control={form.control} name={`victims.${index}.posicaoVeiculo`} render={({ field }) => (<FormItem><FormLabel>Posição no Veículo</FormLabel><FormControl><Input placeholder="Ex: Condutor, Passageiro" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                </AccordionContent>
-                            </AccordionItem>
-
-                            <AccordionItem value={`v${index}-item-3`}>
-                                <AccordionTrigger className="text-xl font-bold">EVENTO</AccordionTrigger>
-                                <AccordionContent className="space-y-6 pt-4">
-                                    <RadioGroupField control={form.control} name={`victims.${index}.tipoEvento`} label="Tipo de Evento" options={[{value: 'trauma', label: 'Trauma'}, {value: 'clinico', label: 'Atendimento Clínico'}]} orientation="horizontal" />
-                                    
-                                    {form.watch(`victims.${index}.tipoEvento`) === 'trauma' && (
-                                        <Card className="bg-background/50">
-                                            <CardHeader><CardTitle>Trauma</CardTitle></CardHeader>
-                                            <CardContent className="space-y-4">
-                                                <CheckboxGroupField control={form.control} name={`victims.${index}.eventoTrauma`} label="" options={[
-                                                    { id: 'acidente', label: 'Acidente Automobilístico' },
-                                                    { id: 'queimadura', label: 'Queimadura' },
-                                                    { id: 'atropelamento', label: 'Atropelamento' },
-                                                    { id: 'queda', label: 'Queda de Altura' },
-                                                    { id: 'outros', label: 'Outros' }
-                                                ]}/>
-                                                 {form.watch(`victims.${index}.eventoTrauma`)?.includes('outros') &&
-                                                    <FormField control={form.control} name={`victims.${index}.eventoTraumaOutros`} render={({ field }) => (<FormItem><FormLabel>Outros (Trauma)</FormLabel><FormControl><Input placeholder="Descreva o trauma" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                                 }
-                                            </CardContent>
-                                        </Card>
-                                    )}
-                                    {form.watch(`victims.${index}.tipoEvento`) === 'clinico' && (
-                                        <Card className="bg-background/50">
-                                            <CardHeader><CardTitle>Atendimento Clínico</CardTitle></CardHeader>
-                                            <CardContent className="space-y-4">
-                                                 <CheckboxGroupField control={form.control} name={`victims.${index}.eventoClinico`} label="" options={[
-                                                    { id: 'mal_subito', label: 'Mal Súbito' },
-                                                    { id: 'intoxicacao', label: 'Intoxicação Exógena' },
-                                                    { id: 'parto', label: 'Assistência ao Parto' },
-                                                    { id: 'convulsao', label: 'Convulsão' },
-                                                    { id: 'psiquiatrico', label: 'Distúrbio Psiquiátrico' },
-                                                    { id: 'outros', label: 'Outros' }
-                                                ]}/>
-                                                {form.watch(`victims.${index}.eventoClinico`)?.includes('outros') &&
-                                                    <FormField control={form.control} name={`victims.${index}.eventoClinicoOutros`} render={({ field }) => (<FormItem><FormLabel>Outros (Clínico)</FormLabel><FormControl><Input placeholder="Descreva o atendimento" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                                }
-                                            </CardContent>
-                                        </Card>
-                                    )}
-
-                                    <CheckboxGroupField control={form.control} name={`victims.${index}.condicoesSeguranca`} label="Condições de Segurança" options={[
-                                        { id: 'cinto', label: 'Cinto de Segurança' },
-                                        { id: 'cadeirinha', label: 'Cadeirinha' },
-                                        { id: 'airbag', label: 'Air Bag' },
-                                        { id: 'capacete', label: 'Capacete' },
-                                        { id: 'outros', label: 'Outros' },
-                                    ]}/>
-                                    {form.watch(`victims.${index}.condicoesSeguranca`)?.includes('outros') &&
-                                        <FormField control={form.control} name={`victims.${index}.condicoesSegurancaOutros`} render={({ field }) => (<FormItem><FormLabel>Outras Condições</FormLabel><FormControl><Input placeholder="Descreva outras condições" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                    }
-                                    
-                                    <CheckboxGroupField control={form.control} name={`victims.${index}.condicaoInicial`} label="Condição Inicial" options={[
-                                        { id: 'alerta', label: 'Alerta' },
-                                        { id: 'deambulando', label: 'Deambulando' },
-                                        { id: 'verbaliza', label: 'Verbaliza' },
-                                        { id: 'ao_solo', label: 'Ao Solo' },
-                                        { id: 'estimulo_doloroso', label: 'Estímulo Doloroso' },
-                                        { id: 'ejetado', label: 'Ejetado' },
-                                        { id: 'inconsciente', label: 'Inconsciente' },
-                                        { id: 'encarcerado', label: 'Encarcerado/Retido' },
-                                    ]}/>
-                                </AccordionContent>
-                            </AccordionItem>
-                            
-                             <AccordionItem value={`v${index}-item-4`}>
-                                <AccordionTrigger className="text-xl font-bold">AVALIAÇÃO PRIMÁRIA (XABCDE)</AccordionTrigger>
-                                <AccordionContent className="space-y-6 pt-4">
-                                    <RadioGroupField control={form.control} name={`victims.${index}.hemorragiaExsanguinante`} label="X - Hemorragia Exsanguinante" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal"/>
-                                    <FormField control={form.control} name={`victims.${index}.viasAereas`} render={({ field }) => (<FormItem><FormLabel>A - Vias Aéreas</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="pervias">Pérvias</SelectItem><SelectItem value="obstruidas">Obstruídas Por</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
-                                    {form.watch(`victims.${index}.viasAereas`) === 'obstruidas' && <FormField control={form.control} name={`victims.${index}.viasAereasObstruidasPor`} render={({ field }) => (<FormItem><FormLabel>Obstruídas Por</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />}
-                                    
-                                    <RadioGroupField control={form.control} name={`victims.${index}.ventilacao`} label="B - Ventilação" options={[{value: 'presente', label: 'Presente'}, {value: 'ausente', label: 'Ausente'}]} orientation="horizontal"/>
-                                    <CheckboxGroupField control={form.control} name={`victims.${index}.detalhesVentilacao`} label="Detalhes da Ventilação" options={[
-                                        {id: 'simetrica', label: 'Simétrica'}, {id: 'assimetrica', label: 'Assimétrica'}, {id: 'apneia', label: 'Apnéia'},
-                                        {id: 'eupneia', label: 'Eupneia'}, {id: 'taquipneia', label: 'Taquipneia'}, {id: 'gasping', label: 'Gasping'}
-                                    ]} />
-
-                                    <Card>
-                                    <CardHeader><CardTitle>C - Circulação e Hemorragias</CardTitle></CardHeader>
-                                    <CardContent className="space-y-4">
-                                        <CheckboxGroupField control={form.control} name={`victims.${index}.pulso`} label="Pulso" options={[{id: 'presente', label: 'Presente'}, {id: 'cheio', label: 'Cheio'}, {id: 'filiforme', label: 'Filiforme'}]} />
-                                        <CheckboxGroupField control={form.control} name={`victims.${index}.pele`} label="Pele" options={[{id: 'normal', label: 'Normal'}, {id: 'fria', label: 'Fria'}, {id: 'sudorese', label: 'Sudorese'}]} />
-                                        <RadioGroupField control={form.control} name={`victims.${index}.perfusao`} label="Perfusão" options={[{value: '<2seg', label: '< 2 Seg'}, {value: '>=2seg', label: '>= 2 Seg'}]} orientation="horizontal" />
-                                        <RadioGroupField control={form.control} name={`victims.${index}.sangramentoAtivo`} label="Sangramento Ativo" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal" />
-                                    </CardContent>
-                                    </Card>
-
-                                    <Card>
-                                    <CardHeader><CardTitle>D - Neurológico</CardTitle></CardHeader>
-                                    <CardContent className="space-y-4">
-                                        <FormField control={form.control} name={`victims.${index}.glasgowInicial`} render={({ field }) => (<FormItem><FormLabel>Glasgow (Inicial)</FormLabel><FormControl><Input placeholder="Ex: 15" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                        <RadioGroupField control={form.control} name={`victims.${index}.pupilas`} label="Pupilas" options={[{value: 'isocoricas', label: 'Isocóricas'}, {value: 'anisocoricas', label: 'Anisocóricas'}]} orientation="horizontal"/>
-                                        <RadioGroupField control={form.control} name={`victims.${index}.fotorreagentes`} label="Fotorreagentes" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal"/>
-                                    </CardContent>
-                                    </Card>
-
-                                    <Card>
-                                    <CardHeader><CardTitle>E - Exposição</CardTitle></CardHeader>
-                                    <CardContent className="space-y-4">
-                                        <RadioGroupField control={form.control} name={`victims.${index}.exposicao`} label="" options={[{value: 'sem_lesoes', label: 'Sem Lesões Aparentes'}, {value: 'lesoes_aparentes', label: 'Lesões Aparentes'}]} />
-                                        <RadioGroupField control={form.control} name={`victims.${index}.hipotermia`} label="Hipotermia" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal"/>
-                                        <FormField control={form.control} name={`victims.${index}.lesoesAparentes`} render={({ field }) => (<FormItem><FormLabel>Lesões Aparentes e Queixas Principais</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                    </CardContent>
-                                    </Card>
-                                </AccordionContent>
-                            </AccordionItem>
-
-                            <AccordionItem value={`v${index}-item-5`}>
-                                <AccordionTrigger className="text-xl font-bold">AVALIAÇÃO SECUNDÁRIA E SINAIS VITAIS</AccordionTrigger>
-                                <AccordionContent className="space-y-6 pt-4">
-                                    <Card>
-                                        <CardHeader><CardTitle>S.A.M.P.L.E.</CardTitle></CardHeader>
-                                        <CardContent className="space-y-4">
-                                            <FormField control={form.control} name={`victims.${index}.alergias`} render={({ field }) => (<FormItem><FormLabel>Alergias</FormLabel><FormControl><Input placeholder="Nega alergias / Dipirona" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                            <FormField control={form.control} name={`victims.${index}.medicamentosEmUso`} render={({ field }) => (<FormItem><FormLabel>Medicamentos em Uso</FormLabel><FormControl><Input placeholder="Nega uso / Losartana" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                            <FormField control={form.control} name={`victims.${index}.comorbidades`} render={({ field }) => (<FormItem><FormLabel>Comorbidades / Gestação</FormLabel><FormControl><Input placeholder="Nega comorbidades / HAS" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                            <FormField control={form.control} name={`victims.${index}.ultimaRefeicao`} render={({ field }) => (<FormItem><FormLabel>Última Refeição / Jejum</FormLabel><FormControl><Input placeholder="Há 2 horas" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                        </CardContent>
-                                    </Card>
-                                    <Card>
-                                        <CardHeader><CardTitle>Sinais Vitais</CardTitle></CardHeader>
-                                        <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                                            <FormField control={form.control} name={`victims.${index}.sinaisVitaisPA`} render={({ field }) => (<FormItem><FormLabel>PA (mmHg)</FormLabel><FormControl><Input placeholder="120x80" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                            <FormField control={form.control} name={`victims.${index}.sinaisVitaisFC`} render={({ field }) => (<FormItem><FormLabel>FC (bpm)</FormLabel><FormControl><Input placeholder="80" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                            <FormField control={form.control} name={`victims.${index}.sinaisVitaisFR`} render={({ field }) => (<FormItem><FormLabel>FR (rpm)</FormLabel><FormControl><Input placeholder="16" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                            <FormField control={form.control} name={`victims.${index}.sinaisVitaisSatO2`} render={({ field }) => (<FormItem><FormLabel>Sat O² (%)</FormLabel><FormControl><Input placeholder="98" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                            <FormField control={form.control} name={`victims.${index}.sinaisVitaisTAX`} render={({ field }) => (<FormItem><FormLabel>TAX (°C)</FormLabel><FormControl><Input placeholder="36.5" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                            <FormField control={form.control} name={`victims.${index}.sinaisVitaisDXT`} render={({ field }) => (<FormItem><FormLabel>DXT (mg/dl)</FormLabel><FormControl><Input placeholder="90" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                        </CardContent>
-                                    </Card>
-                                    <FormField control={form.control} name={`victims.${index}.avaliacaoCraniocaudal`} render={({ field }) => (<FormItem><FormLabel>Avaliação Crânio-Caudal</FormLabel><FormControl><Textarea placeholder="Nenhuma anormalidade encontrada, vítima consciente e orientada." {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                </AccordionContent>
-                            </AccordionItem>
-                             
-                            <AccordionItem value={`v${index}-item-6`}>
-                                <AccordionTrigger className="text-xl font-bold">GLASGOW E PROCEDIMENTOS</AccordionTrigger>
-                                <AccordionContent className="space-y-6 pt-4">
-                                    <GlasgowScale control={form.control} index={index}/>
-                                    <Card>
-                                        <CardHeader><CardTitle>Imobilização</CardTitle></CardHeader>
-                                        <CardContent className="space-y-4">
-                                            <RadioGroupField control={form.control} name={`victims.${index}.pranchamento`} label="Pranchamento" options={[
-                                                {value: 'decubito', label: 'Decúbito'}, {value: 'em_pe', label: 'Em Pé'}
-                                            ]}/>
-                                            <CheckboxGroupField control={form.control} name={`victims.${index}.imobilizacao`} label="" options={[
-                                                {id: 'colar', label: 'Colar Cervical'},
-                                                {id: 'ked', label: 'Extricação com KED'},
-                                                {id: 'terezarautek', label: 'Extricação com Tereza/Rautek'},
-                                                {id: 'desencarceramento', label: 'Desencarceramento'},
-                                                {id: 'retirada_capacete', label: 'Retirada de Capacete'},
-                                                {id: 'imob_mse', label: 'Imobilização de MSE'},
-                                                {id: 'imob_msd', label: 'Imobilização de MSD'},
-                                                {id: 'imob_mie', label: 'Imobilização de MIE'},
-                                                {id: 'imob_mid', label: 'Imobilização de MID'},
-                                                {id: 'imob_pelve', label: 'Imobilização de Pelve'},
-                                            ]} />
-                                        </CardContent>
-                                    </Card>
-                                    <CheckboxGroupField control={form.control} name={`victims.${index}.procedimentos`} label="Procedimentos Realizados" options={[
-                                        {id: 'desobstrucao', label: 'Desobstrução de Vias Aéreas'}, {id: 'canula', label: 'Cânula de Guedel'}, {id: 'oxigenio', label: 'Oxigênio (Máscara/Cateter)'},
-                                        {id: 'ambu', label: 'Ventilação com AMBU'}, {id: 'dea', label: 'DEA'}, {id: 'rcp', label: 'RCP'},
-                                        {id: 'torniquete', label: 'Torniquete'}, {id: 'curativo', label: 'Curativo Oclusivo/Compressivo'}, {id: 'sinais_vitais', label: 'Aferição de Sinais Vitais'},
-                                        {id: 'oximetria', label: 'Oximetria de Pulso'}, {id: 'resgate_altura', label: 'Resgate em Altura'}, {id: 'orientacoes', label: 'Orientações'}
-                                    ]} />
-                                    <FormField control={form.control} name={`victims.${index}.procedimentosOutros`} render={({ field }) => (<FormItem><FormLabel>Outros Procedimentos</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                </AccordionContent>
-                            </AccordionItem>
-                             
-                            <AccordionItem value={`v${index}-item-7`}>
-                                <AccordionTrigger className="text-xl font-bold">DESFECHO E OBSERVAÇÕES</AccordionTrigger>
-                                <AccordionContent className="space-y-6 pt-4">
-                                    <RadioGroupField control={form.control} name={`victims.${index}.conduta`} label="Conduta" options={[
-                                        {value: 'liberacao', label: 'Liberação no Local c/ Orientações'}, {value: 'recusa_atendimento', label: 'Recusa Atendimento'},
-                                        {value: 'recusa_remocao', label: 'Recusa Remoção'}, {value: 'removido_terceiros', label: 'Removido por Terceiros'},
-                                        {value: 'removido_hospital', label: 'Removido a Unidade Hospitalar'}, {value: 'obito_local', label: 'Vítima em Óbito'},
-                                        {value: 'obito_atendimento', label: 'Óbito Durante Atendimento'},
-                                    ]} />
-                                    {form.watch(`victims.${index}.conduta`) === 'removido_terceiros' && (
-                                        <FormField control={form.control} name={`victims.${index}.removidoPorTerceiros`} render={({ field }) => (<FormItem><FormLabel>Removido por</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="COBOM">COBOM</SelectItem><SelectItem value="SAMU">SAMU</SelectItem><SelectItem value="OUTROS">Outros</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
-                                    )}
-                                    {form.watch(`victims.${index}.conduta`) === 'removido_hospital' && (
-                                        <FormField control={form.control} name={`victims.${index}.removidoHospital`} render={({ field }) => (<FormItem><FormLabel>Unidade Hospitalar</FormLabel><FormControl><Input placeholder="Ex: Santa Casa de Misericórdia" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                    )}
-                                    <RadioGroupField control={form.control} name={`victims.${index}.codigoConduta`} label="Código" options={[
-                                        {value: 'vermelho', label: 'Vermelho'}, {value: 'amarelo', label: 'Amarelo'},
-                                        {value: 'verde', label: 'Verde'}, {value: 'azul', label: 'Azul'}, {value: 'preto', label: 'Preto'}
-                                    ]} orientation="horizontal" />
-                                    <FormField control={form.control} name={`victims.${index}.medicoReguladorConduta`} render={({ field }) => (<FormItem><FormLabel>Médico Regulador/Intervencionista</FormLabel><FormControl><Input placeholder="Ex: Dr. Gregory House" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                    <FormField control={form.control} name={`victims.${index}.medicoReceptor`} render={({ field }) => (<FormItem><FormLabel>Médico Receptor</FormLabel><FormControl><Input placeholder="Ex: Dra. Meredith Grey" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                    
-                                    <Card>
-                                        <CardHeader>
-                                            <CardTitle>Consumo de Materiais</CardTitle>
-                                        </CardHeader>
-                                        <CardContent className="space-y-4 pt-6">
-                                            {materialFields.map((item, materialIndex) => (
-                                            <div key={item.id} className="flex items-end gap-2 p-2 border rounded-lg relative md:gap-4 md:p-4">
-                                                <div className="grid grid-cols-1 gap-4 flex-1 md:flex-initial md:w-full">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name={`victims.${index}.materiais.${materialIndex}.nome`}
-                                                        render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Material</FormLabel>
-                                                            <FormControl>
-                                                            <Input placeholder="Ex: Gaze" {...field} />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                        )}
-                                                    />
-                                                    <FormField
-                                                        control={form.control}
-                                                        name={`victims.${index}.materiais.${materialIndex}.quantidade`}
-                                                        render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Quantidade</FormLabel>
-                                                            <FormControl>
-                                                            <Input type="number" placeholder="Ex: 10" {...field} />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                                <Button
-                                                    type="button"
-                                                    variant="destructive"
-                                                    size="icon"
-                                                    onClick={() => removeMaterial(materialIndex)}
-                                                    className="mb-11"
-                                                >
-                                                    <Trash2 className="h-5 w-5" />
-                                                    <span className="sr-only">Remover Material</span>
-                                                </Button>
-                                            </div>
-                                            ))}
-                                            <Button
-                                            type="button"
-                                            variant="outline"
-                                            className="w-full"
-                                            onClick={() => appendMaterial({ nome: '', quantidade: '' })}
-                                            >
-                                            <PlusCircle className="mr-2 h-5 w-5" />
-                                            Adicionar Material
-                                            </Button>
-                                        </CardContent>
-                                    </Card>
-                                    <FormField control={form.control} name={`victims.${index}.relatorioObservacoes`} render={({ field }) => (<FormItem><FormLabel>Relatório/Observações</FormLabel><FormControl><Textarea rows={5} placeholder="Descreva o relatório e observações aqui..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                    <FormField control={form.control} name={`victims.${index}.rolValores`} render={({ field }) => (<FormItem><FormLabel>Rol de Valores/Pertences</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Celular, carteira com documentos e R$ 50,00" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                    <FormField control={form.control} name={`victims.${index}.responsavelValores`} render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input placeholder="Nome do responsável" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                    <FormField control={form.control} name={`victims.${index}.equipamentosRetidos`} render={({ field }) => (<FormItem><FormLabel>Equipamentos/Materiais Retidos</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Colar cervical, prancha rígida..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                    <FormField control={form.control} name={`victims.${index}.responsavelEquipamentos`} render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input placeholder="Nome do responsável" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                </AccordionContent>
-                            </AccordionItem>
-
-                            {(watchConduta === 'recusa_atendimento' || watchConduta === 'recusa_remocao') && (
-                                <AccordionItem value={`v${index}-item-8`}>
-                                    <AccordionTrigger className="text-xl font-bold text-destructive">TERMO DE RECUSA</AccordionTrigger>
-                                    <AccordionContent className="space-y-6 pt-4">
-                                        <Card className="border-destructive">
-                                            <CardContent className="pt-6 space-y-4">
-                                            <p className="text-base text-muted-foreground">
-                                                EU, <FormField control={form.control} name={`victims.${index}.termoRecusaNome`} render={({ field }) => (<Input className="inline-block w-auto" placeholder="NOME" {...field} />)} />,
-                                                PORTADOR DO CPF <FormField control={form.control} name={`victims.${index}.termoRecusaCPF`} render={({ field }) => (<Input className="inline-block w-auto" placeholder="CPF" {...field} />)} />
-                                                RG: <FormField control={form.control} name={`victims.${index}.termoRecusaRG`} render={({ field }) => (<Input className="inline-block w-auto" placeholder="RG" {...field} />)} />,
-                                                RESIDENTE NO ENDEREÇO: <FormField control={form.control} name={`victims.${index}.termoRecusaEndereco`} render={({ field }) => (<Input placeholder="Endereço" {...field} />)} />,
-                                                EM PLENA CONSCIÊNCIA DOS MEUS ATOS E ORIENTADO PELA EQUIPE DE RESGATE, DECLARO PARA TODOS OS FINS QUE RECUSO O ATENDIMENTO PRÉ - HOSPITALAR DA WAY BRASIL, ASSUMINDO TODA RESPONSABILIDADE POR QUALQUER PREJUÍZO A MINHA SAÚDE E INTEGRIDADE FÍSICA OU A DE
-                                                <FormField control={form.control} name={`victims.${index}.termoRecusaResponsavelPor`} render={({ field }) => (<Input className="inline-block w-auto mx-2" placeholder="NOME" {...field} />)} />
-                                                DE QUEM SOU <FormField control={form.control} name={`victims.${index}.termoRecusaParentesco`} render={({ field }) => (<Input className="inline-block w-auto" placeholder="GRAU DE PARENTESCO" {...field} />)} />, NA CONDIÇÃO DE SEU RESPONSÁVEL.
-                                            </p>
-                                            <FormField control={form.control} name={`victims.${index}.termoRecusaTestemunha1`} render={({ field }) => (<FormItem><FormLabel>Testemunha 1</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                            <FormField control={form.control} name={`victims.${index}.termoRecusaTestemunha2`} render={({ field }) => (<FormItem><FormLabel>Testemunha 2</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                            <p className="text-center pt-4">_________________________________________</p>
-                                            <p className="text-center font-semibold">Assinatura da Vítima/Responsável</p>
-                                            </CardContent>
-                                        </Card>
-                                    </AccordionContent>
-                                </AccordionItem>
-                            )}
-                       </Accordion>
-                    </CardContent>
-                </Card>
-               )
-            })}
+            {victimFields.map((field, index) => (
+              <VictimCard 
+                key={field.id}
+                index={index}
+                control={form.control}
+                remove={removeVictim}
+                victimCount={victimFields.length}
+              />
+            ))}
 
             <Button type="button" size="lg" className="w-full" onClick={() => appendVictim(defaultVictimValues)}>
               <PlusCircle className="mr-2 h-5 w-5" /> Adicionar Vítima
