@@ -65,7 +65,7 @@ const formSchema = z.object({
   locais: z.array(z.string()).optional(),
   locaisOutros: z.string().optional(),
   tipoVegetacao: z.string().optional(),
-  necessidadeAcao: z.array(z.string()).optional(),
+  acaoSolicitada: z.array(z.string()).optional(),
   extensaoAproximada: z.string().optional(),
 
   // OUTRAS INFORMAÇÕES
@@ -140,7 +140,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
     const sections: { title: string, fields: (keyof FormValues)[] }[] = [
         { title: 'Informações Gerais', fields: ['rodovia', 'ocorrencia', 'qth', 'sentido'] },
-        { title: 'Detalhes do Mato Alto', fields: ['locais', 'locaisOutros', 'tipoVegetacao', 'necessidadeAcao', 'extensaoAproximada'] },
+        { title: 'Detalhes do Mato Alto', fields: ['locais', 'locaisOutros', 'tipoVegetacao', 'acaoSolicitada', 'extensaoAproximada'] },
         { title: 'Outras Informações', fields: ['vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'] }
     ];
 
@@ -193,7 +193,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         <Field label="locais" value={data.locais} />
                         {data.locais?.includes('Outros') && <Field label="locaisOutros" value={data.locaisOutros} />}
                         <Field label="tipoVegetacao" value={data.tipoVegetacao} />
-                        <Field label="necessidadeAcao" value={data.necessidadeAcao} />
+                        <Field label="acaoSolicitada" value={data.acaoSolicitada} />
                         <Field label="extensaoAproximada" value={data.extensaoAproximada} />
                     </CardContent>
                 </Card>
@@ -299,7 +299,7 @@ export default function MatoAltoPage() {
       locais: [],
       locaisOutros: '',
       tipoVegetacao: '',
-      necessidadeAcao: [],
+      acaoSolicitada: [],
       extensaoAproximada: '',
       vtrApoio: false,
       vtrApoioDescricao: '',
@@ -514,7 +514,7 @@ export default function MatoAltoPage() {
                     </FormItem>
                     )}
                 />
-                 <CheckboxGroupField control={form.control} name="necessidadeAcao" label="Ação Necessária" options={[
+                 <CheckboxGroupField control={form.control} name="acaoSolicitada" label="Ação Solicitada" options={[
                     { id: 'Roçada', label: 'Roçada' },
                     { id: 'Capina', label: 'Capina' },
                     { id: 'Poda', label: 'Poda' },
