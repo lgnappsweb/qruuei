@@ -502,7 +502,7 @@ function RelacionamentosContent({ setOpenAccordion }: { setOpenAccordion: (value
   return (
     <div className="space-y-4">
       {relacionamentosData.map(rel => (
-        <Card key={rel.title} className="bg-card/50 border-border">
+        <Card key={rel.title} className="bg-card/50 border-border shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
           <CardHeader>
             <CardTitle className="text-xl">{rel.title}</CardTitle>
             <DescriptionWithLinks text={rel.description} />

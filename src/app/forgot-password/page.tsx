@@ -52,7 +52,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold">Esqueceu sua Senha?</CardTitle>
           <CardDescription>Insira seu e-mail para receber um link de redefinição.</CardDescription>

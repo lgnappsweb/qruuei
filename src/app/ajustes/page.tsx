@@ -89,7 +89,7 @@ export default function AjustesPage() {
         </p>
       </div>
 
-      <Card>
+      <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
         <CardHeader>
           <CardTitle>Perfil</CardTitle>
           <CardDescription>Suas informações de usuário.</CardDescription>
@@ -117,7 +117,7 @@ export default function AjustesPage() {
         </CardFooter>
       </Card>
 
-      <Card>
+      <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
         <CardHeader>
           <CardTitle>Aparência</CardTitle>
           <CardDescription>Personalize a aparência do aplicativo.</CardDescription>
@@ -153,7 +153,7 @@ export default function AjustesPage() {
         </CardContent>
       </Card>
       
-      <Card>
+      <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
         <CardHeader>
           <CardTitle>Conta</CardTitle>
         </CardHeader>
@@ -165,7 +165,7 @@ export default function AjustesPage() {
         </CardContent>
       </Card>
       
-      <Card>
+      <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
         <CardHeader>
           <CardTitle>Sobre</CardTitle>
         </CardHeader>
