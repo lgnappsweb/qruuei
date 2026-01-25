@@ -76,8 +76,7 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
     }
   };
 
-  const isGradient = occurrence.color?.startsWith('bg-gradient-to-b');
-  const iconColorClass = isGradient ? 'text-white' : 'text-black dark:text-white';
+  const iconColorClass = 'text-black dark:text-white';
   
   return (
     <Card
@@ -93,7 +92,7 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
           className={cn(
             "rounded-full p-4 transition-transform group-hover:scale-110 ring-1 ring-black/10",
             "shadow-2xl shadow-black/25",
-            "dark:shadow-xl dark:hover:shadow-2xl dark:shadow-white/10",
+            "dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10",
             occurrence.color
           )}
         >
