@@ -76,7 +76,7 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
     }
   };
 
-  const iconColorClass = 'text-black dark:text-white';
+  const iconColorClass = "text-black dark:text-white";
   
   return (
     <Card
@@ -84,7 +84,7 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
       className={cn(
         "transition-all duration-300 cursor-pointer group",
         "shadow-xl hover:shadow-2xl shadow-black/25",
-        "dark:shadow-xl dark:hover:shadow-2xl dark:shadow-white/10"
+        "dark:shadow-xl dark:hover:shadow-2xl dark:shadow-white/20"
       )}
     >
       <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6 gap-3 h-40">
@@ -100,8 +100,7 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
         </div>
         <p
           className={cn(
-            "font-condensed font-bold text-center text-card-foreground",
-            occurrence.title.startsWith("TO") || occurrence.title.startsWith("QUD") ? "text-2xl" : "text-xl"
+            "font-condensed font-bold text-center text-card-foreground text-xl"
           )}
         >
           {occurrence.title}
