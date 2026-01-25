@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { useUser, useAuth, useFirestore } from "@/firebase";
 import { signOut, updateProfile } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LogOut, Sun, Moon, Laptop } from "lucide-react";
@@ -95,12 +94,7 @@ export default function AjustesPage() {
           <CardDescription>Suas informações de usuário.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-           <div className="flex items-center gap-4">
-             <Avatar className="h-16 w-16">
-              <AvatarImage src={user.photoURL ?? undefined} alt={name || 'User'} />
-              <AvatarFallback>{name?.charAt(0)?.toUpperCase() || 'U'}</AvatarFallback>
-            </Avatar>
-            <div className="grid gap-4 w-full">
+           <div className="grid gap-4 w-full">
                 <div>
                     <Label htmlFor="name">Nome</Label>
                     <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
@@ -110,7 +104,6 @@ export default function AjustesPage() {
                     <Input id="email" value={user.email ?? ''} disabled />
                 </div>
             </div>
-          </div>
         </CardContent>
         <CardFooter>
             <Button onClick={handleProfileUpdate}>Salvar Alterações</Button>
