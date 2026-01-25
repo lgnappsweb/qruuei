@@ -12,13 +12,13 @@ export default {
       pattern: /bg-(red|blue|green|yellow|orange|purple|pink|rose|teal|cyan|amber|sky|indigo|violet|lime|emerald|fuchsia)-(100|200|300)/,
     },
     {
-      pattern: /dark:bg-(red|blue|green|yellow|orange|purple|pink|rose|teal|cyan|amber|sky|indigo|violet|lime|emerald|fuchsia)-(900|950)/,
+      pattern: /dark:bg-(red|blue|green|yellow|orange|purple|pink|rose|teal|cyan|amber|sky|indigo|violet|lime|emerald|fuchsia)-(800|900|950)/,
     },
     {
       pattern: /bg-(stone|slate|gray|zinc|neutral)-(200|300)/,
     },
     {
-      pattern: /dark:bg-(stone|slate|gray|zinc|neutral)-(900)/,
+      pattern: /dark:bg-(stone|slate|gray|zinc|neutral)-(800|900)/,
     },
   ],
   theme: {
