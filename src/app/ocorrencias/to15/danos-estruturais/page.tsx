@@ -602,7 +602,7 @@ export default function DanosEstruturaisPage() {
                         <Textarea
                           placeholder="Detalhes adicionais sobre a ocorrência."
                           className="resize-none"
-                          {...props}
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
