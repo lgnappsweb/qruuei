@@ -54,25 +54,7 @@ const materialSchema = z.object({
   quantidade: z.string().min(1, "Quantidade é obrigatória."),
 });
 
-const formSchema = z.object({
-  // DADOS OPERACIONAIS
-  equipe: z.string().optional(),
-  medicoRegulador: z.string().optional(),
-  data: z.string().optional(),
-  condutor: z.string().optional(),
-  resgatista1: z.string().optional(),
-  resgatista2: z.string().optional(),
-  acionamento: z.string().optional(),
-  chegadaLocal: z.string().optional(),
-  numOcorrencia: z.string().optional(),
-  rodovia: z.string().optional(),
-  km: z.string().optional(),
-  sentido: z.string().optional(),
-  saidaLocal: z.string().optional(),
-  saidaHospital: z.string().optional(),
-  chegadaHospital: z.string().optional(),
-  chegadaBSO: z.string().optional(),
-
+const victimSchema = z.object({
   // DADOS CADASTRAIS
   nomeUsuario: z.string().optional(),
   sexo: z.string().optional(),
@@ -95,8 +77,6 @@ const formSchema = z.object({
   // SEGURANÇA E CINEMÁTICA
   condicoesSeguranca: z.array(z.string()).optional(),
   condicoesSegurancaOutros: z.string().optional(),
-  cinematicaVeiculo: z.string().optional(),
-  cinematicaPlaca: z.string().optional(),
 
   // CONDIÇÃO INICIAL
   condicaoInicial: z.array(z.string()).optional(),
@@ -170,6 +150,33 @@ const formSchema = z.object({
   materiais: z.array(materialSchema).optional(),
   relatorioObservacoes: z.string().optional(),
 });
+
+const formSchema = z.object({
+  // DADOS OPERACIONAIS
+  equipe: z.string().optional(),
+  medicoRegulador: z.string().optional(),
+  data: z.string().optional(),
+  condutor: z.string().optional(),
+  resgatista1: z.string().optional(),
+  resgatista2: z.string().optional(),
+  acionamento: z.string().optional(),
+  chegadaLocal: z.string().optional(),
+  numOcorrencia: z.string().optional(),
+  rodovia: z.string().optional(),
+  km: z.string().optional(),
+  sentido: z.string().optional(),
+  saidaLocal: z.string().optional(),
+  saidaHospital: z.string().optional(),
+  chegadaHospital: z.string().optional(),
+  chegadaBSO: z.string().optional(),
+
+  // SEGURANÇA E CINEMÁTICA
+  cinematicaVeiculo: z.string().optional(),
+  cinematicaPlaca: z.string().optional(),
+
+  victims: z.array(victimSchema),
+});
+
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -246,62 +253,91 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
     const occurrenceCode = formTitle.match(/\(([^)]+)\)/)?.[1] || formTitle.split(' ')[0] || "Relatório";
 
-    const sections: {title: string, fields: (keyof FormValues)[]}[] = [
-        { title: "Dados Operacionais", fields: ['equipe', 'medicoRegulador', 'data', 'condutor', 'resgatista1', 'resgatista2', 'acionamento', 'chegadaLocal', 'numOcorrencia', 'rodovia', 'km', 'sentido', 'saidaLocal', 'saidaHospital', 'chegadaHospital', 'chegadaBSO']},
-        { title: "Dados Cadastrais do Usuário", fields: ['nomeUsuario', 'sexo', 'idade', 'dn', 'tel', 'cpf', 'rg', 'endereco', 'acompanhante', 'posicaoVeiculo']},
-        { title: "Evento e Cinemática", fields: ['tipoEvento', 'eventoTrauma', 'eventoTraumaOutros', 'eventoClinico', 'eventoClinicoOutros', 'condicoesSeguranca', 'condicoesSegurancaOutros', 'cinematicaVeiculo', 'cinematicaPlaca', 'condicaoInicial']},
-        { title: "Avaliação Primária (XABCDE)", fields: ['hemorragiaExsanguinante', 'viasAereas', 'viasAereasObstruidasPor', 'ventilacao', 'detalhesVentilacao', 'pulso', 'pele', 'perfusao', 'sangramentoAtivo', 'glasgowInicial', 'pupilas', 'fotorreagentes', 'exposicao', 'hipotermia', 'lesoesAparentes']},
-        { title: "Avaliação Secundária e Sinais Vitais", fields: ['alergias', 'medicamentosEmUso', 'comorbidades', 'ultimaRefeicao', 'sinaisVitaisPA', 'sinaisVitaisFC', 'sinaisVitaisFR', 'sinaisVitaisSatO2', 'sinaisVitaisTAX', 'sinaisVitaisDXT', 'avaliacaoCraniocaudal']},
-        { title: "Glasgow e Procedimentos", fields: ['glasgowOcular', 'glasgowVerbal', 'glasgowMotora', 'imobilizacao', 'pranchamento', 'procedimentos', 'procedimentosOutros']},
-        { title: "Desfecho e Observações", fields: ['rolValores', 'responsavelValores', 'equipamentosRetidos', 'responsavelEquipamentos', 'conduta', 'removidoPorTerceiros', 'removidoHospital', 'medicoReguladorConduta', 'codigoConduta', 'medicoReceptor', 'relatorioObservacoes']},
-    ];
-
-    const termoRecusaFields: (keyof FormValues)[] = ['termoRecusaNome', 'termoRecusaCPF', 'termoRecusaRG', 'termoRecusaEndereco', 'termoRecusaResponsavelPor', 'termoRecusaParentesco', 'termoRecusaTestemunha1', 'termoRecusaTestemunha2'];
-
     const handleShare = () => {
-    let text = `*${formTitle.toUpperCase()}*\n\n`;
-    if (numeroOcorrencia) {
-      text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n\n`;
-    }
+      let text = `*${formTitle.toUpperCase()}*\n\n`;
+      if (numeroOcorrencia) {
+        text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n\n`;
+      }
 
-    const formatSectionForShare = (sectionTitle: string, fields: object) => {
-      let sectionText = '';
-      for (const [key, value] of Object.entries(fields)) {
-        if ((key === 'eventoTraumaOutros' && !data.eventoTrauma?.includes('outros')) || 
-            (key === 'eventoClinicoOutros' && !data.eventoClinico?.includes('outros')) ||
-            (key === 'condicoesSegurancaOutros' && !data.condicoesSeguranca?.includes('outros')) ||
-            (key === 'viasAereasObstruidasPor' && data.viasAereas !== 'obstruidas')) continue;
+      const formatSectionForShare = (sectionTitle: string, fields: object) => {
+        let sectionText = '';
+        for (const [key, value] of Object.entries(fields)) {
+            if (value === null || value === undefined || (Array.isArray(value) && value.length === 0) || String(value).trim() === '' || value === 'NILL' ) continue;
+            
+            // @ts-ignore
+            if ((key === 'eventoTraumaOutros' && !data.eventoTrauma?.includes('outros')) || 
+                // @ts-ignore
+                (key === 'eventoClinicoOutros' && !data.eventoClinico?.includes('outros')) ||
+                // @ts-ignore
+                (key === 'condicoesSegurancaOutros' && !data.condicoesSeguranca?.includes('outros')) ||
+                // @ts-ignore
+                (key === 'viasAereasObstruidasPor' && data.viasAereas !== 'obstruidas')) continue;
 
-        const processedValue = renderSimpleValue(value);
-        if (processedValue && processedValue !== 'NILL' && processedValue !== '') {
-          sectionText += `*${formatLabel(key).toUpperCase()}:* ${processedValue}\n`;
+            const processedValue = renderSimpleValue(value);
+            if (processedValue) {
+            sectionText += `*${formatLabel(key).toUpperCase()}:* ${processedValue}\n`;
+            }
         }
-      }
-      if (sectionText) {
-        text += `*${sectionTitle.toUpperCase()}*\n${sectionText}\n`;
-      }
-    };
+        if (sectionText) {
+            text += `*${sectionTitle.toUpperCase()}*\n${sectionText}\n`;
+        }
+      };
 
-    sections.forEach(section => {
-      const sectionData = section.fields.reduce((acc, field) => {
-        // @ts-ignore
-        acc[field] = data[field];
-        return acc;
-      }, {} as any);
-      formatSectionForShare(section.title, sectionData);
-    });
+      const generalOperationalFields = {
+        equipe: data.equipe,
+        medicoRegulador: data.medicoRegulador,
+        data: data.data,
+        condutor: data.condutor,
+        resgatista1: data.resgatista1,
+        resgatista2: data.resgatista2,
+        acionamento: data.acionamento,
+        chegadaLocal: data.chegadaLocal,
+        numOcorrencia: data.numOcorrencia,
+        rodovia: data.rodovia,
+        km: data.km,
+        sentido: data.sentido,
+        saidaLocal: data.saidaLocal,
+        saidaHospital: data.saidaHospital,
+        chegadaHospital: data.chegadaHospital,
+        chegadaBSO: data.chegadaBSO,
+        cinematicaVeiculo: data.cinematicaVeiculo,
+        cinematicaPlaca: data.cinematicaPlaca,
+      }
+      formatSectionForShare('Dados Operacionais', generalOperationalFields);
+      
+      data.victims.forEach((victim: any, index: number) => {
+        text += `\n*--- VÍTIMA ${index + 1} ---*\n`;
 
-    if (Array.isArray(data.materiais) && data.materiais.length > 0) {
-      text += '*CONSUMO DE MATERIAIS*\n';
-      data.materiais.forEach((item: any, index: number) => {
-        text += `*Material ${index + 1}:* ${item.nome.toUpperCase()} - *Qtd:* ${item.quantidade}\n`;
+        const victimSections = [
+            { title: "Dados Cadastrais do Usuário", fields: ['nomeUsuario', 'sexo', 'idade', 'dn', 'tel', 'cpf', 'rg', 'endereco', 'acompanhante', 'posicaoVeiculo']},
+            { title: "Evento e Cinemática", fields: ['tipoEvento', 'eventoTrauma', 'eventoTraumaOutros', 'eventoClinico', 'eventoClinicoOutros', 'condicoesSeguranca', 'condicoesSegurancaOutros', 'condicaoInicial']},
+            { title: "Avaliação Primária (XABCDE)", fields: ['hemorragiaExsanguinante', 'viasAereas', 'viasAereasObstruidasPor', 'ventilacao', 'detalhesVentilacao', 'pulso', 'pele', 'perfusao', 'sangramentoAtivo', 'glasgowInicial', 'pupilas', 'fotorreagentes', 'exposicao', 'hipotermia', 'lesoesAparentes']},
+            { title: "Avaliação Secundária e Sinais Vitais", fields: ['alergias', 'medicamentosEmUso', 'comorbidades', 'ultimaRefeicao', 'sinaisVitaisPA', 'sinaisVitaisFC', 'sinaisVitaisFR', 'sinaisVitaisSatO2', 'sinaisVitaisTAX', 'sinaisVitaisDXT', 'avaliacaoCraniocaudal']},
+            { title: "Glasgow e Procedimentos", fields: ['glasgowOcular', 'glasgowVerbal', 'glasgowMotora', 'imobilizacao', 'pranchamento', 'procedimentos', 'procedimentosOutros']},
+            { title: "Desfecho e Observações", fields: ['rolValores', 'responsavelValores', 'equipamentosRetidos', 'responsavelEquipamentos', 'conduta', 'removidoPorTerceiros', 'removidoHospital', 'medicoReguladorConduta', 'codigoConduta', 'medicoReceptor', 'relatorioObservacoes']},
+        ];
+
+        victimSections.forEach(section => {
+            const sectionData = section.fields.reduce((acc, fieldName) => {
+                // @ts-ignore
+                acc[fieldName] = victim[fieldName];
+                return acc;
+            }, {} as any);
+            formatSectionForShare(section.title, sectionData);
+        });
+
+        if (Array.isArray(victim.materiais) && victim.materiais.length > 0) {
+            text += '*CONSUMO DE MATERIAIS*\n';
+            victim.materiais.forEach((item: any, itemIndex: number) => {
+                text += `*Material ${itemIndex + 1}:* ${item.nome.toUpperCase()} - *Qtd:* ${item.quantidade}\n`;
+            });
+            text += '\n';
+        }
       });
-      text += '\n';
-    }
 
-    const encodedText = encodeURIComponent(text.trim());
-    window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
-  };
+      const encodedText = encodeURIComponent(text.trim());
+      window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
+    };
 
     return (
         <Dialog open={!!data} onOpenChange={(open) => !open && onClose()}>
@@ -312,35 +348,43 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                 </DialogHeader>
                 <ScrollArea className="flex-1 pr-6 -mr-6 mt-4">
                     <div className="space-y-6">
-                        {sections.map(section => (
-                            <Card key={section.title}>
-                                <CardHeader><CardTitle>{section.title}</CardTitle></CardHeader>
+                        <Card>
+                            <CardHeader><CardTitle>Dados Operacionais</CardTitle></CardHeader>
+                            <CardContent className="pt-6">
+                                <div className="text-xl space-y-4">
+                                    {Object.keys(formSchema.shape)
+                                      .filter(key => key !== 'victims')
+                                      .map(key => <Field key={String(key)} label={String(key)} value={data[key]} />)}
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {data.victims?.map((victim: any, index: number) => (
+                           <Card key={index} className="border-2 mt-4">
+                                <CardHeader>
+                                    <CardTitle>Vítima {index + 1}: {victim.nomeUsuario || 'Não identificado'}</CardTitle>
+                                </CardHeader>
                                 <CardContent className="pt-6">
-                                    <div className="text-xl space-y-4">
-                                        {section.fields.map(key => <Field key={String(key)} label={String(key)} value={data[key]} />)}
-                                    </div>
+                                    {Object.entries(victim).map(([key, value]) => {
+                                        if (key === 'materiais' && Array.isArray(value) && value.length > 0) {
+                                            return (
+                                                <Card key="materiais" className="mt-4">
+                                                     <CardHeader><CardTitle>Consumo de Materiais</CardTitle></CardHeader>
+                                                    <CardContent className="pt-6">
+                                                        {value.map((item, i) => <MaterialItem key={i} item={item} index={i} />)}
+                                                    </CardContent>
+                                                </Card>
+                                            )
+                                        }
+                                         if (key === 'materiais') return null;
+
+                                        return <Field key={key} label={key} value={value} />
+                                    })}
                                 </CardContent>
-                            </Card>
+                           </Card>
                         ))}
-
-                        { (data.conduta === 'recusa_atendimento' || data.conduta === 'recusa_remocao') &&
-                            <Card className="border-destructive">
-                                <CardHeader><CardTitle className="text-destructive">Termo de Recusa</CardTitle></CardHeader>
-                                <CardContent className="pt-6">
-                                    <div className="text-xl space-y-4">
-                                        {termoRecusaFields.map(key => <Field key={String(key)} label={String(key)} value={data[key]} />)}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        }
-
-                        {Array.isArray(data.materiais) && data.materiais.length > 0 && (
-                            <Card>
-                                <CardHeader><CardTitle>Consumo de Materiais</CardTitle></CardHeader>
-                                <CardContent className="pt-6">{data.materiais.map((item: any, index: number) => <MaterialItem key={index} item={item} index={index} />)}</CardContent>
-                            </Card>
-                        )}
-                          <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
+                        
+                        <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
                             <CardHeader>
                                 <CardTitle className="text-white text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
                             </CardHeader>
@@ -357,7 +401,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                 </ScrollArea>
                 <DialogFooter className="mt-4 flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4 border-t">
                     <Button variant="outline" onClick={onClose}>Editar</Button>
-                    <Button onClick={handleShare} className="bg-green-600 hover:bg-green-700">
+                    <Button onClick={handleShare} className="bg-green-600 hover:bg-green-700" disabled={!numeroOcorrencia}>
                         <Share2 className="mr-2 h-5 w-5"/> Compartilhar
                     </Button>
                     <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
@@ -368,7 +412,8 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 };
 
 
-function CheckboxGroupField({ control, name, label, options }: { control: Control<FormValues>, name: keyof FormValues, label: string, options: { id: string, label: string }[] }) {
+// Reusable components
+function CheckboxGroupField({ control, name, label, options }: { control: Control<any>, name: any, label: string, options: { id: string, label: string }[] }) {
     return (
       <FormItem>
         <div className="mb-4">
@@ -379,7 +424,7 @@ function CheckboxGroupField({ control, name, label, options }: { control: Contro
             <FormField
               key={item.id}
               control={control}
-              name={name as any}
+              name={name}
               render={({ field }) => {
                 const fieldValue = Array.isArray(field.value) ? field.value : [];
                 return (
@@ -416,7 +461,7 @@ function CheckboxGroupField({ control, name, label, options }: { control: Contro
     );
 }
 
-function RadioGroupField({ control, name, label, options, orientation = 'vertical' }: { control: Control<FormValues>, name: keyof FormValues, label: string, options: { value: string, label: string }[], orientation?: 'vertical' | 'horizontal' }) {
+function RadioGroupField({ control, name, label, options, orientation = 'vertical' }: { control: Control<any>, name: any, label: string, options: { value: string, label: string }[], orientation?: 'vertical' | 'horizontal' }) {
     return (
         <FormField
             control={control}
@@ -449,10 +494,10 @@ function RadioGroupField({ control, name, label, options, orientation = 'vertica
     );
 }
 
-function GlasgowScale({ control }: { control: Control<FormValues> }) {
-  const ocular = useWatch({ control, name: 'glasgowOcular' });
-  const verbal = useWatch({ control, name: 'glasgowVerbal' });
-  const motora = useWatch({ control, name: 'glasgowMotora' });
+function GlasgowScale({ control, index }: { control: Control<FormValues>, index: number }) {
+  const ocular = useWatch({ control, name: `victims.${index}.glasgowOcular` });
+  const verbal = useWatch({ control, name: `victims.${index}.glasgowVerbal` });
+  const motora = useWatch({ control, name: `victims.${index}.glasgowMotora` });
 
   const total = React.useMemo(() => {
     return (parseInt(ocular || '0') || 0) + (parseInt(verbal || '0') || 0) + (parseInt(motora || '0') || 0);
@@ -464,20 +509,20 @@ function GlasgowScale({ control }: { control: Control<FormValues> }) {
         <CardTitle>Escala de Glasgow</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <RadioGroupField control={control} name="glasgowOcular" label="Abertura Ocular" options={[
+        <RadioGroupField control={control} name={`victims.${index}.glasgowOcular`} label="Abertura Ocular" options={[
           { value: '4', label: '04 - Espontânea' },
           { value: '3', label: '03 - Estímulo Verbal' },
           { value: '2', label: '02 - Estímulo Doloroso' },
           { value: '1', label: '01 - Ausente' },
         ]} />
-        <RadioGroupField control={control} name="glasgowVerbal" label="Resposta Verbal" options={[
+        <RadioGroupField control={control} name={`victims.${index}.glasgowVerbal`} label="Resposta Verbal" options={[
           { value: '5', label: '05 - Orientado' },
           { value: '4', label: '04 - Confuso' },
           { value: '3', label: '03 - Palavras Inapropriadas' },
           { value: '2', label: '02 - Sons Incompreensíveis' },
           { value: '1', label: '01 - Ausente' },
         ]} />
-        <RadioGroupField control={control} name="glasgowMotora" label="Resposta Motora" options={[
+        <RadioGroupField control={control} name={`victims.${index}.glasgowMotora`} label="Resposta Motora" options={[
           { value: '6', label: '06 - Obedece a Comandos' },
           { value: '5', label: '05 - Localiza a Dor' },
           { value: '4', label: '04 - Retira o Membro à Dor' },
@@ -496,7 +541,81 @@ function GlasgowScale({ control }: { control: Control<FormValues> }) {
   );
 }
 
+const defaultVictimValues = {
+  nomeUsuario: '',
+  idade: '',
+  dn: '',
+  sexo: '',
+  cpf: '',
+  rg: '',
+  tel: '',
+  endereco: '',
+  acompanhante: '',
+  posicaoVeiculo: '',
+  tipoEvento: undefined,
+  eventoTrauma: [],
+  eventoTraumaOutros: '',
+  eventoClinico: [],
+  eventoClinicoOutros: '',
+  condicoesSeguranca: [],
+  condicoesSegurancaOutros: '',
+  condicaoInicial: [],
+  hemorragiaExsanguinante: '',
+  viasAereas: '',
+  viasAereasObstruidasPor: '',
+  ventilacao: '',
+  detalhesVentilacao: [],
+  pulso: [],
+  pele: [],
+  perfusao: '',
+  sangramentoAtivo: '',
+  glasgowInicial: '',
+  pupilas: '',
+  fotorreagentes: '',
+  exposicao: '',
+  hipotermia: '',
+  lesoesAparentes: '',
+  alergias: '',
+  medicamentosEmUso: '',
+  comorbidades: '',
+  ultimaRefeicao: '',
+  sinaisVitaisPA: '',
+  sinaisVitaisFC: '',
+  sinaisVitaisFR: '',
+  sinaisVitaisSatO2: '',
+  sinaisVitaisTAX: '',
+  sinaisVitaisDXT: '',
+  avaliacaoCraniocaudal: '',
+  glasgowOcular: '',
+  glasgowVerbal: '',
+  glasgowMotora: '',
+  imobilizacao: [],
+  pranchamento: '',
+  procedimentos: [],
+  procedimentosOutros: '',
+  rolValores: '',
+  responsavelValores: '',
+  equipamentosRetidos: '',
+  responsavelEquipamentos: '',
+  conduta: '',
+  removidoPorTerceiros: '',
+  removidoHospital: '',
+  medicoReguladorConduta: '',
+  codigoConduta: '',
+  medicoReceptor: '',
+  termoRecusaNome: '',
+  termoRecusaCPF: '',
+  termoRecusaRG: '',
+  termoRecusaEndereco: '',
+  termoRecusaResponsavelPor: '',
+  termoRecusaParentesco: '',
+  termoRecusaTestemunha1: '',
+  termoRecusaTestemunha2: '',
+  materiais: [],
+  relatorioObservacoes: '',
+};
 
+// Main page component
 export default function QudResgatePage() {
   const { toast } = useToast();
   const router = useRouter();
@@ -522,79 +641,9 @@ export default function QudResgatePage() {
       chegadaHospital: '',
       saidaHospital: '',
       chegadaBSO: '',
-      nomeUsuario: '',
-      idade: '',
-      dn: '',
-      sexo: '',
-      cpf: '',
-      rg: '',
-      tel: '',
-      endereco: '',
-      acompanhante: '',
-      posicaoVeiculo: '',
-      tipoEvento: undefined,
-      eventoTrauma: [],
-      eventoTraumaOutros: '',
-      eventoClinico: [],
-      eventoClinicoOutros: '',
-      condicoesSeguranca: [],
-      condicoesSegurancaOutros: '',
       cinematicaVeiculo: '',
       cinematicaPlaca: '',
-      condicaoInicial: [],
-      hemorragiaExsanguinante: '',
-      viasAereas: '',
-      viasAereasObstruidasPor: '',
-      ventilacao: '',
-      detalhesVentilacao: [],
-      pulso: [],
-      pele: [],
-      perfusao: '',
-      sangramentoAtivo: '',
-      glasgowInicial: '',
-      pupilas: '',
-      fotorreagentes: '',
-      exposicao: '',
-      hipotermia: '',
-      lesoesAparentes: '',
-      alergias: '',
-      medicamentosEmUso: '',
-      comorbidades: '',
-      ultimaRefeicao: '',
-      sinaisVitaisPA: '',
-      sinaisVitaisFC: '',
-      sinaisVitaisFR: '',
-      sinaisVitaisSatO2: '',
-      sinaisVitaisTAX: '',
-      sinaisVitaisDXT: '',
-      avaliacaoCraniocaudal: '',
-      glasgowOcular: '',
-      glasgowVerbal: '',
-      glasgowMotora: '',
-      imobilizacao: [],
-      pranchamento: '',
-      procedimentos: [],
-      procedimentosOutros: '',
-      rolValores: '',
-      responsavelValores: '',
-      equipamentosRetidos: '',
-      responsavelEquipamentos: '',
-      conduta: '',
-      removidoPorTerceiros: '',
-      removidoHospital: '',
-      medicoReguladorConduta: '',
-      codigoConduta: '',
-      medicoReceptor: '',
-      termoRecusaNome: '',
-      termoRecusaCPF: '',
-      termoRecusaRG: '',
-      termoRecusaEndereco: '',
-      termoRecusaResponsavelPor: '',
-      termoRecusaParentesco: '',
-      termoRecusaTestemunha1: '',
-      termoRecusaTestemunha2: '',
-      materiais: [],
-      relatorioObservacoes: '',
+      victims: [defaultVictimValues]
     },
   });
 
@@ -604,7 +653,27 @@ export default function QudResgatePage() {
         if (editDataString) {
             const editData = JSON.parse(editDataString);
             if(editData.formPath === '/ocorrencias/qud-resgate') {
-                form.reset(editData.fullReport);
+                const reportToLoad = editData.fullReport;
+                 Object.keys(reportToLoad).forEach(key => {
+                    if (reportToLoad[key] === 'NILL') {
+                       reportToLoad[key] = Array.isArray(form.getValues(key as keyof FormValues)) ? [] : '';
+                    }
+                });
+
+                if(Array.isArray(reportToLoad.victims)) {
+                    reportToLoad.victims = reportToLoad.victims.map((victim: any) => {
+                        const newVictim = {...victim};
+                        Object.keys(newVictim).forEach(key => {
+                            if (newVictim[key] === 'NILL') {
+                                // @ts-ignore
+                                newVictim[key] = Array.isArray(defaultVictimValues[key]) ? [] : '';
+                            }
+                        });
+                        return newVictim;
+                    });
+                }
+
+                form.reset(reportToLoad);
                 setEditingId(editData.id);
                 localStorage.removeItem('editOcorrenciaData');
             }
@@ -615,11 +684,9 @@ export default function QudResgatePage() {
     }
   }, [form]);
 
-  const watchConduta = useWatch({ control: form.control, name: 'conduta'});
-
-  const { fields: materialFields, append: appendMaterial, remove: removeMaterial } = useFieldArray({
+  const { fields: victimFields, append: appendVictim, remove: removeVictim } = useFieldArray({
     control: form.control,
-    name: "materiais",
+    name: "victims",
   });
 
   function onSubmit(values: FormValues) {
@@ -694,7 +761,7 @@ export default function QudResgatePage() {
                     <AccordionTrigger className="text-xl font-bold">DADOS OPERACIONAIS</AccordionTrigger>
                     <AccordionContent className="space-y-6 pt-4">
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <FormField control={form.control} name="rodovia" render={({ field }) => (<FormItem><FormLabel>Rodovia</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="MS-112">MS-112</SelectItem><SelectItem value="BR-158">BR-158</SelectItem><SelectItem value="MS-306">MS-306</SelectItem><SelectItem value="BR-436">BR-436</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
+                            <FormField control={form.control} name="rodovia" render={({ field }) => (<FormItem><FormLabel>Rodovia</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="MS-112">MS-112</SelectItem><SelectItem value="BR-158">BR-158</SelectItem><SelectItem value="MS-306">MS-306</SelectItem><SelectItem value="BR-436">BR-436</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
                             <FormField control={form.control} name="km" render={({ field }) => (<FormItem><FormLabel>KM</FormLabel><FormControl><Input placeholder="Ex: 123+400" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          </div>
                          <RadioGroupField control={form.control} name="sentido" label="Sentido" options={[{value: 'Norte', label: 'Norte'}, {value: 'Sul', label: 'Sul'}]} orientation="horizontal" />
@@ -713,398 +780,425 @@ export default function QudResgatePage() {
                              <FormField control={form.control} name="saidaHospital" render={({ field }) => (<FormItem><FormLabel>Saída do Hospital</FormLabel><FormControl><Input type="time" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                             <FormField control={form.control} name="chegadaBSO" render={({ field }) => (<FormItem><FormLabel>Chegada na BSO/Término</FormLabel><FormControl><Input type="time" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          </div>
-                    </AccordionContent>
-                </AccordionItem>
-
-                 <AccordionItem value="item-2">
-                    <AccordionTrigger className="text-xl font-bold">DADOS CADASTRAIS DO USUÁRIO</AccordionTrigger>
-                    <AccordionContent className="space-y-6 pt-4">
-                        <FormField control={form.control} name="nomeUsuario" render={({ field }) => (<FormItem><FormLabel>Nome</FormLabel><FormControl><Input placeholder="Nome completo do usuário" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <FormField control={form.control} name="idade" render={({ field }) => (<FormItem><FormLabel>Idade</FormLabel><FormControl><Input type="number" placeholder="Ex: 35" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                            <FormField control={form.control} name="dn" render={({ field }) => (<FormItem><FormLabel>Data Nasc.</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                            <RadioGroupField control={form.control} name="sexo" label="Sexo" options={[{value: 'M', label: 'M'}, {value: 'F', label: 'F'}]} orientation="horizontal" />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <FormField
-                              name="cpf"
-                              control={form.control}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>CPF</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      placeholder="000.000.000-00"
-                                      {...field}
-                                      onChange={(e) => {
-                                        const rawValue = e.target.value.replace(/\D/g, '');
-                                        let maskedValue = rawValue.substring(0, 11);
-                                        if (rawValue.length > 9) {
-                                          maskedValue = maskedValue.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-                                        } else if (rawValue.length > 6) {
-                                          maskedValue = maskedValue.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
-                                        } else if (rawValue.length > 3) {
-                                          maskedValue = maskedValue.replace(/(\d{3})(\d{1,3})/, '$1.$2');
-                                        }
-                                        field.onChange(maskedValue);
-                                      }}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              name="rg"
-                              control={form.control}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>RG</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      placeholder="00.000.000-0"
-                                      {...field}
-                                      onChange={(e) => {
-                                        const rawValue = e.target.value.replace(/\D/g, '');
-                                        let maskedValue = rawValue.substring(0, 9);
-                                        if (rawValue.length > 8) {
-                                          maskedValue = maskedValue.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/, '$1.$2.$3-$4');
-                                        } else if (rawValue.length > 5) {
-                                          maskedValue = maskedValue.replace(/(\d{2})(\d{3})(\d{1,3})/, '$1.$2.$3');
-                                        } else if (rawValue.length > 2) {
-                                          maskedValue = maskedValue.replace(/(\d{2})(\d{1,3})/, '$1.$2');
-                                        }
-                                        field.onChange(maskedValue);
-                                      }}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                        </div>
-                         <FormField
-                          control={form.control}
-                          name="tel"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Telefone</FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="(99) 99999-9999"
-                                  {...field}
-                                  onChange={(e) => {
-                                    let value = e.target.value.replace(/\D/g, "");
-                                    value = value.substring(0, 11);
-                                    if (value.length > 10) {
-                                      value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-                                    } else if (value.length > 6) {
-                                      value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-                                    } else if (value.length > 2) {
-                                      value = value.replace(/(\d{2})(\d*)/, '($1) $2');
-                                    } else if (value.length > 0) {
-                                      value = `(${value}`;
-                                    }
-                                    field.onChange(value);
-                                  }}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField control={form.control} name="endereco" render={({ field }) => (<FormItem><FormLabel>Endereço</FormLabel><FormControl><Input placeholder="Rua, Av, etc." {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                        <FormField control={form.control} name="acompanhante" render={({ field }) => (<FormItem><FormLabel>Acompanhante</FormLabel><FormControl><Input placeholder="Nome do acompanhante" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                        <FormField control={form.control} name="posicaoVeiculo" render={({ field }) => (<FormItem><FormLabel>Posição no Veículo</FormLabel><FormControl><Input placeholder="Ex: Condutor, Passageiro" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                    </AccordionContent>
-                </AccordionItem>
-
-                 <AccordionItem value="item-3">
-                    <AccordionTrigger className="text-xl font-bold">EVENTO E CINEMÁTICA</AccordionTrigger>
-                    <AccordionContent className="space-y-6 pt-4">
-                        <RadioGroupField control={form.control} name="tipoEvento" label="Tipo de Evento" options={[{value: 'trauma', label: 'Trauma'}, {value: 'clinico', label: 'Atendimento Clínico'}]} orientation="horizontal" />
-                        
-                        {form.watch('tipoEvento') === 'trauma' && (
-                            <Card className="bg-background/50">
-                                <CardHeader><CardTitle>Trauma</CardTitle></CardHeader>
-                                <CardContent className="space-y-4">
-                                    <CheckboxGroupField control={form.control} name="eventoTrauma" label="" options={[
-                                        { id: 'acidente', label: 'Acidente Automobilístico' },
-                                        { id: 'queimadura', label: 'Queimadura' },
-                                        { id: 'atropelamento', label: 'Atropelamento' },
-                                        { id: 'queda', label: 'Queda de Altura' },
-                                        { id: 'outros', label: 'Outros' }
-                                    ]}/>
-                                     {form.watch('eventoTrauma')?.includes('outros') &&
-                                        <FormField control={form.control} name="eventoTraumaOutros" render={({ field }) => (<FormItem><FormLabel>Outros (Trauma)</FormLabel><FormControl><Input placeholder="Descreva o trauma" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                     }
-                                </CardContent>
-                            </Card>
-                        )}
-                        {form.watch('tipoEvento') === 'clinico' && (
-                            <Card className="bg-background/50">
-                                <CardHeader><CardTitle>Atendimento Clínico</CardTitle></CardHeader>
-                                <CardContent className="space-y-4">
-                                     <CheckboxGroupField control={form.control} name="eventoClinico" label="" options={[
-                                        { id: 'mal_subito', label: 'Mal Súbito' },
-                                        { id: 'intoxicacao', label: 'Intoxicação Exógena' },
-                                        { id: 'parto', label: 'Assistência ao Parto' },
-                                        { id: 'convulsao', label: 'Convulsão' },
-                                        { id: 'psiquiatrico', label: 'Distúrbio Psiquiátrico' },
-                                        { id: 'outros', label: 'Outros' }
-                                    ]}/>
-                                    {form.watch('eventoClinico')?.includes('outros') &&
-                                        <FormField control={form.control} name="eventoClinicoOutros" render={({ field }) => (<FormItem><FormLabel>Outros (Clínico)</FormLabel><FormControl><Input placeholder="Descreva o atendimento" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                    }
-                                </CardContent>
-                            </Card>
-                        )}
-
-                        <CheckboxGroupField control={form.control} name="condicoesSeguranca" label="Condições de Segurança" options={[
-                            { id: 'cinto', label: 'Cinto de Segurança' },
-                            { id: 'cadeirinha', label: 'Cadeirinha' },
-                            { id: 'airbag', label: 'Air Bag' },
-                            { id: 'capacete', label: 'Capacete' },
-                            { id: 'outros', label: 'Outros' },
-                        ]}/>
-                        {form.watch('condicoesSeguranca')?.includes('outros') &&
-                            <FormField control={form.control} name="condicoesSegurancaOutros" render={({ field }) => (<FormItem><FormLabel>Outras Condições</FormLabel><FormControl><Input placeholder="Descreva outras condições" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                        }
-                        
-                        <FormField control={form.control} name="cinematicaVeiculo" render={({ field }) => (<FormItem><FormLabel>Veículo (Cinemática)</FormLabel><FormControl><Input placeholder="Ex: Moto, Carro, Caminhão..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                         <FormField control={form.control} name="cinematicaVeiculo" render={({ field }) => (<FormItem><FormLabel>Veículo (Cinemática)</FormLabel><FormControl><Input placeholder="Ex: Moto, Carro, Caminhão..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
                         <FormField control={form.control} name="cinematicaPlaca" render={({ field }) => (<FormItem><FormLabel>Placa</FormLabel><FormControl><Input placeholder="Ex: ABC-1234" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                        
-                        <CheckboxGroupField control={form.control} name="condicaoInicial" label="Condição Inicial" options={[
-                            { id: 'alerta', label: 'Alerta' },
-                            { id: 'deambulando', label: 'Deambulando' },
-                            { id: 'verbaliza', label: 'Verbaliza' },
-                            { id: 'ao_solo', label: 'Ao Solo' },
-                            { id: 'estimulo_doloroso', label: 'Estímulo Doloroso' },
-                            { id: 'ejetado', label: 'Ejetado' },
-                            { id: 'inconsciente', label: 'Inconsciente' },
-                            { id: 'encarcerado', label: 'Encarcerado/Retido' },
-                        ]}/>
                     </AccordionContent>
                 </AccordionItem>
+            </Accordion>
 
-                <AccordionItem value="item-4">
-                    <AccordionTrigger className="text-xl font-bold">AVALIAÇÃO PRIMÁRIA (XABCDE)</AccordionTrigger>
-                    <AccordionContent className="space-y-6 pt-4">
-                        <RadioGroupField control={form.control} name="hemorragiaExsanguinante" label="X - Hemorragia Exsanguinante" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal"/>
-                        <FormField control={form.control} name="viasAereas" render={({ field }) => (<FormItem><FormLabel>A - Vias Aéreas</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="pervias">Pérvias</SelectItem><SelectItem value="obstruidas">Obstruídas Por</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
-                        {form.watch('viasAereas') === 'obstruidas' && <FormField control={form.control} name="viasAereasObstruidasPor" render={({ field }) => (<FormItem><FormLabel>Obstruídas Por</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />}
-                        
-                        <RadioGroupField control={form.control} name="ventilacao" label="B - Ventilação" options={[{value: 'presente', label: 'Presente'}, {value: 'ausente', label: 'Ausente'}]} orientation="horizontal"/>
-                        <CheckboxGroupField control={form.control} name="detalhesVentilacao" label="Detalhes da Ventilação" options={[
-                            {id: 'simetrica', label: 'Simétrica'}, {id: 'assimetrica', label: 'Assimétrica'}, {id: 'apneia', label: 'Apnéia'},
-                            {id: 'eupneia', label: 'Eupneia'}, {id: 'taquipneia', label: 'Taquipneia'}, {id: 'gasping', label: 'Gasping'}
-                        ]} />
+            {victimFields.map((field, index) => {
+               const watchConduta = form.watch(`victims.${index}.conduta`);
+               const { fields: materialFields, append: appendMaterial, remove: removeMaterial } = useFieldArray({
+                 control: form.control,
+                 name: `victims.${index}.materiais`,
+               });
 
-                        <Card>
-                          <CardHeader><CardTitle>C - Circulação e Hemorragias</CardTitle></CardHeader>
-                          <CardContent className="space-y-4">
-                            <CheckboxGroupField control={form.control} name="pulso" label="Pulso" options={[{id: 'presente', label: 'Presente'}, {id: 'cheio', label: 'Cheio'}, {id: 'filiforme', label: 'Filiforme'}]} />
-                            <CheckboxGroupField control={form.control} name="pele" label="Pele" options={[{id: 'normal', label: 'Normal'}, {id: 'fria', label: 'Fria'}, {id: 'sudorese', label: 'Sudorese'}]} />
-                            <RadioGroupField control={form.control} name="perfusao" label="Perfusão" options={[{value: '<2seg', label: '< 2 Seg'}, {value: '>=2seg', label: '>= 2 Seg'}]} orientation="horizontal" />
-                            <RadioGroupField control={form.control} name="sangramentoAtivo" label="Sangramento Ativo" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal" />
-                          </CardContent>
-                        </Card>
-
-                        <Card>
-                          <CardHeader><CardTitle>D - Neurológico</CardTitle></CardHeader>
-                          <CardContent className="space-y-4">
-                            <FormField control={form.control} name="glasgowInicial" render={({ field }) => (<FormItem><FormLabel>Glasgow (Inicial)</FormLabel><FormControl><Input placeholder="Ex: 15" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                            <RadioGroupField control={form.control} name="pupilas" label="Pupilas" options={[{value: 'isocoricas', label: 'Isocóricas'}, {value: 'anisocoricas', label: 'Anisocóricas'}]} orientation="horizontal"/>
-                            <RadioGroupField control={form.control} name="fotorreagentes" label="Fotorreagentes" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal"/>
-                          </CardContent>
-                        </Card>
-
-                        <Card>
-                           <CardHeader><CardTitle>E - Exposição</CardTitle></CardHeader>
-                           <CardContent className="space-y-4">
-                              <RadioGroupField control={form.control} name="exposicao" label="" options={[{value: 'sem_lesoes', label: 'Sem Lesões Aparentes'}, {value: 'lesoes_aparentes', label: 'Lesões Aparentes'}]} />
-                              <RadioGroupField control={form.control} name="hipotermia" label="Hipotermia" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal"/>
-                              <FormField control={form.control} name="lesoesAparentes" render={({ field }) => (<FormItem><FormLabel>Lesões Aparentes e Queixas Principais</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                           </CardContent>
-                        </Card>
-                    </AccordionContent>
-                </AccordionItem>
-
-                 <AccordionItem value="item-5">
-                    <AccordionTrigger className="text-xl font-bold">AVALIAÇÃO SECUNDÁRIA E SINAIS VITAIS</AccordionTrigger>
-                    <AccordionContent className="space-y-6 pt-4">
-                        <Card>
-                            <CardHeader><CardTitle>S.A.M.P.L.E.</CardTitle></CardHeader>
-                            <CardContent className="space-y-4">
-                                <FormField control={form.control} name="alergias" render={({ field }) => (<FormItem><FormLabel>Alergias</FormLabel><FormControl><Input placeholder="Nega alergias / Dipirona" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                <FormField control={form.control} name="medicamentosEmUso" render={({ field }) => (<FormItem><FormLabel>Medicamentos em Uso</FormLabel><FormControl><Input placeholder="Nega uso / Losartana" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                <FormField control={form.control} name="comorbidades" render={({ field }) => (<FormItem><FormLabel>Comorbidades / Gestação</FormLabel><FormControl><Input placeholder="Nega comorbidades / HAS" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                <FormField control={form.control} name="ultimaRefeicao" render={({ field }) => (<FormItem><FormLabel>Última Refeição / Jejum</FormLabel><FormControl><Input placeholder="Há 2 horas" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader><CardTitle>Sinais Vitais</CardTitle></CardHeader>
-                            <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                                <FormField control={form.control} name="sinaisVitaisPA" render={({ field }) => (<FormItem><FormLabel>PA (mmHg)</FormLabel><FormControl><Input placeholder="120x80" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                <FormField control={form.control} name="sinaisVitaisFC" render={({ field }) => (<FormItem><FormLabel>FC (bpm)</FormLabel><FormControl><Input placeholder="80" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                <FormField control={form.control} name="sinaisVitaisFR" render={({ field }) => (<FormItem><FormLabel>FR (rpm)</FormLabel><FormControl><Input placeholder="16" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                <FormField control={form.control} name="sinaisVitaisSatO2" render={({ field }) => (<FormItem><FormLabel>Sat O² (%)</FormLabel><FormControl><Input placeholder="98" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                <FormField control={form.control} name="sinaisVitaisTAX" render={({ field }) => (<FormItem><FormLabel>TAX (°C)</FormLabel><FormControl><Input placeholder="36.5" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                <FormField control={form.control} name="sinaisVitaisDXT" render={({ field }) => (<FormItem><FormLabel>DXT (mg/dl)</FormLabel><FormControl><Input placeholder="90" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                            </CardContent>
-                        </Card>
-                        <FormField control={form.control} name="avaliacaoCraniocaudal" render={({ field }) => (<FormItem><FormLabel>Avaliação Crânio-Caudal</FormLabel><FormControl><Textarea placeholder="Nenhuma anormalidade encontrada, vítima consciente e orientada." {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                    </AccordionContent>
-                </AccordionItem>
-
-                 <AccordionItem value="item-6">
-                    <AccordionTrigger className="text-xl font-bold">GLASGOW E PROCEDIMENTOS</AccordionTrigger>
-                    <AccordionContent className="space-y-6 pt-4">
-                        <GlasgowScale control={form.control} />
-                        <Card>
-                            <CardHeader><CardTitle>Imobilização</CardTitle></CardHeader>
-                            <CardContent className="space-y-4">
-                                <RadioGroupField control={form.control} name="pranchamento" label="Pranchamento" options={[
-                                    {value: 'decubito', label: 'Decúbito'}, {value: 'em_pe', label: 'Em Pé'}
-                                ]}/>
-                                <CheckboxGroupField control={form.control} name="imobilizacao" label="" options={[
-                                    {id: 'colar', label: 'Colar Cervical'},
-                                    {id: 'ked', label: 'Extricação com KED'},
-                                    {id: 'terezarautek', label: 'Extricação com Tereza/Rautek'},
-                                    {id: 'desencarceramento', label: 'Desencarceramento'},
-                                    {id: 'retirada_capacete', label: 'Retirada de Capacete'},
-                                    {id: 'imob_mse', label: 'Imobilização de MSE'},
-                                    {id: 'imob_msd', label: 'Imobilização de MSD'},
-                                    {id: 'imob_mie', label: 'Imobilização de MIE'},
-                                    {id: 'imob_mid', label: 'Imobilização de MID'},
-                                    {id: 'imob_pelve', label: 'Imobilização de Pelve'},
-                                ]} />
-                            </CardContent>
-                        </Card>
-                         <CheckboxGroupField control={form.control} name="procedimentos" label="Procedimentos Realizados" options={[
-                            {id: 'desobstrucao', label: 'Desobstrução de Vias Aéreas'}, {id: 'canula', label: 'Cânula de Guedel'}, {id: 'oxigenio', label: 'Oxigênio (Máscara/Cateter)'},
-                            {id: 'ambu', label: 'Ventilação com AMBU'}, {id: 'dea', label: 'DEA'}, {id: 'rcp', label: 'RCP'},
-                            {id: 'torniquete', label: 'Torniquete'}, {id: 'curativo', label: 'Curativo Oclusivo/Compressivo'}, {id: 'sinais_vitais', label: 'Aferição de Sinais Vitais'},
-                            {id: 'oximetria', label: 'Oximetria de Pulso'}, {id: 'resgate_altura', label: 'Resgate em Altura'}, {id: 'orientacoes', label: 'Orientações'}
-                         ]} />
-                         <FormField control={form.control} name="procedimentosOutros" render={({ field }) => (<FormItem><FormLabel>Outros Procedimentos</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                    </AccordionContent>
-                </AccordionItem>
-
-                 <AccordionItem value="item-7">
-                    <AccordionTrigger className="text-xl font-bold">DESFECHO E OBSERVAÇÕES</AccordionTrigger>
-                    <AccordionContent className="space-y-6 pt-4">
-                        <RadioGroupField control={form.control} name="conduta" label="Conduta" options={[
-                            {value: 'liberacao', label: 'Liberação no Local c/ Orientações'}, {value: 'recusa_atendimento', label: 'Recusa Atendimento'},
-                            {value: 'recusa_remocao', label: 'Recusa Remoção'}, {value: 'removido_terceiros', label: 'Removido por Terceiros'},
-                            {value: 'removido_hospital', label: 'Removido a Unidade Hospitalar'}, {value: 'obito_local', label: 'Vítima em Óbito'},
-                            {value: 'obito_atendimento', label: 'Óbito Durante Atendimento'},
-                        ]} />
-                        {form.watch('conduta') === 'removido_terceiros' && (
-                             <FormField control={form.control} name="removidoPorTerceiros" render={({ field }) => (<FormItem><FormLabel>Removido por</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="COBOM">COBOM</SelectItem><SelectItem value="SAMU">SAMU</SelectItem><SelectItem value="OUTROS">Outros</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
+               return (
+                <Card key={field.id} className="border-primary border-2 mt-6">
+                    <CardHeader className="flex-row items-center justify-between bg-primary text-primary-foreground">
+                        <CardTitle>Vítima {index + 1}</CardTitle>
+                        {victimFields.length > 1 && (
+                            <Button type="button" variant="destructive" size="icon" onClick={() => removeVictim(index)}>
+                                <Trash2 className="h-5 w-5" />
+                                <span className="sr-only">Remover Vítima</span>
+                            </Button>
                         )}
-                         {form.watch('conduta') === 'removido_hospital' && (
-                            <FormField control={form.control} name="removidoHospital" render={({ field }) => (<FormItem><FormLabel>Unidade Hospitalar</FormLabel><FormControl><Input placeholder="Ex: Santa Casa de Misericórdia" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                         )}
-                        <RadioGroupField control={form.control} name="codigoConduta" label="Código" options={[
-                            {value: 'vermelho', label: 'Vermelho'}, {value: 'amarelo', label: 'Amarelo'},
-                            {value: 'verde', label: 'Verde'}, {value: 'azul', label: 'Azul'}, {value: 'preto', label: 'Preto'}
-                        ]} orientation="horizontal" />
-                         <FormField control={form.control} name="medicoReguladorConduta" render={({ field }) => (<FormItem><FormLabel>Médico Regulador/Intervencionista</FormLabel><FormControl><Input placeholder="Ex: Dr. Gregory House" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                         <FormField control={form.control} name="medicoReceptor" render={({ field }) => (<FormItem><FormLabel>Médico Receptor</FormLabel><FormControl><Input placeholder="Ex: Dra. Meredith Grey" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                         
-                         <Card>
-                            <CardHeader>
-                                <CardTitle>Consumo de Materiais</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4 pt-6">
-                                {materialFields.map((item, index) => (
-                                <div key={item.id} className="flex items-end gap-2 p-2 border rounded-lg relative md:gap-4 md:p-4">
-                                    <div className="grid grid-cols-1 gap-4 flex-1">
+                    </CardHeader>
+                    <CardContent className="pt-6">
+                       <Accordion type="multiple" className="w-full space-y-4" defaultValue={[`v${index}-item-2`]}>
+                            <AccordionItem value={`v${index}-item-2`}>
+                                <AccordionTrigger className="text-xl font-bold">DADOS CADASTRAIS DO USUÁRIO</AccordionTrigger>
+                                <AccordionContent className="space-y-6 pt-4">
+                                    <FormField control={form.control} name={`victims.${index}.nomeUsuario`} render={({ field }) => (<FormItem><FormLabel>Nome</FormLabel><FormControl><Input placeholder="Nome completo do usuário" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        <FormField control={form.control} name={`victims.${index}.idade`} render={({ field }) => (<FormItem><FormLabel>Idade</FormLabel><FormControl><Input type="number" placeholder="Ex: 35" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                        <FormField control={form.control} name={`victims.${index}.dn`} render={({ field }) => (<FormItem><FormLabel>Data Nasc.</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                        <RadioGroupField control={form.control} name={`victims.${index}.sexo`} label="Sexo" options={[{value: 'M', label: 'M'}, {value: 'F', label: 'F'}]} orientation="horizontal" />
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <FormField
-                                            control={form.control}
-                                            name={`materiais.${index}.nome`}
-                                            render={({ field }) => (
+                                        name={`victims.${index}.cpf`}
+                                        control={form.control}
+                                        render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Material</FormLabel>
-                                                <FormControl>
-                                                <Input placeholder="Ex: Gaze" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
+                                            <FormLabel>CPF</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                placeholder="000.000.000-00"
+                                                {...field}
+                                                onChange={(e) => {
+                                                    const rawValue = e.target.value.replace(/\D/g, '');
+                                                    let maskedValue = rawValue.substring(0, 11);
+                                                    if (rawValue.length > 9) {
+                                                    maskedValue = maskedValue.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                                                    } else if (rawValue.length > 6) {
+                                                    maskedValue = maskedValue.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+                                                    } else if (rawValue.length > 3) {
+                                                    maskedValue = maskedValue.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+                                                    }
+                                                    field.onChange(maskedValue);
+                                                }}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
                                             </FormItem>
-                                            )}
+                                        )}
                                         />
                                         <FormField
-                                            control={form.control}
-                                            name={`materiais.${index}.quantidade`}
-                                            render={({ field }) => (
+                                        name={`victims.${index}.rg`}
+                                        control={form.control}
+                                        render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Quantidade</FormLabel>
-                                                <FormControl>
-                                                <Input type="number" placeholder="Ex: 10" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
+                                            <FormLabel>RG</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                placeholder="00.000.000-0"
+                                                {...field}
+                                                onChange={(e) => {
+                                                    const rawValue = e.target.value.replace(/\D/g, '');
+                                                    let maskedValue = rawValue.substring(0, 9);
+                                                    if (rawValue.length > 8) {
+                                                    maskedValue = maskedValue.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/, '$1.$2.$3-$4');
+                                                    } else if (rawValue.length > 5) {
+                                                    maskedValue = maskedValue.replace(/(\d{2})(\d{3})(\d{1,3})/, '$1.$2.$3');
+                                                    } else if (rawValue.length > 2) {
+                                                    maskedValue = maskedValue.replace(/(\d{2})(\d{1,3})/, '$1.$2');
+                                                    }
+                                                    field.onChange(maskedValue);
+                                                }}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
                                             </FormItem>
-                                            )}
+                                        )}
                                         />
                                     </div>
-                                    <Button
-                                        type="button"
-                                        variant="destructive"
-                                        size="icon"
-                                        onClick={() => removeMaterial(index)}
-                                        className="mb-11"
-                                    >
-                                        <Trash2 className="h-5 w-5" />
-                                        <span className="sr-only">Remover Material</span>
-                                    </Button>
-                                </div>
-                                ))}
-                                <Button
-                                type="button"
-                                variant="outline"
-                                className="w-full"
-                                onClick={() => appendMaterial({ nome: '', quantidade: '' })}
-                                >
-                                <PlusCircle className="mr-2 h-5 w-5" />
-                                Adicionar Material
-                                </Button>
-                            </CardContent>
-                          </Card>
-                         <FormField control={form.control} name="relatorioObservacoes" render={({ field }) => (<FormItem><FormLabel>Relatório/Observações</FormLabel><FormControl><Textarea rows={5} placeholder="Descreva o relatório e observações aqui..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                         <FormField control={form.control} name="rolValores" render={({ field }) => (<FormItem><FormLabel>Rol de Valores/Pertences</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Celular, carteira com documentos e R$ 50,00" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                         <FormField control={form.control} name="responsavelValores" render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input placeholder="Nome do responsável" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                         <FormField control={form.control} name="equipamentosRetidos" render={({ field }) => (<FormItem><FormLabel>Equipamentos/Materiais Retidos</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Colar cervical, prancha rígida..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                         <FormField control={form.control} name="responsavelEquipamentos" render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input placeholder="Nome do responsável" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                    </AccordionContent>
-                 </AccordionItem>
+                                    <FormField
+                                    control={form.control}
+                                    name={`victims.${index}.tel`}
+                                    render={({ field }) => (
+                                        <FormItem>
+                                        <FormLabel>Telefone</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                            placeholder="(99) 99999-9999"
+                                            {...field}
+                                            onChange={(e) => {
+                                                let value = e.target.value.replace(/\D/g, "");
+                                                value = value.substring(0, 11);
+                                                if (value.length > 10) {
+                                                value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                                                } else if (value.length > 6) {
+                                                value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+                                                } else if (value.length > 2) {
+                                                value = value.replace(/(\d{2})(\d*)/, '($1) $2');
+                                                } else if (value.length > 0) {
+                                                value = `(${value}`;
+                                                }
+                                                field.onChange(value);
+                                            }}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                        </FormItem>
+                                    )}
+                                    />
+                                    <FormField control={form.control} name={`victims.${index}.endereco`} render={({ field }) => (<FormItem><FormLabel>Endereço</FormLabel><FormControl><Input placeholder="Rua, Av, etc." {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                    <FormField control={form.control} name={`victims.${index}.acompanhante`} render={({ field }) => (<FormItem><FormLabel>Acompanhante</FormLabel><FormControl><Input placeholder="Nome do acompanhante" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                    <FormField control={form.control} name={`victims.${index}.posicaoVeiculo`} render={({ field }) => (<FormItem><FormLabel>Posição no Veículo</FormLabel><FormControl><Input placeholder="Ex: Condutor, Passageiro" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                </AccordionContent>
+                            </AccordionItem>
 
-                 {(watchConduta === 'recusa_atendimento' || watchConduta === 'recusa_remocao') && (
-                     <AccordionItem value="item-8">
-                        <AccordionTrigger className="text-xl font-bold text-destructive">TERMO DE RECUSA</AccordionTrigger>
-                        <AccordionContent className="space-y-6 pt-4">
-                            <Card className="border-destructive">
-                                <CardContent className="pt-6 space-y-4">
-                                <p className="text-base text-muted-foreground">
-                                    EU, <FormField control={form.control} name="termoRecusaNome" render={({ field }) => (<Input className="inline-block w-auto" placeholder="NOME" {...field} />)} />,
-                                    PORTADOR DO CPF <FormField control={form.control} name="termoRecusaCPF" render={({ field }) => (<Input className="inline-block w-auto" placeholder="CPF" {...field} />)} />
-                                    RG: <FormField control={form.control} name="termoRecusaRG" render={({ field }) => (<Input className="inline-block w-auto" placeholder="RG" {...field} />)} />,
-                                    RESIDENTE NO ENDEREÇO: <FormField control={form.control} name="termoRecusaEndereco" render={({ field }) => (<Input placeholder="Endereço" {...field} />)} />,
-                                    EM PLENA CONSCIÊNCIA DOS MEUS ATOS E ORIENTADO PELA EQUIPE DE RESGATE, DECLARO PARA TODOS OS FINS QUE RECUSO O ATENDIMENTO PRÉ - HOSPITALAR DA WAY BRASIL, ASSUMINDO TODA RESPONSABILIDADE POR QUALQUER PREJUÍZO A MINHA SAÚDE E INTEGRIDADE FÍSICA OU A DE
-                                    <FormField control={form.control} name="termoRecusaResponsavelPor" render={({ field }) => (<Input className="inline-block w-auto mx-2" placeholder="NOME" {...field} />)} />
-                                    DE QUEM SOU <FormField control={form.control} name="termoRecusaParentesco" render={({ field }) => (<Input className="inline-block w-auto" placeholder="GRAU DE PARENTESCO" {...field} />)} />, NA CONDIÇÃO DE SEU RESPONSÁVEL.
-                                </p>
-                                 <FormField control={form.control} name="termoRecusaTestemunha1" render={({ field }) => (<FormItem><FormLabel>Testemunha 1</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                 <FormField control={form.control} name="termoRecusaTestemunha2" render={({ field }) => (<FormItem><FormLabel>Testemunha 2</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                                 <p className="text-center pt-4">_________________________________________</p>
-                                 <p className="text-center font-semibold">Assinatura da Vítima/Responsável</p>
-                                </CardContent>
-                            </Card>
-                        </AccordionContent>
-                     </AccordionItem>
-                 )}
+                            <AccordionItem value={`v${index}-item-3`}>
+                                <AccordionTrigger className="text-xl font-bold">EVENTO</AccordionTrigger>
+                                <AccordionContent className="space-y-6 pt-4">
+                                    <RadioGroupField control={form.control} name={`victims.${index}.tipoEvento`} label="Tipo de Evento" options={[{value: 'trauma', label: 'Trauma'}, {value: 'clinico', label: 'Atendimento Clínico'}]} orientation="horizontal" />
+                                    
+                                    {form.watch(`victims.${index}.tipoEvento`) === 'trauma' && (
+                                        <Card className="bg-background/50">
+                                            <CardHeader><CardTitle>Trauma</CardTitle></CardHeader>
+                                            <CardContent className="space-y-4">
+                                                <CheckboxGroupField control={form.control} name={`victims.${index}.eventoTrauma`} label="" options={[
+                                                    { id: 'acidente', label: 'Acidente Automobilístico' },
+                                                    { id: 'queimadura', label: 'Queimadura' },
+                                                    { id: 'atropelamento', label: 'Atropelamento' },
+                                                    { id: 'queda', label: 'Queda de Altura' },
+                                                    { id: 'outros', label: 'Outros' }
+                                                ]}/>
+                                                 {form.watch(`victims.${index}.eventoTrauma`)?.includes('outros') &&
+                                                    <FormField control={form.control} name={`victims.${index}.eventoTraumaOutros`} render={({ field }) => (<FormItem><FormLabel>Outros (Trauma)</FormLabel><FormControl><Input placeholder="Descreva o trauma" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                                 }
+                                            </CardContent>
+                                        </Card>
+                                    )}
+                                    {form.watch(`victims.${index}.tipoEvento`) === 'clinico' && (
+                                        <Card className="bg-background/50">
+                                            <CardHeader><CardTitle>Atendimento Clínico</CardTitle></CardHeader>
+                                            <CardContent className="space-y-4">
+                                                 <CheckboxGroupField control={form.control} name={`victims.${index}.eventoClinico`} label="" options={[
+                                                    { id: 'mal_subito', label: 'Mal Súbito' },
+                                                    { id: 'intoxicacao', label: 'Intoxicação Exógena' },
+                                                    { id: 'parto', label: 'Assistência ao Parto' },
+                                                    { id: 'convulsao', label: 'Convulsão' },
+                                                    { id: 'psiquiatrico', label: 'Distúrbio Psiquiátrico' },
+                                                    { id: 'outros', label: 'Outros' }
+                                                ]}/>
+                                                {form.watch(`victims.${index}.eventoClinico`)?.includes('outros') &&
+                                                    <FormField control={form.control} name={`victims.${index}.eventoClinicoOutros`} render={({ field }) => (<FormItem><FormLabel>Outros (Clínico)</FormLabel><FormControl><Input placeholder="Descreva o atendimento" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                                }
+                                            </CardContent>
+                                        </Card>
+                                    )}
 
-            </Accordion>
+                                    <CheckboxGroupField control={form.control} name={`victims.${index}.condicoesSeguranca`} label="Condições de Segurança" options={[
+                                        { id: 'cinto', label: 'Cinto de Segurança' },
+                                        { id: 'cadeirinha', label: 'Cadeirinha' },
+                                        { id: 'airbag', label: 'Air Bag' },
+                                        { id: 'capacete', label: 'Capacete' },
+                                        { id: 'outros', label: 'Outros' },
+                                    ]}/>
+                                    {form.watch(`victims.${index}.condicoesSeguranca`)?.includes('outros') &&
+                                        <FormField control={form.control} name={`victims.${index}.condicoesSegurancaOutros`} render={({ field }) => (<FormItem><FormLabel>Outras Condições</FormLabel><FormControl><Input placeholder="Descreva outras condições" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                    }
+                                    
+                                    <CheckboxGroupField control={form.control} name={`victims.${index}.condicaoInicial`} label="Condição Inicial" options={[
+                                        { id: 'alerta', label: 'Alerta' },
+                                        { id: 'deambulando', label: 'Deambulando' },
+                                        { id: 'verbaliza', label: 'Verbaliza' },
+                                        { id: 'ao_solo', label: 'Ao Solo' },
+                                        { id: 'estimulo_doloroso', label: 'Estímulo Doloroso' },
+                                        { id: 'ejetado', label: 'Ejetado' },
+                                        { id: 'inconsciente', label: 'Inconsciente' },
+                                        { id: 'encarcerado', label: 'Encarcerado/Retido' },
+                                    ]}/>
+                                </AccordionContent>
+                            </AccordionItem>
+                            
+                             <AccordionItem value={`v${index}-item-4`}>
+                                <AccordionTrigger className="text-xl font-bold">AVALIAÇÃO PRIMÁRIA (XABCDE)</AccordionTrigger>
+                                <AccordionContent className="space-y-6 pt-4">
+                                    <RadioGroupField control={form.control} name={`victims.${index}.hemorragiaExsanguinante`} label="X - Hemorragia Exsanguinante" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal"/>
+                                    <FormField control={form.control} name={`victims.${index}.viasAereas`} render={({ field }) => (<FormItem><FormLabel>A - Vias Aéreas</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="pervias">Pérvias</SelectItem><SelectItem value="obstruidas">Obstruídas Por</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
+                                    {form.watch(`victims.${index}.viasAereas`) === 'obstruidas' && <FormField control={form.control} name={`victims.${index}.viasAereasObstruidasPor`} render={({ field }) => (<FormItem><FormLabel>Obstruídas Por</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />}
+                                    
+                                    <RadioGroupField control={form.control} name={`victims.${index}.ventilacao`} label="B - Ventilação" options={[{value: 'presente', label: 'Presente'}, {value: 'ausente', label: 'Ausente'}]} orientation="horizontal"/>
+                                    <CheckboxGroupField control={form.control} name={`victims.${index}.detalhesVentilacao`} label="Detalhes da Ventilação" options={[
+                                        {id: 'simetrica', label: 'Simétrica'}, {id: 'assimetrica', label: 'Assimétrica'}, {id: 'apneia', label: 'Apnéia'},
+                                        {id: 'eupneia', label: 'Eupneia'}, {id: 'taquipneia', label: 'Taquipneia'}, {id: 'gasping', label: 'Gasping'}
+                                    ]} />
+
+                                    <Card>
+                                    <CardHeader><CardTitle>C - Circulação e Hemorragias</CardTitle></CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <CheckboxGroupField control={form.control} name={`victims.${index}.pulso`} label="Pulso" options={[{id: 'presente', label: 'Presente'}, {id: 'cheio', label: 'Cheio'}, {id: 'filiforme', label: 'Filiforme'}]} />
+                                        <CheckboxGroupField control={form.control} name={`victims.${index}.pele`} label="Pele" options={[{id: 'normal', label: 'Normal'}, {id: 'fria', label: 'Fria'}, {id: 'sudorese', label: 'Sudorese'}]} />
+                                        <RadioGroupField control={form.control} name={`victims.${index}.perfusao`} label="Perfusão" options={[{value: '<2seg', label: '< 2 Seg'}, {value: '>=2seg', label: '>= 2 Seg'}]} orientation="horizontal" />
+                                        <RadioGroupField control={form.control} name={`victims.${index}.sangramentoAtivo`} label="Sangramento Ativo" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal" />
+                                    </CardContent>
+                                    </Card>
+
+                                    <Card>
+                                    <CardHeader><CardTitle>D - Neurológico</CardTitle></CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <FormField control={form.control} name={`victims.${index}.glasgowInicial`} render={({ field }) => (<FormItem><FormLabel>Glasgow (Inicial)</FormLabel><FormControl><Input placeholder="Ex: 15" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                        <RadioGroupField control={form.control} name={`victims.${index}.pupilas`} label="Pupilas" options={[{value: 'isocoricas', label: 'Isocóricas'}, {value: 'anisocoricas', label: 'Anisocóricas'}]} orientation="horizontal"/>
+                                        <RadioGroupField control={form.control} name={`victims.${index}.fotorreagentes`} label="Fotorreagentes" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal"/>
+                                    </CardContent>
+                                    </Card>
+
+                                    <Card>
+                                    <CardHeader><CardTitle>E - Exposição</CardTitle></CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <RadioGroupField control={form.control} name={`victims.${index}.exposicao`} label="" options={[{value: 'sem_lesoes', label: 'Sem Lesões Aparentes'}, {value: 'lesoes_aparentes', label: 'Lesões Aparentes'}]} />
+                                        <RadioGroupField control={form.control} name={`victims.${index}.hipotermia`} label="Hipotermia" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal"/>
+                                        <FormField control={form.control} name={`victims.${index}.lesoesAparentes`} render={({ field }) => (<FormItem><FormLabel>Lesões Aparentes e Queixas Principais</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                    </CardContent>
+                                    </Card>
+                                </AccordionContent>
+                            </AccordionItem>
+
+                            <AccordionItem value={`v${index}-item-5`}>
+                                <AccordionTrigger className="text-xl font-bold">AVALIAÇÃO SECUNDÁRIA E SINAIS VITAIS</AccordionTrigger>
+                                <AccordionContent className="space-y-6 pt-4">
+                                    <Card>
+                                        <CardHeader><CardTitle>S.A.M.P.L.E.</CardTitle></CardHeader>
+                                        <CardContent className="space-y-4">
+                                            <FormField control={form.control} name={`victims.${index}.alergias`} render={({ field }) => (<FormItem><FormLabel>Alergias</FormLabel><FormControl><Input placeholder="Nega alergias / Dipirona" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                            <FormField control={form.control} name={`victims.${index}.medicamentosEmUso`} render={({ field }) => (<FormItem><FormLabel>Medicamentos em Uso</FormLabel><FormControl><Input placeholder="Nega uso / Losartana" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                            <FormField control={form.control} name={`victims.${index}.comorbidades`} render={({ field }) => (<FormItem><FormLabel>Comorbidades / Gestação</FormLabel><FormControl><Input placeholder="Nega comorbidades / HAS" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                            <FormField control={form.control} name={`victims.${index}.ultimaRefeicao`} render={({ field }) => (<FormItem><FormLabel>Última Refeição / Jejum</FormLabel><FormControl><Input placeholder="Há 2 horas" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                        </CardContent>
+                                    </Card>
+                                    <Card>
+                                        <CardHeader><CardTitle>Sinais Vitais</CardTitle></CardHeader>
+                                        <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                                            <FormField control={form.control} name={`victims.${index}.sinaisVitaisPA`} render={({ field }) => (<FormItem><FormLabel>PA (mmHg)</FormLabel><FormControl><Input placeholder="120x80" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                            <FormField control={form.control} name={`victims.${index}.sinaisVitaisFC`} render={({ field }) => (<FormItem><FormLabel>FC (bpm)</FormLabel><FormControl><Input placeholder="80" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                            <FormField control={form.control} name={`victims.${index}.sinaisVitaisFR`} render={({ field }) => (<FormItem><FormLabel>FR (rpm)</FormLabel><FormControl><Input placeholder="16" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                            <FormField control={form.control} name={`victims.${index}.sinaisVitaisSatO2`} render={({ field }) => (<FormItem><FormLabel>Sat O² (%)</FormLabel><FormControl><Input placeholder="98" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                            <FormField control={form.control} name={`victims.${index}.sinaisVitaisTAX`} render={({ field }) => (<FormItem><FormLabel>TAX (°C)</FormLabel><FormControl><Input placeholder="36.5" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                            <FormField control={form.control} name={`victims.${index}.sinaisVitaisDXT`} render={({ field }) => (<FormItem><FormLabel>DXT (mg/dl)</FormLabel><FormControl><Input placeholder="90" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                        </CardContent>
+                                    </Card>
+                                    <FormField control={form.control} name={`victims.${index}.avaliacaoCraniocaudal`} render={({ field }) => (<FormItem><FormLabel>Avaliação Crânio-Caudal</FormLabel><FormControl><Textarea placeholder="Nenhuma anormalidade encontrada, vítima consciente e orientada." {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                </AccordionContent>
+                            </AccordionItem>
+                             
+                            <AccordionItem value={`v${index}-item-6`}>
+                                <AccordionTrigger className="text-xl font-bold">GLASGOW E PROCEDIMENTOS</AccordionTrigger>
+                                <AccordionContent className="space-y-6 pt-4">
+                                    <GlasgowScale control={form.control} index={index}/>
+                                    <Card>
+                                        <CardHeader><CardTitle>Imobilização</CardTitle></CardHeader>
+                                        <CardContent className="space-y-4">
+                                            <RadioGroupField control={form.control} name={`victims.${index}.pranchamento`} label="Pranchamento" options={[
+                                                {value: 'decubito', label: 'Decúbito'}, {value: 'em_pe', label: 'Em Pé'}
+                                            ]}/>
+                                            <CheckboxGroupField control={form.control} name={`victims.${index}.imobilizacao`} label="" options={[
+                                                {id: 'colar', label: 'Colar Cervical'},
+                                                {id: 'ked', label: 'Extricação com KED'},
+                                                {id: 'terezarautek', label: 'Extricação com Tereza/Rautek'},
+                                                {id: 'desencarceramento', label: 'Desencarceramento'},
+                                                {id: 'retirada_capacete', label: 'Retirada de Capacete'},
+                                                {id: 'imob_mse', label: 'Imobilização de MSE'},
+                                                {id: 'imob_msd', label: 'Imobilização de MSD'},
+                                                {id: 'imob_mie', label: 'Imobilização de MIE'},
+                                                {id: 'imob_mid', label: 'Imobilização de MID'},
+                                                {id: 'imob_pelve', label: 'Imobilização de Pelve'},
+                                            ]} />
+                                        </CardContent>
+                                    </Card>
+                                    <CheckboxGroupField control={form.control} name={`victims.${index}.procedimentos`} label="Procedimentos Realizados" options={[
+                                        {id: 'desobstrucao', label: 'Desobstrução de Vias Aéreas'}, {id: 'canula', label: 'Cânula de Guedel'}, {id: 'oxigenio', label: 'Oxigênio (Máscara/Cateter)'},
+                                        {id: 'ambu', label: 'Ventilação com AMBU'}, {id: 'dea', label: 'DEA'}, {id: 'rcp', label: 'RCP'},
+                                        {id: 'torniquete', label: 'Torniquete'}, {id: 'curativo', label: 'Curativo Oclusivo/Compressivo'}, {id: 'sinais_vitais', label: 'Aferição de Sinais Vitais'},
+                                        {id: 'oximetria', label: 'Oximetria de Pulso'}, {id: 'resgate_altura', label: 'Resgate em Altura'}, {id: 'orientacoes', label: 'Orientações'}
+                                    ]} />
+                                    <FormField control={form.control} name={`victims.${index}.procedimentosOutros`} render={({ field }) => (<FormItem><FormLabel>Outros Procedimentos</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                </AccordionContent>
+                            </AccordionItem>
+                             
+                            <AccordionItem value={`v${index}-item-7`}>
+                                <AccordionTrigger className="text-xl font-bold">DESFECHO E OBSERVAÇÕES</AccordionTrigger>
+                                <AccordionContent className="space-y-6 pt-4">
+                                    <RadioGroupField control={form.control} name={`victims.${index}.conduta`} label="Conduta" options={[
+                                        {value: 'liberacao', label: 'Liberação no Local c/ Orientações'}, {value: 'recusa_atendimento', label: 'Recusa Atendimento'},
+                                        {value: 'recusa_remocao', label: 'Recusa Remoção'}, {value: 'removido_terceiros', label: 'Removido por Terceiros'},
+                                        {value: 'removido_hospital', label: 'Removido a Unidade Hospitalar'}, {value: 'obito_local', label: 'Vítima em Óbito'},
+                                        {value: 'obito_atendimento', label: 'Óbito Durante Atendimento'},
+                                    ]} />
+                                    {form.watch(`victims.${index}.conduta`) === 'removido_terceiros' && (
+                                        <FormField control={form.control} name={`victims.${index}.removidoPorTerceiros`} render={({ field }) => (<FormItem><FormLabel>Removido por</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="COBOM">COBOM</SelectItem><SelectItem value="SAMU">SAMU</SelectItem><SelectItem value="OUTROS">Outros</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
+                                    )}
+                                    {form.watch(`victims.${index}.conduta`) === 'removido_hospital' && (
+                                        <FormField control={form.control} name={`victims.${index}.removidoHospital`} render={({ field }) => (<FormItem><FormLabel>Unidade Hospitalar</FormLabel><FormControl><Input placeholder="Ex: Santa Casa de Misericórdia" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                    )}
+                                    <RadioGroupField control={form.control} name={`victims.${index}.codigoConduta`} label="Código" options={[
+                                        {value: 'vermelho', label: 'Vermelho'}, {value: 'amarelo', label: 'Amarelo'},
+                                        {value: 'verde', label: 'Verde'}, {value: 'azul', label: 'Azul'}, {value: 'preto', label: 'Preto'}
+                                    ]} orientation="horizontal" />
+                                    <FormField control={form.control} name={`victims.${index}.medicoReguladorConduta`} render={({ field }) => (<FormItem><FormLabel>Médico Regulador/Intervencionista</FormLabel><FormControl><Input placeholder="Ex: Dr. Gregory House" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                    <FormField control={form.control} name={`victims.${index}.medicoReceptor`} render={({ field }) => (<FormItem><FormLabel>Médico Receptor</FormLabel><FormControl><Input placeholder="Ex: Dra. Meredith Grey" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                    
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle>Consumo de Materiais</CardTitle>
+                                        </CardHeader>
+                                        <CardContent className="space-y-4 pt-6">
+                                            {materialFields.map((item, materialIndex) => (
+                                            <div key={item.id} className="flex items-end gap-2 p-2 border rounded-lg relative md:gap-4 md:p-4">
+                                                <div className="grid grid-cols-1 gap-4 flex-1 md:flex-initial md:w-full">
+                                                    <FormField
+                                                        control={form.control}
+                                                        name={`victims.${index}.materiais.${materialIndex}.nome`}
+                                                        render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Material</FormLabel>
+                                                            <FormControl>
+                                                            <Input placeholder="Ex: Gaze" {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                        )}
+                                                    />
+                                                    <FormField
+                                                        control={form.control}
+                                                        name={`victims.${index}.materiais.${materialIndex}.quantidade`}
+                                                        render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Quantidade</FormLabel>
+                                                            <FormControl>
+                                                            <Input type="number" placeholder="Ex: 10" {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                        )}
+                                                    />
+                                                </div>
+                                                <Button
+                                                    type="button"
+                                                    variant="destructive"
+                                                    size="icon"
+                                                    onClick={() => removeMaterial(materialIndex)}
+                                                    className="mb-11"
+                                                >
+                                                    <Trash2 className="h-5 w-5" />
+                                                    <span className="sr-only">Remover Material</span>
+                                                </Button>
+                                            </div>
+                                            ))}
+                                            <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="w-full"
+                                            onClick={() => appendMaterial({ nome: '', quantidade: '' })}
+                                            >
+                                            <PlusCircle className="mr-2 h-5 w-5" />
+                                            Adicionar Material
+                                            </Button>
+                                        </CardContent>
+                                    </Card>
+                                    <FormField control={form.control} name={`victims.${index}.relatorioObservacoes`} render={({ field }) => (<FormItem><FormLabel>Relatório/Observações</FormLabel><FormControl><Textarea rows={5} placeholder="Descreva o relatório e observações aqui..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                    <FormField control={form.control} name={`victims.${index}.rolValores`} render={({ field }) => (<FormItem><FormLabel>Rol de Valores/Pertences</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Celular, carteira com documentos e R$ 50,00" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                    <FormField control={form.control} name={`victims.${index}.responsavelValores`} render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input placeholder="Nome do responsável" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                    <FormField control={form.control} name={`victims.${index}.equipamentosRetidos`} render={({ field }) => (<FormItem><FormLabel>Equipamentos/Materiais Retidos</FormLabel><FormControl><Textarea rows={3} placeholder="Ex: Colar cervical, prancha rígida..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                    <FormField control={form.control} name={`victims.${index}.responsavelEquipamentos`} render={({ field }) => (<FormItem><FormLabel>Responsável pelo Recebimento</FormLabel><FormControl><Input placeholder="Nome do responsável" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                </AccordionContent>
+                            </AccordionItem>
+
+                            {(watchConduta === 'recusa_atendimento' || watchConduta === 'recusa_remocao') && (
+                                <AccordionItem value={`v${index}-item-8`}>
+                                    <AccordionTrigger className="text-xl font-bold text-destructive">TERMO DE RECUSA</AccordionTrigger>
+                                    <AccordionContent className="space-y-6 pt-4">
+                                        <Card className="border-destructive">
+                                            <CardContent className="pt-6 space-y-4">
+                                            <p className="text-base text-muted-foreground">
+                                                EU, <FormField control={form.control} name={`victims.${index}.termoRecusaNome`} render={({ field }) => (<Input className="inline-block w-auto" placeholder="NOME" {...field} />)} />,
+                                                PORTADOR DO CPF <FormField control={form.control} name={`victims.${index}.termoRecusaCPF`} render={({ field }) => (<Input className="inline-block w-auto" placeholder="CPF" {...field} />)} />
+                                                RG: <FormField control={form.control} name={`victims.${index}.termoRecusaRG`} render={({ field }) => (<Input className="inline-block w-auto" placeholder="RG" {...field} />)} />,
+                                                RESIDENTE NO ENDEREÇO: <FormField control={form.control} name={`victims.${index}.termoRecusaEndereco`} render={({ field }) => (<Input placeholder="Endereço" {...field} />)} />,
+                                                EM PLENA CONSCIÊNCIA DOS MEUS ATOS E ORIENTADO PELA EQUIPE DE RESGATE, DECLARO PARA TODOS OS FINS QUE RECUSO O ATENDIMENTO PRÉ - HOSPITALAR DA WAY BRASIL, ASSUMINDO TODA RESPONSABILIDADE POR QUALQUER PREJUÍZO A MINHA SAÚDE E INTEGRIDADE FÍSICA OU A DE
+                                                <FormField control={form.control} name={`victims.${index}.termoRecusaResponsavelPor`} render={({ field }) => (<Input className="inline-block w-auto mx-2" placeholder="NOME" {...field} />)} />
+                                                DE QUEM SOU <FormField control={form.control} name={`victims.${index}.termoRecusaParentesco`} render={({ field }) => (<Input className="inline-block w-auto" placeholder="GRAU DE PARENTESCO" {...field} />)} />, NA CONDIÇÃO DE SEU RESPONSÁVEL.
+                                            </p>
+                                            <FormField control={form.control} name={`victims.${index}.termoRecusaTestemunha1`} render={({ field }) => (<FormItem><FormLabel>Testemunha 1</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                            <FormField control={form.control} name={`victims.${index}.termoRecusaTestemunha2`} render={({ field }) => (<FormItem><FormLabel>Testemunha 2</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                                            <p className="text-center pt-4">_________________________________________</p>
+                                            <p className="text-center font-semibold">Assinatura da Vítima/Responsável</p>
+                                            </CardContent>
+                                        </Card>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            )}
+                       </Accordion>
+                    </CardContent>
+                </Card>
+               )
+            })}
+
+            <Button type="button" size="lg" className="w-full" onClick={() => appendVictim(defaultVictimValues)}>
+              <PlusCircle className="mr-2 h-5 w-5" /> Adicionar Vítima
+            </Button>
           
           <Button type="submit" size="lg" className="w-full">Gerar Relatório</Button>
         </form>
