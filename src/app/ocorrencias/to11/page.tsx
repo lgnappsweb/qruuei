@@ -160,7 +160,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     if (Array.isArray(value)) {
         if (value.length === 0) return 'NILL';
         if (key === 'tipoPanes') {
-          return value.join(', ').toUpperCase();
+          return value.map(p => p.split(' ')[0]).join(', ');
         }
         return value.join(', ').toUpperCase();
     }
@@ -180,50 +180,38 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
   const handleShare = () => {
     let text = `*${formTitle.toUpperCase()}*\n\n`;
-    if (numeroOcorrencia) {
-      text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n\n`;
-    }
 
-    const formatSectionForShare = (sectionTitle: string, fields: object) => {
-      let sectionText = '';
-      for (const [key, value] of Object.entries(fields)) {
-        if ((key === 'vtrApoioDescricao' && !data.vtrApoio) || (key === 'danoPatrimonioDescricao' && !data.danoPatrimonio)) continue;
-
-        const processedValue = renderSimpleValue(value, key);
-        if (processedValue && processedValue !== 'NILL' && processedValue !== '') {
-          sectionText += `*${formatLabel(key).toUpperCase()}:* ${processedValue}\n`;
+    const report = data;
+    const fieldOrder = ['rodovia', 'ocorrencia', 'tipoPanes', 'qth', 'sentido', 'localArea', '---VEHICLES---', 'vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'];
+    
+    fieldOrder.forEach(key => {
+        if (key === '---VEHICLES---') {
+            if (Array.isArray(report.vehicles) && report.vehicles.length > 0) {
+                const vehicleOrder = ['marca', 'modelo', 'ano', 'cor', 'placa', 'cidadeEmplacamento', 'eixos', 'tipoVeiculo', 'estadoPneu', 'tipoCarga', 'qraCondutor', 'baixaFrequencia', 'ocupantes', 'cpf', 'rg', 'endereco', 'numero', 'bairro', 'cidade'];
+                report.vehicles.forEach((vehicle: any, index: number) => {
+                    let vehicleText = '';
+                    vehicleOrder.forEach(vKey => {
+                        const value = vehicle[vKey];
+                        if (value != null && value !== '' && value !== 'NILL' && !(Array.isArray(value) && value.length === 0)) {
+                            vehicleText += `*${formatLabel(vKey).toUpperCase()}:* ${renderSimpleValue(value, vKey)}\n`;
+                        }
+                    });
+                    if (vehicleText) {
+                        text += `*DADOS DO VEÍCULO ${index + 1}*\n${vehicleText}\n`;
+                    }
+                });
+            }
+        } else if (key !== 'vehicles') {
+            const value = report[key];
+             if (value != null && value !== '' && value !== 'NILL' && !(Array.isArray(value) && value.length === 0)) {
+                text += `*${formatLabel(key).toUpperCase()}:* ${renderSimpleValue(value, key)}\n`;
+            }
         }
-      }
-      if (sectionText) {
-        text += `*${sectionTitle.toUpperCase()}*\n${sectionText}\n`;
-      }
-    };
+    });
 
-    const generalFields = {
-      rodovia: data.rodovia,
-      ocorrencia: data.ocorrencia,
-      tipoPanes: data.tipoPanes,
-      qth: data.qth,
-      sentido: data.sentido,
-      localArea: data.localArea,
-    };
-    formatSectionForShare('Informações Gerais', generalFields);
-
-    if (Array.isArray(data.vehicles) && data.vehicles.length > 0) {
-      data.vehicles.forEach((vehicle: any, index: number) => {
-        formatSectionForShare(`Dados do Veículo ${index + 1}`, vehicle);
-      });
+    if (numeroOcorrencia) {
+      text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n`;
     }
-
-    const otherFields = {
-      vtrApoio: data.vtrApoio,
-      vtrApoioDescricao: data.vtrApoioDescricao,
-      danoPatrimonio: data.danoPatrimonio,
-      danoPatrimonioDescricao: data.danoPatrimonioDescricao,
-      observacoes: data.observacoes,
-      auxilios: data.auxilios,
-    };
-    formatSectionForShare('Outras Informações', otherFields);
 
     const encodedText = encodeURIComponent(text.trim());
     window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
@@ -287,7 +275,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
         </ScrollArea>
         <DialogFooter className="mt-4 flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4 border-t">
           <Button variant="outline" onClick={onClose}>Editar</Button>
-          <Button onClick={handleShare} className="bg-green-600 hover:bg-green-700">
+          <Button onClick={handleShare} className="bg-green-600 hover:bg-green-700" disabled={!numeroOcorrencia}>
             <Share2 className="mr-2 h-5 w-5"/> Compartilhar
           </Button>
           <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
@@ -516,9 +504,6 @@ export default function OcorrenciaTO11Page() {
                                               field.onChange(newValue);
                                           }}
                                           className="text-xl"
-                                          onSelect={(e) => {
-                                            e.preventDefault();
-                                          }}
                                       >
                                           {item.label}
                                       </DropdownMenuCheckboxItem>

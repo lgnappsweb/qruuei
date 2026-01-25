@@ -485,9 +485,6 @@ export default function OcorrenciaTO04Page() {
                                               field.onChange(newValue);
                                           }}
                                           className="text-xl"
-                                          onSelect={(e) => {
-                                            e.preventDefault();
-                                          }}
                                       >
                                           {item.label}
                                       </DropdownMenuCheckboxItem>

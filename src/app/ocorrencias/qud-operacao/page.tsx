@@ -161,7 +161,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     if (Array.isArray(value)) {
         if (value.length === 0) return 'NILL';
         if (key === 'tipoPanes') {
-          return value.join(', ').toUpperCase();
+          return value.map(p => p.split(' ')[0]).join(', ');
         }
         return value.join(', ').toUpperCase();
     }
@@ -186,6 +186,9 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
         if (typeof value === 'boolean') return value ? 'SIM' : 'NÃO';
         if (Array.isArray(value)) {
              if (value.length === 0) return '';
+             if (key === 'tipoPanes') {
+                return value.map(p => p.split(' ')[0]).join(', ');
+             }
              return value.join(', ').toUpperCase();
         }
         return String(value).toUpperCase();
@@ -530,10 +533,6 @@ export default function QudOperacaoPage() {
                                               field.onChange(newValue);
                                           }}
                                           className="text-xl"
-                                          onSelect={(e) => {
-                                            e.preventDefault();
-                                            (e.currentTarget as HTMLDivElement).parentElement?.parentElement?.dispatchEvent(new Event('mouseleave'));
-                                          }}
                                       >
                                           {item.label}
                                       </DropdownMenuCheckboxItem>
