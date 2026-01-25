@@ -107,7 +107,7 @@ const formSchema = z.object({
 
 const fillEmptyWithNill = (data: any): any => {
     if (Array.isArray(data)) {
-        if (data.length === 0 && !Object.keys(vehicleSchema.shape).includes(data.toString())) return 'NILL';
+        if (data.length === 0) return 'NILL';
         if (typeof data[0] === 'object' && data[0] !== null) {
           return data.map(item => fillEmptyWithNill(item));
         }
@@ -197,7 +197,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     formatSectionForShare('Informações Gerais', generalFields);
 
     if (Array.isArray(data.vehicles) && data.vehicles.length > 0) {
-      data.vehicles.forEach((vehicle, index) => {
+      data.vehicles.forEach((vehicle: any, index: number) => {
         formatSectionForShare(`Dados do Veículo ${index + 1}`, vehicle);
       });
     }
