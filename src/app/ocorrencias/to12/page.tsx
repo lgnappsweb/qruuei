@@ -221,7 +221,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     );
 
     const MaterialItem = ({ item, index }: { item: any, index: number }) => (
-        <Card key={index} className="mt-4">
+        <Card key={index} className="mt-4 shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
             <CardHeader><CardTitle>Material {index + 1}</CardTitle></CardHeader>
             <CardContent className="pt-6">
                 <div className="text-xl space-y-4">
@@ -248,7 +248,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 
     const handleShare = () => {
     let text = `*${formTitle.toUpperCase()}*\n\n`;
-
+    
     const formatSectionForShare = (sectionTitle: string, fields: object) => {
       let sectionText = '';
       for (const [key, value] of Object.entries(fields)) {
@@ -287,7 +287,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     if (numeroOcorrencia) {
       text += `*NÚMERO DA OCORRÊNCIA:* ${numeroOcorrencia.toUpperCase()}\n`;
     }
-
+    
     const encodedText = encodeURIComponent(text.trim());
     window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
   };
@@ -302,7 +302,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                 <ScrollArea className="flex-1 pr-6 -mr-6 mt-4">
                     <div className="space-y-6">
                         {sections.map(section => (
-                            <Card key={section.title}>
+                            <Card key={section.title} className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                                 <CardHeader><CardTitle>{section.title}</CardTitle></CardHeader>
                                 <CardContent className="pt-6">
                                     <div className="text-xl space-y-4">
@@ -313,7 +313,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         ))}
 
                         { (data.conduta === 'recusa_atendimento' || data.conduta === 'recusa_remocao') &&
-                            <Card className="border-destructive">
+                            <Card className="border-destructive shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                                 <CardHeader><CardTitle className="text-destructive">Termo de Recusa</CardTitle></CardHeader>
                                 <CardContent className="pt-6">
                                     <div className="text-xl space-y-4">
@@ -324,12 +324,12 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         }
 
                         {data.materiais && Array.isArray(data.materiais) && data.materiais.length > 0 && (
-                            <Card>
+                            <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                                 <CardHeader><CardTitle>Consumo de Materiais</CardTitle></CardHeader>
                                 <CardContent className="pt-6">{data.materiais.map((item: any, index: number) => <MaterialItem key={index} item={item} index={index} />)}</CardContent>
                             </Card>
                         )}
-                        <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
+                        <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10 shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                             <CardHeader>
                                 <CardTitle className="text-white text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
                             </CardHeader>
@@ -448,7 +448,7 @@ function GlasgowScale({ control }: { control: Control<FormValues> }) {
   }, [ocular, verbal, motora]);
 
   return (
-    <Card>
+    <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
       <CardHeader>
         <CardTitle>Escala de Glasgow</CardTitle>
       </CardHeader>
@@ -679,7 +679,7 @@ export default function OcorrenciaTO12Page() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <Accordion type="multiple" className="w-full space-y-4" defaultValue={['item-1']}>
-                <AccordionItem value="item-1">
+                <AccordionItem value="item-1" className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <AccordionTrigger className="text-xl font-bold">DADOS OPERACIONAIS</AccordionTrigger>
                     <AccordionContent className="space-y-6 pt-4">
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -705,7 +705,7 @@ export default function OcorrenciaTO12Page() {
                     </AccordionContent>
                 </AccordionItem>
 
-                 <AccordionItem value="item-2">
+                 <AccordionItem value="item-2" className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <AccordionTrigger className="text-xl font-bold">DADOS CADASTRAIS DO USUÁRIO</AccordionTrigger>
                     <AccordionContent className="space-y-6 pt-4">
                         <FormField control={form.control} name="nomeUsuario" render={({ field }) => (<FormItem><FormLabel>Nome</FormLabel><FormControl><Input placeholder="Nome completo do usuário" {...field} /></FormControl><FormMessage /></FormItem>)}/>
@@ -808,10 +808,10 @@ export default function OcorrenciaTO12Page() {
                     </AccordionContent>
                 </AccordionItem>
 
-                 <AccordionItem value="item-3">
+                 <AccordionItem value="item-3" className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <AccordionTrigger className="text-xl font-bold">SOBRE O EVENTO</AccordionTrigger>
                     <AccordionContent className="space-y-6 pt-4">
-                        <Card className="bg-background/50">
+                        <Card className="bg-background/50 shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                             <CardHeader><CardTitle>Atendimento Clínico</CardTitle></CardHeader>
                             <CardContent className="space-y-4">
                                     <CheckboxGroupField control={form.control} name="eventoClinico" label="" options={[
@@ -838,7 +838,7 @@ export default function OcorrenciaTO12Page() {
                     </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="item-4">
+                <AccordionItem value="item-4" className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <AccordionTrigger className="text-xl font-bold">AVALIAÇÃO PRIMÁRIA (XABCDE)</AccordionTrigger>
                     <AccordionContent className="space-y-6 pt-4">
                         <RadioGroupField control={form.control} name="hemorragiaExsanguinante" label="X - Hemorragia Exsanguinante" options={[{value: 'sim', label: 'Sim'}, {value: 'nao', label: 'Não'}]} orientation="horizontal"/>
@@ -851,7 +851,7 @@ export default function OcorrenciaTO12Page() {
                             {id: 'eupneia', label: 'Eupneia'}, {id: 'taquipneia', label: 'Taquipneia'}, {id: 'gasping', label: 'Gasping'}
                         ]} />
 
-                        <Card>
+                        <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                           <CardHeader><CardTitle>C - Circulação e Hemorragias</CardTitle></CardHeader>
                           <CardContent className="space-y-4">
                             <CheckboxGroupField control={form.control} name="pulso" label="Pulso" options={[{id: 'presente', label: 'Presente'}, {id: 'cheio', label: 'Cheio'}, {id: 'filiforme', label: 'Filiforme'}]} />
@@ -861,7 +861,7 @@ export default function OcorrenciaTO12Page() {
                           </CardContent>
                         </Card>
 
-                        <Card>
+                        <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                           <CardHeader><CardTitle>D - Neurológico</CardTitle></CardHeader>
                           <CardContent className="space-y-4">
                             <FormField control={form.control} name="glasgowInicial" render={({ field }) => (<FormItem><FormLabel>Glasgow (Inicial)</FormLabel><FormControl><Input placeholder="Ex: 15" {...field} /></FormControl><FormMessage /></FormItem>)}/>
@@ -870,7 +870,7 @@ export default function OcorrenciaTO12Page() {
                           </CardContent>
                         </Card>
 
-                        <Card>
+                        <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                            <CardHeader><CardTitle>E - Exposição</CardTitle></CardHeader>
                            <CardContent className="space-y-4">
                               <RadioGroupField control={form.control} name="exposicao" label="" options={[{value: 'sem_lesoes', label: 'Sem Lesões Aparentes'}, {value: 'lesoes_aparentes', label: 'Lesões Aparentes'}]} />
@@ -881,10 +881,10 @@ export default function OcorrenciaTO12Page() {
                     </AccordionContent>
                 </AccordionItem>
 
-                 <AccordionItem value="item-5">
+                 <AccordionItem value="item-5" className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <AccordionTrigger className="text-xl font-bold">AVALIAÇÃO SECUNDÁRIA E SINAIS VITAIS</AccordionTrigger>
                     <AccordionContent className="space-y-6 pt-4">
-                        <Card>
+                        <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                             <CardHeader><CardTitle>S.A.M.P.L.E.</CardTitle></CardHeader>
                             <CardContent className="space-y-4">
                                 <FormField control={form.control} name="alergias" render={({ field }) => (<FormItem><FormLabel>Alergias</FormLabel><FormControl><Input placeholder="Nega alergias / Dipirona" {...field} /></FormControl><FormMessage /></FormItem>)}/>
@@ -893,7 +893,7 @@ export default function OcorrenciaTO12Page() {
                                 <FormField control={form.control} name="ultimaRefeicao" render={({ field }) => (<FormItem><FormLabel>Última Refeição / Jejum</FormLabel><FormControl><Input placeholder="Há 2 horas" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                             </CardContent>
                         </Card>
-                        <Card>
+                        <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                             <CardHeader><CardTitle>Sinais Vitais</CardTitle></CardHeader>
                             <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-6">
                                 <FormField control={form.control} name="sinaisVitaisPA" render={({ field }) => (<FormItem><FormLabel>PA (mmHg)</FormLabel><FormControl><Input placeholder="120x80" {...field} /></FormControl><FormMessage /></FormItem>)}/>
@@ -908,11 +908,11 @@ export default function OcorrenciaTO12Page() {
                     </AccordionContent>
                 </AccordionItem>
 
-                 <AccordionItem value="item-6">
+                 <AccordionItem value="item-6" className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <AccordionTrigger className="text-xl font-bold">GLASGOW E PROCEDIMENTOS</AccordionTrigger>
                     <AccordionContent className="space-y-6 pt-4">
                         <GlasgowScale control={form.control} />
-                        <Card>
+                        <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                             <CardHeader><CardTitle>Imobilização (se aplicável)</CardTitle></CardHeader>
                             <CardContent className="space-y-4">
                                 <RadioGroupField control={form.control} name="pranchamento" label="Pranchamento" options={[
@@ -938,7 +938,7 @@ export default function OcorrenciaTO12Page() {
                     </AccordionContent>
                 </AccordionItem>
 
-                 <AccordionItem value="item-7">
+                 <AccordionItem value="item-7" className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <AccordionTrigger className="text-xl font-bold">DESFECHO E OBSERVAÇÕES</AccordionTrigger>
                     <AccordionContent className="space-y-6 pt-4">
                         <RadioGroupField control={form.control} name="conduta" label="Conduta" options={[
@@ -960,7 +960,7 @@ export default function OcorrenciaTO12Page() {
                          <FormField control={form.control} name="medicoReguladorConduta" render={({ field }) => (<FormItem><FormLabel>Médico Regulador/Intervencionista</FormLabel><FormControl><Input placeholder="Ex: Dr. House" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          <FormField control={form.control} name="medicoReceptor" render={({ field }) => (<FormItem><FormLabel>Médico Receptor</FormLabel><FormControl><Input placeholder="Ex: Dra. Grey" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                          
-                         <Card>
+                         <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                             <CardHeader>
                                 <CardTitle>Consumo de Materiais</CardTitle>
                             </CardHeader>
@@ -1027,10 +1027,10 @@ export default function OcorrenciaTO12Page() {
                  </AccordionItem>
 
                  {(watchConduta === 'recusa_atendimento' || watchConduta === 'recusa_remocao') && (
-                     <AccordionItem value="item-8">
+                     <AccordionItem value="item-8" className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                         <AccordionTrigger className="text-xl font-bold text-destructive">TERMO DE RECUSA</AccordionTrigger>
                         <AccordionContent className="space-y-6 pt-4">
-                            <Card className="border-destructive">
+                            <Card className="border-destructive shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                                 <CardContent className="pt-6 space-y-4">
                                 <p className="text-base text-muted-foreground">
                                     EU, <FormField control={form.control} name="termoRecusaNome" render={({ field }) => (<Input className="inline-block w-auto" placeholder="NOME" {...field} />)} />,

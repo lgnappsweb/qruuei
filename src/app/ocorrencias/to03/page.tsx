@@ -205,7 +205,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
         </DialogHeader>
         <ScrollArea className="flex-1 pr-6 -mr-6 mt-4">
             <div className="space-y-6">
-                <Card>
+                <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
                     <CardContent className="text-xl space-y-4 pt-6">
                         <Field label="rodovia" value={data.rodovia} />
@@ -218,7 +218,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         <Field label="situacao" value={data.situacao} />
                     </CardContent>
                 </Card>
-                <Card>
+                <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <CardHeader><CardTitle>Características do Entorno</CardTitle></CardHeader>
                     <CardContent className="text-xl space-y-4 pt-6">
                         <Field label="entornoNorte" value={data.entornoNorte} />
@@ -227,7 +227,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         {data.entornoSul === 'Outros' && <Field label="entornoSulOutros" value={data.entornoSulOutros} />}
                     </CardContent>
                 </Card>
-                <Card>
+                <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <CardHeader><CardTitle>Traçado da Pista</CardTitle></CardHeader>
                     <CardContent className="text-xl space-y-4 pt-6">
                         <Field label="pista" value={data.pista} />
@@ -236,7 +236,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         <Field label="perfil" value={data.perfil} />
                     </CardContent>
                 </Card>
-                 <Card>
+                 <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
                     <CardContent className="text-xl space-y-4 pt-6">
                         <Field label="destinacaoAnimal" value={data.destinacaoAnimal} />
@@ -247,7 +247,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         <Field label="auxilios" value={data.auxilios} />
                     </CardContent>
                 </Card>
-                <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
+                <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10 shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <CardHeader>
                         <CardTitle className="text-white text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
                     </CardHeader>
@@ -404,7 +404,7 @@ export default function OcorrenciaTO03Page() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Card>
+          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
             <CardHeader>
               <CardTitle>Informações Gerais</CardTitle>
             </CardHeader>
@@ -562,7 +562,7 @@ export default function OcorrenciaTO03Page() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
             <CardHeader>
               <CardTitle>Características do Entorno</CardTitle>
             </CardHeader>
@@ -654,7 +654,7 @@ export default function OcorrenciaTO03Page() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
             <CardHeader>
               <CardTitle>Traçado da Pista</CardTitle>
             </CardHeader>
@@ -752,7 +752,7 @@ export default function OcorrenciaTO03Page() {
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
             <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
             <CardContent className="space-y-6 pt-6">
                 <FormField

@@ -43,7 +43,7 @@ import {
 } from '@/components/ui/accordion';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from '@/lib/utils';
 
 const auxilios = [
@@ -178,7 +178,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
         </DialogHeader>
         <ScrollArea className="flex-1 pr-6 -mr-6 mt-4">
             <div className="space-y-6">
-                <Card>
+                <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
                     <CardContent className="text-xl space-y-4 pt-6">
                         <Field label="rodovia" value={data.rodovia} />
@@ -187,7 +187,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         <Field label="sentido" value={data.sentido} />
                     </CardContent>
                 </Card>
-                 <Card>
+                 <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <CardHeader><CardTitle>Detalhes do Mato Alto</CardTitle></CardHeader>
                     <CardContent className="text-xl space-y-4 pt-6">
                         <Field label="locais" value={data.locais} />
@@ -197,7 +197,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         <Field label="extensaoAproximada" value={data.extensaoAproximada} />
                     </CardContent>
                 </Card>
-                <Card>
+                <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
                     <CardContent className="text-xl space-y-4 pt-6">
                         <Field label="vtrApoio" value={data.vtrApoio} />
@@ -206,7 +206,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         <Field label="auxilios" value={data.auxilios} />
                     </CardContent>
                 </Card>
-                <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
+                <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10 shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <CardHeader>
                         <CardTitle className="text-white text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
                     </CardHeader>
@@ -401,7 +401,7 @@ export default function MatoAltoPage() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Card>
+          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
             <CardHeader>
               <CardTitle>Informações Gerais</CardTitle>
             </CardHeader>
@@ -484,7 +484,7 @@ export default function MatoAltoPage() {
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
             <CardHeader><CardTitle>Detalhes do Mato Alto</CardTitle></CardHeader>
             <CardContent className="space-y-6 pt-6">
                 <CheckboxGroupField control={form.control} name="locais" label="Locais Afetados" options={[
@@ -536,7 +536,7 @@ export default function MatoAltoPage() {
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
             <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
             <CardContent className="space-y-6 pt-6">
                 <FormField

@@ -225,7 +225,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
         </DialogHeader>
         <ScrollArea className="flex-1 pr-6 -mr-6 mt-4">
             <div className="space-y-6">
-                <Card>
+                <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <CardHeader><CardTitle>Informações Gerais</CardTitle></CardHeader>
                     <CardContent className="pt-6 space-y-4 text-xl">
                         <Field label="rodovia" value={data.rodovia} />
@@ -237,7 +237,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                 </Card>
 
                 {Array.isArray(data.vehicles) && data.vehicles.map((vehicle: any, index: number) => (
-                    <Card key={index} className="mt-6">
+                    <Card key={index} className="mt-6 shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                         <CardHeader><CardTitle>Dados do Veículo {index + 1}</CardTitle></CardHeader>
                         <CardContent className="pt-6 space-y-4 text-xl">
                             {Object.entries(vehicle).map(([key, value]) => <Field key={key} label={key} value={value} />)}
@@ -245,7 +245,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                     </Card>
                 ))}
 
-                <Card className="mt-6">
+                <Card className="mt-6 shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
                     <CardContent className="pt-6 space-y-4 text-xl">
                         <Field label="vtrApoio" value={data.vtrApoio} />
@@ -257,7 +257,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                     </CardContent>
                 </Card>
 
-                <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10">
+                <Card className="mt-6 border-2 border-primary shadow-lg bg-primary/10 shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <CardHeader>
                         <CardTitle className="text-white text-center text-2xl">NÚMERO DA OCORRÊNCIA</CardTitle>
                     </CardHeader>
@@ -427,7 +427,7 @@ export default function OcorrenciaTO15FaixaDeDominioPage() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Card>
+          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
             <CardHeader>
               <CardTitle>Informações Gerais</CardTitle>
             </CardHeader>
@@ -534,7 +534,7 @@ export default function OcorrenciaTO15FaixaDeDominioPage() {
 
           <div className="space-y-4">
             {fields.map((item, index) => (
-              <Card key={item.id}>
+              <Card key={item.id} className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>Dados do Veículo {index + 1}</CardTitle>
                   <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)}>
@@ -652,7 +652,7 @@ export default function OcorrenciaTO15FaixaDeDominioPage() {
             </Button>
           </div>
           
-          <Card>
+          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
             <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
             <CardContent className="space-y-6 pt-6">
                 <FormField
