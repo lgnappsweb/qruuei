@@ -3,10 +3,10 @@
 // It is created automatically by the Firebase Studio.
 
 export const firebaseConfig = {
-  "apiKey": "REPLACE_WITH_YOUR_API_KEY",
-  "authDomain": "REPLACE_WITH_YOUR_AUTH_DOMAIN",
-  "projectId": "REPLACE_WITH_YOUR_PROJECT_ID",
-  "storageBucket": "REPLACE_WITH_YOUR_STORAGE_BUCKET",
-  "messagingSenderId": "REPLACE_WITH_YOUR_MESSAGING_SENDER_ID",
-  "appId": "REPLACE_WITH_YOUR_APP_ID"
+  "projectId": "studio-5446065759-8b2ba",
+  "appId": "1:864164662429:web:62fdd41f6bbf37ae2fd874",
+  "apiKey": "AIzaSyAtFJEtkoEXDigCpXlH4B35D0ZEg3lKTOU",
+  "authDomain": "studio-5446065759-8b2ba.firebaseapp.com",
+  "storageBucket": "studio-5446065759-8b2ba.appspot.com",
+  "messagingSenderId": "864164662429"
 };
