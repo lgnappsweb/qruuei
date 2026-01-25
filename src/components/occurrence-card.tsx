@@ -14,6 +14,7 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
   const { toast } = useToast();
   const router = useRouter();
   const Icon = occurrence.icon;
+  const isGradient = occurrence.color.includes('bg-gradient');
 
   const handleClick = () => {
     if (occurrence.id === '1') { // This is QUD RESGATE
@@ -90,7 +91,7 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
             occurrence.color
           )}
         >
-          <Icon className="h-8 w-8 text-black dark:text-primary-foreground" />
+          <Icon className={cn("h-8 w-8", isGradient ? 'text-white' : 'text-black dark:text-primary-foreground')} />
         </div>
         <p
           className={cn(
