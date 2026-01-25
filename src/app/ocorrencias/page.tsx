@@ -219,7 +219,7 @@ export default function OcorrenciasPage() {
            const vehicleOrder = ocorrencia.formPath === '/ocorrencias/qud-operacao' || ocorrencia.formPath === '/ocorrencias/to11' || ocorrencia.formPath === '/ocorrencias/to19' ? vehicleWithPersonalDataFieldOrder : vehicleFieldOrder;
 
            return (
-            <Card key={ocorrencia.id} className="flex flex-col">
+            <Card key={ocorrencia.id} className="flex flex-col shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
               <div onClick={() => toggleCardExpansion(ocorrencia.id)} className="cursor-pointer">
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">

@@ -211,7 +211,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
         <ScrollArea className="flex-1 pr-6 -mr-6 mt-4">
             <div className="space-y-6">
               {sections.map(section => (
-                  <Card key={section.title}>
+                  <Card key={section.title} className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                     <CardHeader><CardTitle>{section.title}</CardTitle></CardHeader>
                     <CardContent className="pt-6">
                         <div className="text-xl space-y-4">
@@ -462,7 +462,7 @@ export default function TracadoDePistaPage() {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     <Accordion type="multiple" className="w-full space-y-4" defaultValue={['previa']}>
-                        <AccordionItem value="previa" className="border rounded-lg">
+                        <AccordionItem value="previa" className="border rounded-lg shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                             <AccordionTrigger className="px-6 text-xl">PRÉVIA</AccordionTrigger>
                             <AccordionContent className="px-6 pt-2">
                                 <div className="space-y-6">
@@ -503,7 +503,7 @@ export default function TracadoDePistaPage() {
                             </AccordionContent>
                         </AccordionItem>
 
-                        <AccordionItem value="confirmacao" className="border rounded-lg">
+                        <AccordionItem value="confirmacao" className="border rounded-lg shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                             <AccordionTrigger className="px-6 text-xl">CONFIRMAÇÃO DA PRÉVIA</AccordionTrigger>
                             <AccordionContent className="px-6 pt-2">
                                 <div className="space-y-6">
@@ -521,7 +521,7 @@ export default function TracadoDePistaPage() {
                             </AccordionContent>
                         </AccordionItem>
 
-                        <AccordionItem value="condicao" className="border rounded-lg">
+                        <AccordionItem value="condicao" className="border rounded-lg shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                             <AccordionTrigger className="px-6 text-xl">CONDIÇÃO</AccordionTrigger>
                             <AccordionContent className="px-6 pt-2">
                                 <div className="space-y-6">
@@ -535,7 +535,7 @@ export default function TracadoDePistaPage() {
                             </AccordionContent>
                         </AccordionItem>
 
-                        <AccordionItem value="pista" className="border rounded-lg">
+                        <AccordionItem value="pista" className="border rounded-lg shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                             <AccordionTrigger className="px-6 text-xl">PISTA</AccordionTrigger>
                             <AccordionContent className="px-6 pt-2">
                                 <div className="space-y-6">
@@ -559,7 +559,7 @@ export default function TracadoDePistaPage() {
                             </AccordionContent>
                         </AccordionItem>
 
-                        <AccordionItem value="sinalizacao" className="border rounded-lg">
+                        <AccordionItem value="sinalizacao" className="border rounded-lg shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                             <AccordionTrigger className="px-6 text-xl">SINALIZAÇÃO</AccordionTrigger>
                             <AccordionContent className="px-6 pt-2">
                                 <div className="space-y-6">

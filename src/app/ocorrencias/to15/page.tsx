@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 const subOccurrences = [
   {
@@ -76,11 +77,12 @@ export default function OcorrenciaTO15SelectionPage() {
           <Card
             key={item.title}
             onClick={() => handleClick(item)}
-            className={`cursor-pointer transition-all ${
+            className={cn(
+              "cursor-pointer transition-all shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10",
               item.enabled
-                ? 'hover:border-primary hover:shadow-lg'
-                : 'opacity-50 cursor-not-allowed'
-            }`}
+                ? "hover:border-primary"
+                : "opacity-50 cursor-not-allowed"
+            )}
           >
             <CardHeader className="flex-row items-center gap-4 space-y-0 pb-2">
                <item.icon className="h-8 w-8 text-primary" />
