@@ -80,11 +80,19 @@ export default function SignupPage() {
       });
       router.push('/');
     } catch (error: any) {
-       toast({
-        variant: "destructive",
-        title: "Erro ao cadastrar",
-        description: error.message,
-      });
+       if (error.code === 'auth/email-already-in-use') {
+        toast({
+          variant: "destructive",
+          title: "Erro ao cadastrar",
+          description: "Este endereço de e-mail já está em uso por outra conta.",
+        });
+       } else {
+        toast({
+          variant: "destructive",
+          title: "Erro ao cadastrar",
+          description: error.message,
+        });
+       }
     }
   };
   
