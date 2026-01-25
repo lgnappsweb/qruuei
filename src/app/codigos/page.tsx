@@ -72,7 +72,7 @@ function TiposDeOcorrenciaTable() {
       <TableBody>
         {tiposDeOcorrenciaData.map((item) => (
           <TableRow key={item.codigo} id={item.codigo}>
-            <TableCell className="font-medium">{item.codigo}</TableCell>
+            <TableCell className="font-medium"><span className="bg-accent font-semibold p-1 px-2 rounded-md">{item.codigo}</span></TableCell>
             <TableCell>{item.mensagem}</TableCell>
             <TableCell>{item.grupo}</TableCell>
           </TableRow>
@@ -159,7 +159,7 @@ function TiposDeAcaoTable() {
       <TableBody>
         {tiposDeAcaoData.map((item) => (
           <TableRow key={item.codigo} id={item.codigo}>
-            <TableCell className="font-medium">{item.codigo}</TableCell>
+            <TableCell className="font-medium"><span className="bg-accent font-semibold p-1 px-2 rounded-md">{item.codigo}</span></TableCell>
             <TableCell>{item.mensagem}</TableCell>
           </TableRow>
         ))}
@@ -189,7 +189,7 @@ function TiposDePaneTable() {
       <TableBody>
         {tiposDePaneData.map((item) => (
           <TableRow key={item.codigo} id={item.codigo}>
-            <TableCell className="font-medium">{item.codigo}</TableCell>
+            <TableCell className="font-medium"><span className="bg-accent font-semibold p-1 px-2 rounded-md">{item.codigo}</span></TableCell>
             <TableCell>{item.mensagem}</TableCell>
           </TableRow>
         ))}
@@ -229,7 +229,7 @@ function OutrasMensagensTable() {
       <TableBody>
         {outrasMensagensData.map((item) => (
           <TableRow key={item.codigo} id={item.codigo}>
-            <TableCell className="font-medium">{item.codigo}</TableCell>
+            <TableCell className="font-medium"><span className="bg-accent font-semibold p-1 px-2 rounded-md">{item.codigo}</span></TableCell>
             <TableCell>{item.mensagem}</TableCell>
           </TableRow>
         ))}
@@ -274,7 +274,7 @@ function CodigosDeMensagemTable() {
       <TableBody>
         {codigosDeMensagemData.map((item) => (
           <TableRow key={item.codigo} id={item.codigo}>
-            <TableCell className="font-medium">{item.codigo}</TableCell>
+            <TableCell className="font-medium"><span className="bg-accent font-semibold p-1 px-2 rounded-md">{item.codigo}</span></TableCell>
             <TableCell>{item.mensagem}</TableCell>
           </TableRow>
         ))}
@@ -325,7 +325,7 @@ function AlfabetoFoneticoTable() {
             <TableBody>
                 {alfabetoFoneticoData.map((item) => (
                     <TableRow key={item.letra} id={item.letra}>
-                        <TableCell className="font-medium">{item.letra}</TableCell>
+                        <TableCell className="font-medium"><span className="bg-accent font-semibold p-1 px-2 rounded-md">{item.letra}</span></TableCell>
                         <TableCell>{item.palavra}</TableCell>
                         <TableCell>{item.pronuncia}</TableCell>
                     </TableRow>
@@ -483,7 +483,7 @@ function RelacionamentosContent({ setOpenAccordion }: { setOpenAccordion: (value
                 <React.Fragment key={code}>
                     <button
                         onClick={() => handleCodeClick(code, 'item-1')}
-                        className="text-primary hover:underline"
+                        className="text-primary bg-accent rounded-md px-2 py-1 hover:bg-primary/20"
                     >
                         {code}
                     </button>
@@ -517,7 +517,7 @@ function RelacionamentosContent({ setOpenAccordion }: { setOpenAccordion: (value
                     return item ? (
                       <li key={code} className="text-muted-foreground">
                         <button onClick={() => handleCodeClick(code, 'item-2')} className="text-left hover:underline">
-                          <strong className="text-foreground/90 font-semibold">{code}:</strong> {item.mensagem}
+                          <strong className="text-foreground/90 font-semibold"><span className="bg-accent p-1 px-2 rounded-md">{code}</span>:</strong> {item.mensagem}
                         </button>
                       </li>
                     ) : null;
@@ -534,7 +534,7 @@ function RelacionamentosContent({ setOpenAccordion }: { setOpenAccordion: (value
                     return item ? (
                        <li key={code} className="text-muted-foreground">
                         <button onClick={() => handleCodeClick(code, 'item-3')} className="text-left hover:underline">
-                           <strong className="text-foreground/90 font-semibold">{code}:</strong> {item.mensagem}
+                           <strong className="text-foreground/90 font-semibold"><span className="bg-accent p-1 px-2 rounded-md">{code}</span>:</strong> {item.mensagem}
                         </button>
                       </li>
                     ) : null;
@@ -551,7 +551,7 @@ function RelacionamentosContent({ setOpenAccordion }: { setOpenAccordion: (value
                     return item ? (
                        <li key={code} className="text-muted-foreground">
                         <button onClick={() => handleCodeClick(code, 'item-4')} className="text-left hover:underline">
-                           <strong className="text-foreground/90 font-semibold">{code}:</strong> {item.mensagem}
+                           <strong className="text-foreground/90 font-semibold"><span className="bg-accent p-1 px-2 rounded-md">{code}</span>:</strong> {item.mensagem}
                         </button>
                       </li>
                     ) : null;
