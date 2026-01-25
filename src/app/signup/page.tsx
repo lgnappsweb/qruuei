@@ -2,7 +2,7 @@
 import { useUser, useAuth } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { User as UserIcon, Mail, KeyRound } from 'lucide-react';
+import { User as UserIcon, Mail, KeyRound, Eye, EyeOff } from 'lucide-react';
 
 const formSchema = z.object({
   name: z.string().min(3, { message: 'O nome deve ter pelo menos 3 caracteres.' }),
@@ -29,6 +29,8 @@ export default function SignupPage() {
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -136,7 +138,20 @@ export default function SignupPage() {
                      <FormControl>
                        <div className="relative">
                          <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                         <Input type="password" placeholder="Crie uma senha" {...field} className="pl-10"/>
+                          <Input 
+                            type={showPassword ? "text" : "password"} 
+                            placeholder="Crie uma senha" 
+                            {...field} 
+                            className="pl-10 pr-10"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute inset-y-0 right-0 flex items-center pr-3"
+                            aria-label={showPassword ? "Esconder senha" : "Mostrar senha"}
+                          >
+                            {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
+                          </button>
                        </div>
                     </FormControl>
                     <FormMessage />
@@ -152,7 +167,20 @@ export default function SignupPage() {
                      <FormControl>
                        <div className="relative">
                          <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                         <Input type="password" placeholder="Confirme sua senha" {...field} className="pl-10"/>
+                         <Input 
+                            type={showConfirmPassword ? "text" : "password"} 
+                            placeholder="Confirme sua senha" 
+                            {...field} 
+                            className="pl-10 pr-10"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            className="absolute inset-y-0 right-0 flex items-center pr-3"
+                             aria-label={showConfirmPassword ? "Esconder senha" : "Mostrar senha"}
+                          >
+                            {showConfirmPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
+                          </button>
                        </div>
                     </FormControl>
                     <FormMessage />
