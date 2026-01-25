@@ -26,8 +26,8 @@ export default function AjustesPage() {
     if (!initialising && !user) {
       router.push('/login');
     }
-    if (user?.displayName) {
-        setName(user.displayName);
+    if (user) {
+        setName(user.displayName || '');
     }
   }, [user, initialising, router]);
 
@@ -94,8 +94,8 @@ export default function AjustesPage() {
         <CardContent className="space-y-6">
            <div className="flex items-center gap-4">
              <Avatar className="h-16 w-16">
-              <AvatarImage src={user.photoURL ?? undefined} alt={user.displayName ?? 'User'} />
-              <AvatarFallback>{name.charAt(0) ?? 'U'}</AvatarFallback>
+              <AvatarImage src={user.photoURL ?? undefined} alt={name || 'User'} />
+              <AvatarFallback>{name?.charAt(0)?.toUpperCase() || 'U'}</AvatarFallback>
             </Avatar>
             <div className="grid gap-4 w-full">
                 <div>
