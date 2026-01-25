@@ -1,7 +1,8 @@
 'use client';
-import { useUser, useAuth } from '@/firebase';
+import { useUser, useAuth, useFirestore } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Chrome, KeyRound, Mail, Eye, EyeOff } from 'lucide-react';
@@ -29,6 +30,7 @@ const formSchema = z.object({
 export default function LoginPage() {
   const { user, initialising } = useUser();
   const auth = useAuth();
+  const firestore = useFirestore();
   const router = useRouter();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
@@ -47,19 +49,33 @@ export default function LoginPage() {
     }
   }, [user, router]);
 
-  const handleGoogleSignIn = () => {
-    if (!auth) {
-        console.error("Auth service is not available.");
+  const handleGoogleSignIn = async () => {
+    if (!auth || !firestore) {
+        console.error("Auth or Firestore service is not available.");
         return;
     };
     const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider).catch(error => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      const userDocRef = doc(firestore, "users", user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        await setDoc(userDocRef, {
+          name: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+        }, { merge: true });
+      }
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Erro de Autenticação",
         description: error.message,
       });
-    });
+    }
   };
 
   const handleEmailSignIn = (values: z.infer<typeof formSchema>) => {

@@ -1,7 +1,8 @@
 'use client';
-import { useUser, useAuth } from '@/firebase';
+import { useUser, useAuth, useFirestore } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
@@ -27,6 +28,7 @@ const formSchema = z.object({
 export default function SignupPage() {
   const { user, initialising } = useUser();
   const auth = useAuth();
+  const firestore = useFirestore();
   const router = useRouter();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
@@ -49,18 +51,28 @@ export default function SignupPage() {
   }, [user, router]);
 
   const handleSignUp = async (values: z.infer<typeof formSchema>) => {
-    if (!auth) {
-      console.error("Auth service is not available.");
+    if (!auth || !firestore) {
+      console.error("Auth or Firestore service is not available.");
       return;
     }
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      if (userCredential.user) {
-        await updateProfile(userCredential.user, {
+      const newUser = userCredential.user;
+      if (newUser) {
+        await updateProfile(newUser, {
           displayName: values.name,
         });
+
+        // Create user document in Firestore
+        const userDocRef = doc(firestore, "users", newUser.uid);
+        await setDoc(userDocRef, {
+          name: values.name,
+          email: newUser.email,
+          photoURL: newUser.photoURL ?? null,
+        });
+        
         // Force refresh user data
-        await userCredential.user.reload();
+        await newUser.reload();
       }
       toast({
         title: "Cadastro realizado com sucesso!",
