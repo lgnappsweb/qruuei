@@ -14,7 +14,6 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
   const { toast } = useToast();
   const router = useRouter();
   const Icon = occurrence.icon;
-  const isGradient = occurrence.color.includes('bg-gradient');
 
   const handleClick = () => {
     if (occurrence.id === '1') { // This is QUD RESGATE
@@ -81,17 +80,17 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
     <Card
       onClick={handleClick}
       className={cn(
-        "hover:shadow-2xl transition-all duration-300 cursor-pointer group shadow-lg dark:shadow-xl dark:shadow-white/10 dark:hover:shadow-2xl dark:hover:shadow-white/20"
+        "transition-all duration-300 cursor-pointer group shadow-2xl shadow-black/20 dark:shadow-2xl dark:shadow-white/20"
       )}
     >
       <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6 gap-3 h-40">
         <div
           className={cn(
-            "rounded-full p-4 transition-transform group-hover:scale-110 shadow-lg group-hover:shadow-xl ring-1 ring-black/10 dark:ring-white/10 dark:shadow-lg dark:shadow-white/10 group-hover:dark:shadow-xl group-hover:dark:shadow-white/15",
+            "rounded-full p-4 transition-transform group-hover:scale-110 ring-1 ring-black/10 shadow-2xl shadow-black/10 dark:shadow-2xl dark:shadow-white/10",
             occurrence.color
           )}
         >
-          <Icon className={cn("h-8 w-8", isGradient ? 'text-white' : 'text-card-foreground')} />
+          <Icon className={cn("h-8 w-8", "text-black dark:text-white")} />
         </div>
         <p
           className={cn(
