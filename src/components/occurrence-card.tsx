@@ -77,15 +77,15 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
   };
 
   const isGradient = occurrence.color?.startsWith('bg-gradient-to-b');
-  const iconColorClass = isGradient ? 'text-black' : 'text-black dark:text-white';
+  const iconColorClass = isGradient ? 'text-white' : 'text-black dark:text-white';
   
   return (
     <Card
       onClick={handleClick}
       className={cn(
         "transition-all duration-300 cursor-pointer group",
-        "shadow-xl hover:shadow-2xl shadow-black/20",
-        "dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/20"
+        "shadow-xl hover:shadow-2xl shadow-black/25",
+        "dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10"
       )}
     >
       <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6 gap-3 h-40">
@@ -93,7 +93,7 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
           className={cn(
             "rounded-full p-4 transition-transform group-hover:scale-110 ring-1 ring-black/10",
             "shadow-2xl shadow-black/25",
-            "dark:shadow-xl dark:hover:shadow-2xl dark:shadow-white/20",
+            "dark:shadow-xl dark:hover:shadow-2xl dark:shadow-white/10",
             occurrence.color
           )}
         >
