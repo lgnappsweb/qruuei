@@ -83,8 +83,8 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
       onClick={handleClick}
       className={cn(
         "transition-all duration-300 cursor-pointer group",
-        "shadow-xl hover:shadow-2xl shadow-black/25",
-        "dark:shadow-2xl dark:hover:shadow-2xl dark:shadow-white/20"
+        "shadow-xl hover:shadow-2xl shadow-black/50",
+        "dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10"
       )}
     >
       <CardContent className={cn(
@@ -94,8 +94,8 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
         <div
           className={cn(
             "rounded-full p-4 transition-transform group-hover:scale-110",
-            "shadow-2xl shadow-black/25",
-            "dark:shadow-2xl dark:hover:shadow-2xl dark:shadow-white/20 dark:ring-1 dark:ring-white/20",
+            "shadow-2xl shadow-black/50",
+            "dark:shadow-xl dark:hover:shadow-2xl dark:shadow-white/10 dark:ring-1 dark:ring-white/20",
             occurrence.color
           )}
         >
