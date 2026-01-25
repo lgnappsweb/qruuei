@@ -91,7 +91,7 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
             occurrence.color
           )}
         >
-          <Icon className="h-8 w-8 text-black dark:text-white" />
+          <Icon className="h-8 w-8 text-black dark:text-primary-foreground" />
         </div>
         <p
           className={cn(
