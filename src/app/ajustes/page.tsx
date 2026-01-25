@@ -155,6 +155,15 @@ export default function AjustesPage() {
       
       <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
         <CardHeader>
+          <CardTitle>Sobre</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">QRU Prioridade v1.0.0</p>
+        </CardContent>
+      </Card>
+
+      <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+        <CardHeader>
           <CardTitle>Conta</CardTitle>
         </CardHeader>
         <CardContent>
@@ -162,15 +171,6 @@ export default function AjustesPage() {
             <LogOut className="mr-2 h-4 w-4" />
             Sair da conta
           </Button>
-        </CardContent>
-      </Card>
-      
-      <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
-        <CardHeader>
-          <CardTitle>Sobre</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">QRU Prioridade v1.0.0</p>
         </CardContent>
       </Card>
     </div>
