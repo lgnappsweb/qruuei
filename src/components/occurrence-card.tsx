@@ -81,7 +81,7 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
     <Card
       onClick={handleClick}
       className={cn(
-        "hover:shadow-2xl transition-all duration-300 cursor-pointer group shadow-lg dark:shadow-black/25"
+        "hover:shadow-2xl transition-all duration-300 cursor-pointer group shadow-lg dark:shadow-lg dark:shadow-white/5 dark:hover:shadow-white/10"
       )}
     >
       <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6 gap-3 h-40">
@@ -91,7 +91,7 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
             occurrence.color
           )}
         >
-          <Icon className={cn("h-8 w-8", isGradient ? 'text-white' : 'text-black dark:text-primary-foreground')} />
+          <Icon className={cn("h-8 w-8", isGradient ? 'text-white' : 'text-card-foreground')} />
         </div>
         <p
           className={cn(
