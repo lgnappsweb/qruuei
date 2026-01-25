@@ -78,19 +78,36 @@ export default function LoginPage() {
     }
   };
 
-  const handleEmailSignIn = (values: z.infer<typeof formSchema>) => {
-    if (!auth) {
-      console.error("Auth service is not available.");
+  const handleEmailSignIn = async (values: z.infer<typeof formSchema>) => {
+    if (!auth || !firestore) {
+      toast({
+        variant: "destructive",
+        title: "Erro de Serviço",
+        description: "Serviço de autenticação ou banco de dados indisponível.",
+      });
       return;
     }
-    signInWithEmailAndPassword(auth, values.email, values.password)
-      .catch(error => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
+      const user = userCredential.user;
+      
+      const userDocRef = doc(firestore, "users", user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        await setDoc(userDocRef, {
+          name: user.displayName || user.email,
+          email: user.email,
+          photoURL: user.photoURL,
+        }, { merge: true });
+      }
+    } catch (error: any) {
         toast({
           variant: "destructive",
           title: "Erro de Autenticação",
           description: "E-mail ou senha incorretos. Por favor, tente novamente.",
         });
-      });
+    }
   };
 
   if (initialising || user) {
