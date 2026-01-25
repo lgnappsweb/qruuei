@@ -9,10 +9,11 @@ import { signOut, updateProfile } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { LogOut, Sun, Moon, Laptop } from "lucide-react";
+import { LogOut, Sun, Moon, Laptop, ArrowLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "next-themes";
+import Link from "next/link";
 
 export default function AjustesPage() {
   const { user, initialising } = useUser();
@@ -79,6 +80,12 @@ export default function AjustesPage() {
 
   return (
     <div className="space-y-8 max-w-2xl mx-auto pb-24">
+       <Button asChild variant="ghost" className="pl-0">
+        <Link href="/">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Voltar para o início
+        </Link>
+      </Button>
       <div className="space-y-2 text-center">
         <h1 className="font-condensed text-3xl font-bold tracking-tight">
           AJUSTES
