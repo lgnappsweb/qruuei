@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, Search, Shield, Leaf } from 'lucide-react';
+import { ArrowLeft, Search, Shield, Leaf, ClipboardList } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
@@ -27,6 +27,13 @@ const subOccurrences = [
     description: 'Danos em meio-fio, canaletas, defensas, etc.',
     icon: Shield,
     href: '/ocorrencias/to15/danos-estruturais',
+    enabled: true,
+  },
+  {
+    title: 'Outras Verificações',
+    description: 'Para outros tipos de verificações na faixa de domínio.',
+    icon: ClipboardList,
+    href: '/ocorrencias/to15/outras-verificacoes',
     enabled: true,
   },
 ];
@@ -64,7 +71,7 @@ export default function OcorrenciaTO15SelectionPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {subOccurrences.map((item) => (
           <Card
             key={item.title}
