@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { tiposPane } from '@/lib/tipos-pane';
+import { cn } from '@/lib/utils';
 
 interface Ocorrencia {
   id: string;
@@ -228,13 +229,12 @@ export default function OcorrenciasPage() {
 
             return (
               <Card key={ocorrencia.id} className="flex flex-col shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10 transition-all duration-300">
-                <div onClick={() => toggleCardExpansion(ocorrencia.id)} className="cursor-pointer flex-grow">
-                  <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                    <div>
-                      <CardTitle className="text-lg font-bold">{ocorrencia.codOcorrencia}</CardTitle>
-                      <CardDescription className="text-xs">{ocorrencia.type}</CardDescription>
-                    </div>
-                    <AlertDialog>
+                <CardHeader onClick={() => toggleCardExpansion(ocorrencia.id)} className="cursor-pointer flex flex-row items-start justify-between space-y-0 pb-2">
+                  <div>
+                    <CardTitle className="text-lg font-bold">{ocorrencia.codOcorrencia}</CardTitle>
+                  </div>
+                   {!isExpanded && (
+                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button variant="destructive" size="icon" className="shrink-0" onClick={(e) => e.stopPropagation()}>
                           <Trash2 className="h-5 w-5" />
@@ -256,8 +256,11 @@ export default function OcorrenciasPage() {
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
-                  </CardHeader>
-                  <CardContent className="space-y-3 pt-2">
+                   )}
+                </CardHeader>
+                
+                {!isExpanded && (
+                   <CardContent onClick={() => toggleCardExpansion(ocorrencia.id)} className="cursor-pointer space-y-3 pt-2">
                       <div className="text-sm text-muted-foreground flex items-center gap-2">
                           <Route className="h-4 w-4 text-primary" />
                           <span><span className="font-semibold text-foreground">Rodovia:</span> {ocorrencia.rodovia}</span>
@@ -271,13 +274,14 @@ export default function OcorrenciasPage() {
                           <span><span className="font-semibold text-foreground">Data:</span> {ocorrencia.timestamp}</span>
                       </div>
                   </CardContent>
-                </div>
-
+                )}
+                
                 {isExpanded && (
                   <div className="flex flex-col flex-grow">
                     <CardContent className="border-t pt-4 mt-4 flex-grow">
                         <ScrollArea className="h-96 pr-4">
-                           <h4 className="font-semibold text-lg text-foreground mb-4 border-b pb-2">Relatório Completo</h4>
+                           <CardDescription className="text-md mb-4">{ocorrencia.type}</CardDescription>
+                            <h4 className="font-semibold text-lg text-foreground mb-4 border-b pb-2">Relatório Completo</h4>
                             {fieldOrder.map(key => {
                                 if (key === '---VEHICLES---') {
                                     return Array.isArray(ocorrencia.fullReport.vehicles) && ocorrencia.fullReport.vehicles.map((vehicle: any, index: number) => (
