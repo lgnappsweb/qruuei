@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Edit, Save, Share2, Trash2, X } from 'lucide-react';
+import { ArrowLeft, Edit, PlusCircle, Save, Share2, Trash2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -42,6 +42,7 @@ export default function NotasPage() {
   const [title, setTitle] = React.useState('');
   const [content, setContent] = React.useState('');
   const [editingNoteId, setEditingNoteId] = React.useState<string | null>(null);
+  const [showCreateForm, setShowCreateForm] = React.useState(false);
   const [noteToDelete, setNoteToDelete] = React.useState<string | null>(null);
   const [hasLoaded, setHasLoaded] = React.useState(false);
   const { toast } = useToast();
@@ -111,21 +112,24 @@ export default function NotasPage() {
       });
     }
 
-    // Reset form
+    // Reset form and hide it
     setTitle('');
     setContent('');
     setEditingNoteId(null);
+    setShowCreateForm(false);
   };
 
   const handleEdit = (note: Note) => {
+    setShowCreateForm(false);
     setEditingNoteId(note.id);
     setTitle(note.title);
     setContent(note.content);
-    formRef.current?.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth' }), 0);
   };
   
   const handleCancelEdit = () => {
     setEditingNoteId(null);
+    setShowCreateForm(false);
     setTitle('');
     setContent('');
   }
@@ -171,6 +175,15 @@ export default function NotasPage() {
     }
   };
 
+  const handleCreateNewNoteClick = () => {
+    setEditingNoteId(null);
+    setTitle('');
+    setContent('');
+    setShowCreateForm(true);
+    setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth' }), 0);
+  };
+
+
   if (!hasLoaded) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -200,42 +213,51 @@ export default function NotasPage() {
         </p>
       </div>
 
-      <Card ref={formRef} className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            {editingNoteId ? 'Editando Nota' : 'Nova Nota'}
-            {editingNoteId && (
-              <Button variant="ghost" size="sm" onClick={handleCancelEdit}>
-                <X className="mr-2 h-4 w-4" />
-                Cancelar Edição
-              </Button>
-            )}
-          </CardTitle>
-          <CardDescription>
-            {editingNoteId ? 'Altere os campos e clique em salvar.' : 'Preencha o título e o conteúdo da sua nota.'}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Título da nota"
-          />
-          <Textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            rows={8}
-            className="w-full"
-            placeholder="Digite suas anotações aqui..."
-          />
-        </CardContent>
-        <CardFooter className="flex justify-end gap-2">
-          <Button onClick={handleSave}>
-            <Save className="mr-2 h-4 w-4" />
-            {editingNoteId ? 'Salvar Alterações' : 'Salvar Nota'}
-          </Button>
-        </CardFooter>
-      </Card>
+      <div className="text-center">
+        <Button onClick={handleCreateNewNoteClick}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Criar Nova Nota
+        </Button>
+      </div>
+
+      {(showCreateForm || editingNoteId) && (
+        <Card ref={formRef} className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              {editingNoteId ? 'Editando Nota' : 'Nova Nota'}
+              {(showCreateForm || editingNoteId) && (
+                <Button variant="ghost" size="sm" onClick={handleCancelEdit}>
+                  <X className="mr-2 h-4 w-4" />
+                  Cancelar
+                </Button>
+              )}
+            </CardTitle>
+            <CardDescription>
+              {editingNoteId ? 'Altere os campos e clique em salvar.' : 'Preencha o título e o conteúdo da sua nota.'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Título da nota"
+            />
+            <Textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              rows={8}
+              className="w-full"
+              placeholder="Digite suas anotações aqui..."
+            />
+          </CardContent>
+          <CardFooter className="flex justify-end gap-2">
+            <Button onClick={handleSave}>
+              <Save className="mr-2 h-4 w-4" />
+              {editingNoteId ? 'Salvar Alterações' : 'Salvar Nota'}
+            </Button>
+          </CardFooter>
+        </Card>
+      )}
       
       <div className="space-y-6 pt-8">
         <h2 className="text-2xl font-bold text-center font-condensed">Minhas Notas</h2>
