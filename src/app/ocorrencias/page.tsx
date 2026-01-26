@@ -278,38 +278,94 @@ export default function OcorrenciasPage() {
                 
                 {isExpanded && (
                   <div className="flex flex-col flex-grow">
+                    <CardHeader>
+                        <CardTitle>{ocorrencia.type}</CardTitle>
+                        <div className="text-sm text-muted-foreground pt-2 space-y-1">
+                            <div className="flex items-center gap-2">
+                                <Route className="h-4 w-4 text-primary" />
+                                <span><span className="font-semibold text-foreground">Rodovia:</span> {ocorrencia.rodovia}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <MapPin className="h-4 w-4 text-primary" />
+                                <span><span className="font-semibold text-foreground">KM:</span> {ocorrencia.km}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Calendar className="h-4 w-4 text-primary" />
+                                <span><span className="font-semibold text-foreground">Data:</span> {ocorrencia.timestamp}</span>
+                            </div>
+                        </div>
+                    </CardHeader>
                     <CardContent className="border-t pt-4 mt-4 flex-grow">
                         <ScrollArea className="h-96 pr-4">
-                           <CardDescription className="text-md mb-4">{ocorrencia.type}</CardDescription>
-                            <h4 className="font-semibold text-lg text-foreground mb-4 border-b pb-2">Relatório Completo</h4>
-                            {fieldOrder.map(key => {
-                                if (key === '---VEHICLES---') {
-                                    return Array.isArray(ocorrencia.fullReport.vehicles) && ocorrencia.fullReport.vehicles.map((vehicle: any, index: number) => (
-                                        <Card key={index} className="pt-2 mt-4 bg-muted/50 shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
-                                            <CardHeader>
-                                                <CardTitle className="flex items-center gap-2 text-base"><Car className="h-5 w-5"/> Veículo {index + 1}</CardTitle>
-                                            </CardHeader>
-                                            <CardContent className="space-y-1 text-xs">
-                                                {vehicleOrder.map(vKey => {
-                                                    if (!(vKey in vehicle)) return null;
-                                                    return <ReportField key={`${index}-${vKey}`} fieldKey={vKey} value={vehicle[vKey]} />;
-                                                })}
-                                            </CardContent>
-                                        </Card>
-                                    ));
-                                }
+                            {(() => {
+                                const otherInfoKeys = ['vtrApoio', 'vtrApoioDescricao', 'danoPatrimonio', 'danoPatrimonioDescricao', 'observacoes', 'auxilios'];
 
-                                if (key === 'vehicles' || !(key in ocorrencia.fullReport)) return null;
-                                return <ReportField key={key} fieldKey={key} value={ocorrencia.fullReport[key]} />;
-                            })}
-                            {ocorrencia.numeroOcorrencia && ocorrencia.numeroOcorrencia !== 'NILL' && (
-                                <div className="pt-2 mt-4 border-t">
-                                    <p className="font-semibold text-foreground">
-                                        Número da Ocorrência:{' '}
-                                        <span className="font-mono bg-accent p-1 rounded-md">{String(ocorrencia.numeroOcorrencia).toUpperCase()}</span>
-                                    </p>
-                                </div>
-                            )}
+                                const generalInfoFields = fieldOrder.filter(key => !otherInfoKeys.includes(key) && key !== '---VEHICLES---' && key !== 'vehicles');
+                                const otherInfoFieldsData = fieldOrder
+                                    .filter(key => otherInfoKeys.includes(key))
+                                    .map(key => ({ key, value: ocorrencia.fullReport[key] }))
+                                    .filter(item => item.value != null && item.value !== '' && item.value !== 'NILL' && (!Array.isArray(item.value) || item.value.length > 0));
+                                
+                                const hasVehicles = fieldOrder.includes('---VEHICLES---') && Array.isArray(ocorrencia.fullReport.vehicles) && ocorrencia.fullReport.vehicles.length > 0;
+
+                                const generalFieldsContent = generalInfoFields.map(key => {
+                                    if (!(key in ocorrencia.fullReport)) return null;
+                                        const value = ocorrencia.fullReport[key];
+                                        if (value === null || value === undefined || value === 'NILL' || (Array.isArray(value) && value.length === 0) || value === '') return null;
+                                    return <ReportField key={key} fieldKey={key} value={value} />;
+                                }).filter(Boolean);
+
+                                return (
+                                    <div className="space-y-4">
+                                        {generalFieldsContent.length > 0 && (
+                                            <Card className="pt-2 bg-muted/50 shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+                                                <CardHeader>
+                                                    <CardTitle className="text-base">Informações Gerais</CardTitle>
+                                                </CardHeader>
+                                                <CardContent className="space-y-2 text-sm">
+                                                    {generalFieldsContent}
+                                                </CardContent>
+                                            </Card>
+                                        )}
+
+                                        {hasVehicles && ocorrencia.fullReport.vehicles.map((vehicle: any, index: number) => (
+                                            <Card key={index} className="pt-2 bg-muted/50 shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+                                                <CardHeader>
+                                                    <CardTitle className="flex items-center gap-2 text-base"><Car className="h-5 w-5"/> Veículo {index + 1}</CardTitle>
+                                                </CardHeader>
+                                                <CardContent className="space-y-2 text-sm">
+                                                    {vehicleOrder.map(vKey => {
+                                                        if (!(vKey in vehicle)) return null;
+                                                        return <ReportField key={`${index}-${vKey}`} fieldKey={vKey} value={vehicle[vKey]} />;
+                                                    })}
+                                                </CardContent>
+                                            </Card>
+                                        ))}
+
+                                        {otherInfoFieldsData.length > 0 && (
+                                            <Card className="pt-2 bg-muted/50 shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+                                                <CardHeader>
+                                                    <CardTitle className="text-base">Outras Informações</CardTitle>
+                                                </CardHeader>
+                                                <CardContent className="space-y-2 text-sm">
+                                                    {otherInfoFieldsData.map(item => <ReportField key={item.key} fieldKey={item.key} value={item.value} />)}
+                                                </CardContent>
+                                            </Card>
+                                        )}
+
+                                        {ocorrencia.numeroOcorrencia && ocorrencia.numeroOcorrencia !== 'NILL' && (
+                                            <Card className="pt-2 bg-muted/50 shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+                                                    <CardHeader>
+                                                    <CardTitle className="text-base">Número da Ocorrência</CardTitle>
+                                                </CardHeader>
+                                                <CardContent>
+                                                    <p className="font-mono bg-accent p-2 rounded-md text-center text-lg">{String(ocorrencia.numeroOcorrencia).toUpperCase()}</p>
+                                                </CardContent>
+                                            </Card>
+                                        )}
+                                    </div>
+                                );
+                            })()}
                         </ScrollArea>
                     </CardContent>
                     <CardFooter className="flex gap-2 border-t pt-4 mt-auto">
