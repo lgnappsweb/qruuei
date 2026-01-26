@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, LinkIcon } from 'lucide-react';
+import { ArrowLeft, LinkIcon, Map } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -598,9 +598,27 @@ function LinksTable() {
           </CardHeader>
         </Card>
       </a>
+      <Accordion type="single" collapsible className="w-full">
+        <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+          <AccordionItem value="maps-me" className="border-none">
+            <AccordionTrigger className="p-6 hover:no-underline">
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Map className="h-5 w-5 text-primary" />
+                MAPS.ME (Arquivos KMZ)
+              </CardTitle>
+            </AccordionTrigger>
+            <AccordionContent className="px-6 pb-6">
+              <p className="text-muted-foreground">
+                Em breve, os links para os arquivos KMZ estarão disponíveis aqui.
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+        </Card>
+      </Accordion>
     </div>
   );
 }
+
 
 export default function CodigosPage() {
   const [openAccordion, setOpenAccordion] = React.useState<string>();
