@@ -69,7 +69,7 @@ export default function MapaPage() {
   };
 
   return (
-    <div className="flex h-full flex-col gap-4">
+    <div className="grid grid-rows-[auto_1fr] h-full gap-4">
       <Card className="shadow-xl">
         <CardHeader className="pb-4">
           <CardTitle className="text-center font-condensed text-2xl font-bold tracking-tight">MAPA DAS RODOVIAS</CardTitle>
@@ -96,7 +96,7 @@ export default function MapaPage() {
         </CardFooter>
       </Card>
       
-      <div className="flex-1 rounded-lg border shadow-xl overflow-hidden">
+      <div className="rounded-lg border shadow-xl overflow-hidden">
         {isLoaded ? (
           <GoogleMap
             mapContainerStyle={containerStyle}
