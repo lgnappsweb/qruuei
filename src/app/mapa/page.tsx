@@ -35,7 +35,6 @@ export default function MapaPage() {
   const watchIdRef = React.useRef<number | null>(null);
   
   useEffect(() => {
-    // Carrega todas as rotas por padrão ao montar o componente
     setSelectedKmzs(kmzLinks.map(link => link.url));
   }, []);
 
@@ -63,7 +62,6 @@ export default function MapaPage() {
 
   const onLoad = useCallback((mapInstance: google.maps.Map) => {
     setMap(mapInstance);
-    // Get initial position to center map
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -90,7 +88,6 @@ export default function MapaPage() {
 
   const onUnmount = useCallback(function callback(mapInstance: google.maps.Map) {
     setMap(null);
-    // Clear watch on unmount
      if (watchIdRef.current !== null && navigator.geolocation) {
       navigator.geolocation.clearWatch(watchIdRef.current);
     }
@@ -98,7 +95,6 @@ export default function MapaPage() {
 
   const startTracking = useCallback(() => {
     if (navigator.geolocation) {
-      // Clear any existing watch
       if (watchIdRef.current !== null) {
         navigator.geolocation.clearWatch(watchIdRef.current);
       }
@@ -137,7 +133,6 @@ export default function MapaPage() {
     }
   }, [toast]);
 
-  // Clean up on component unmount
   useEffect(() => {
     return () => {
       if (watchIdRef.current !== null && navigator.geolocation) {
@@ -185,7 +180,7 @@ export default function MapaPage() {
   };
 
   return (
-    <div className="grid grid-rows-[auto_1fr] h-full gap-4">
+    <div className="flex flex-col h-full gap-4">
       <Card className="shadow-xl flex-shrink-0">
         <CardHeader className="pb-4">
           <CardTitle className="text-center font-condensed text-2xl font-bold tracking-tight">MAPA DAS RODOVIAS</CardTitle>
@@ -216,51 +211,54 @@ export default function MapaPage() {
         </CardFooter>
       </Card>
       
-      <div className="rounded-lg border shadow-xl overflow-hidden min-h-0">
-        {isLoaded ? (
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={center}
-            zoom={7}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-            options={{
-                mapTypeControl: false,
-                streetViewControl: false,
-            }}
-          >
-            {selectedKmzs.map((url) => (
-              <KmlLayer key={url} url={url} options={{ preserveViewport: true }} />
-            ))}
-             {currentPosition && (
-              <MarkerF
-                position={currentPosition}
-                icon={{
-                  path: window.google.maps.SymbolPath.CIRCLE,
-                  scale: 8,
-                  fillColor: "black",
-                  fillOpacity: 1,
-                  strokeWeight: 2,
-                  strokeColor: "white",
-                }}
-              />
-            )}
-          </GoogleMap>
-        ) : (
-            <div className="flex items-center justify-center h-full bg-muted">
-                <div className="h-24 flex justify-center gap-x-1 overflow-hidden -my-4">
-                    <div className="w-[6px] h-full bg-foreground"></div>
-                    <div
-                        className="w-[6px] h-[calc(100%+40px)] animate-road-dashes"
-                    ></div>
-                </div>
-            </div>
-        )}
-        {loadError && (
-             <div className="flex items-center justify-center h-full bg-destructive text-destructive-foreground p-4 text-center">
-                Erro ao carregar o mapa. Verifique sua chave de API e as configurações de referenciador.
-            </div>
-        )}
+      <div className="flex-1 rounded-lg border shadow-xl overflow-hidden relative">
+        <div className="absolute inset-0">
+          {isLoaded ? (
+            <GoogleMap
+              mapContainerStyle={containerStyle}
+              center={center}
+              zoom={7}
+              onLoad={onLoad}
+              onUnmount={onUnmount}
+              options={{
+                  mapTypeControl: false,
+                  streetViewControl: false,
+                  preserveViewport: true,
+              }}
+            >
+              {selectedKmzs.map((url) => (
+                <KmlLayer key={url} url={url} options={{ preserveViewport: true }} />
+              ))}
+              {currentPosition && (
+                <MarkerF
+                  position={currentPosition}
+                  icon={{
+                    path: window.google.maps.SymbolPath.CIRCLE,
+                    scale: 8,
+                    fillColor: "black",
+                    fillOpacity: 1,
+                    strokeWeight: 2,
+                    strokeColor: "white",
+                  }}
+                />
+              )}
+            </GoogleMap>
+          ) : (
+              <div className="flex items-center justify-center h-full bg-muted">
+                  <div className="h-24 flex justify-center gap-x-1 overflow-hidden -my-4">
+                      <div className="w-[6px] h-full bg-foreground"></div>
+                      <div
+                          className="w-[6px] h-[calc(100%+40px)] animate-road-dashes"
+                      ></div>
+                  </div>
+              </div>
+          )}
+          {loadError && (
+              <div className="flex items-center justify-center h-full bg-destructive text-destructive-foreground p-4 text-center">
+                  Erro ao carregar o mapa. Verifique sua chave de API e as configurações de referenciador.
+              </div>
+          )}
+        </div>
       </div>
     </div>
   );
