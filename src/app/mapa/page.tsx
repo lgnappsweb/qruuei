@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, KmlLayer } from '@react-google-maps/api';
 import { Button } from '@/components/ui/button';
 import { kmzLinks } from '@/lib/kmz-links';
@@ -22,7 +22,12 @@ export default function MapaPage() {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""
   });
 
-  const [selectedKmzs, setSelectedKmzs] = useState<string[]>(kmzLinks.map(link => link.url));
+  const [selectedKmzs, setSelectedKmzs] = useState<string[]>([]);
+  
+  useEffect(() => {
+    // Carrega todas as rotas por padrão ao montar o componente
+    setSelectedKmzs(kmzLinks.map(link => link.url));
+  }, []);
 
   if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY === 'SUA_CHAVE_DE_API_AQUI') {
     return (
