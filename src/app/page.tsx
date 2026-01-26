@@ -20,10 +20,10 @@ export default function Home() {
           <h1 className="font-condensed text-7xl font-black tracking-tighter text-foreground">
             QRU
           </h1>
-          <div className="h-20 flex justify-center gap-x-1">
-            <div className="w-1 h-full bg-foreground"></div>
+          <div className="h-24 flex justify-center gap-x-1 overflow-hidden -my-4">
+            <div className="w-1.5 h-full bg-foreground"></div>
             <div
-              className="w-1 h-full animate-road-dashes"
+              className="w-1.5 h-[calc(100%+40px)] animate-road-dashes"
             ></div>
           </div>
           <h1 className="font-condensed text-7xl font-black tracking-tighter text-foreground">
