@@ -48,36 +48,6 @@
         "userId",
         "updatedAt"
       ]
-    },
-    "image": {
-      "title": "Image",
-      "description": "A user's saved image.",
-      "type": "object",
-      "properties": {
-        "title": {
-          "type": "string",
-          "description": "The title of the image."
-        },
-        "imageUrl": {
-          "type": "string",
-          "format": "uri",
-          "description": "The URL of the image."
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time",
-          "description": "The timestamp of when the image was added."
-        },
-        "userId": {
-          "type": "string",
-          "description": "The ID of the user who owns the image."
-        }
-      },
-      "required": [
-        "userId",
-        "imageUrl",
-        "createdAt"
-      ]
     }
   },
   "auth": {
@@ -98,12 +68,6 @@
         "$ref": "#/backend/entities/note"
       },
       "description": "Stores notes for each user."
-    },
-    "/users/{userId}/images/{imageId}": {
-      "schema": {
-        "$ref": "#/backend/entities/image"
-      },
-      "description": "Stores images for each user."
     }
   }
 }

@@ -1,3 +1,52 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "1",
+      "description": "Estrada sinuosa na montanha",
+      "imageUrl": "https://images.unsplash.com/photo-1421218108559-eb1ff78357f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3aW5kaW5nJTIwcm9hZHxlbnwwfHx8fDE3NjkzNjY3MDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "winding road"
+    },
+    {
+      "id": "2",
+      "description": "Caminhão em uma rodovia deserta",
+      "imageUrl": "https://images.unsplash.com/photo-1682033239272-6b60b828a9a2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxoaWdod2F5JTIwdHJ1Y2t8ZW58MHx8fHwxNzY5NDcwMjQxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "highway truck"
+    },
+    {
+      "id": "3",
+      "description": "Pôr do sol sobre a estrada",
+      "imageUrl": "https://images.unsplash.com/photo-1685216037287-c9c70a919a3e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cm9hZCUyMHN1bnNldHxlbnwwfHx8fDE3Njk0MjI3MzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "road sunset"
+    },
+    {
+      "id": "4",
+      "description": "Tráfego noturno na cidade",
+      "imageUrl": "https://images.unsplash.com/photo-1665858521317-383aa4321cbe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bmlnaHQlMjB0cmFmZmljfGVufDB8fHx8MTc2OTQ3MDI0MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "night traffic"
+    },
+    {
+      "id": "5",
+      "description": "Ponte estaiada ao amanhecer",
+      "imageUrl": "https://images.unsplash.com/photo-1630266665290-3d9ed1e016b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjYWJsZS1zdGF5ZWQlMjBicmlkZ2V8ZW58MHx8fHwxNzY5NDcwMjQxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cable-stayed bridge"
+    },
+    {
+      "id": "6",
+      "description": "Trabalhadores da construção civil em uma rodovia",
+      "imageUrl": "https://images.unsplash.com/photo-1634114581762-c929b85a0aa1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxyb2FkJTIwd29ya2Vyc3xlbnwwfHx8fDE3Njk0NzAyNDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "road workers"
+    },
+    {
+      "id": "7",
+      "description": "Vista aérea de um trevo rodoviário",
+      "imageUrl": "https://images.unsplash.com/photo-1645964261980-3078e798b330?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoaWdod2F5JTIwanVuY3Rpb258ZW58MHx8fHwxNzY5NDcwMjQxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "highway junction"
+    },
+    {
+      "id": "8",
+      "description": "Ambulância em alta velocidade",
+      "imageUrl": "https://images.unsplash.com/photo-1560131614-8167a0cfa49c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YW1idWxhbmNlJTIwc3BlZWR8ZW58MHx8fHwxNzY5NDcwMjQxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ambulance speed"
+    }
+  ]
 }
