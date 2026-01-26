@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { GoogleMap, useJsApiLoader, KmlLayer } from '@react-google-maps/api';
+import React, { useState, useEffect, useCallback } from 'react';
+import { GoogleMap, useJsApiLoader, KmlLayer, MarkerF } from '@react-google-maps/api';
 import { Button } from '@/components/ui/button';
 import { kmzLinks } from '@/lib/kmz-links';
 import { Map as MapIcon } from 'lucide-react';
@@ -17,18 +17,68 @@ const center = {
   lng: -54.646389
 };
 
+const libraries: "maps"[] = ["maps"];
+
 export default function MapaPage() {
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g"
+    googleMapsApiKey: "AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g",
+    libraries,
   });
 
+  const [map, setMap] = useState<google.maps.Map | null>(null);
   const [selectedKmzs, setSelectedKmzs] = useState<string[]>([]);
+  const [currentPosition, setCurrentPosition] = useState<google.maps.LatLngLiteral | null>(null);
   
   useEffect(() => {
     // Carrega todas as rotas por padrão ao montar o componente
     setSelectedKmzs(kmzLinks.map(link => link.url));
   }, []);
+
+  const onLoad = useCallback(function callback(mapInstance: google.maps.Map) {
+    setMap(mapInstance)
+  }, [])
+
+  const onUnmount = useCallback(function callback(mapInstance: google.maps.Map) {
+    setMap(null)
+  }, [])
+
+  useEffect(() => {
+    if (!map) return;
+    
+    let watchId: number;
+    if (navigator.geolocation) {
+      watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setCurrentPosition(pos);
+          
+          map.panTo(pos);
+          if (map.getZoom()! < 15) {
+            map.setZoom(15);
+          }
+        },
+        () => {
+          console.error("Error: The Geolocation service failed.");
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
+        }
+      );
+    }
+
+    return () => {
+      if (watchId && navigator.geolocation) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+    };
+  }, [map]);
+
 
   if ("AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g" === 'SUA_CHAVE_DE_API_AQUI' || "AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g" === "") {
     return (
@@ -89,7 +139,7 @@ export default function MapaPage() {
             </Button>
           ))}
         </CardContent>
-        <CardFooter className="justify-center p-4 pt-2">
+         <CardFooter className="justify-center p-4 pt-2">
           <p className="text-xs text-muted-foreground text-center">
             Atenção: A exibição dos mapas KMZ depende das permissões de compartilhamento do Google Drive.
           </p>
@@ -102,14 +152,29 @@ export default function MapaPage() {
             mapContainerStyle={containerStyle}
             center={center}
             zoom={7}
+            onLoad={onLoad}
+            onUnmount={onUnmount}
             options={{
                 mapTypeControl: false,
                 streetViewControl: false,
             }}
           >
             {selectedKmzs.map((url) => (
-              <KmlLayer key={url} url={url} options={{ preserveViewport: false }} />
+              <KmlLayer key={url} url={url} options={{ preserveViewport: true }} />
             ))}
+             {currentPosition && (
+              <MarkerF
+                position={currentPosition}
+                icon={{
+                  path: window.google.maps.SymbolPath.CIRCLE,
+                  scale: 8,
+                  fillColor: "black",
+                  fillOpacity: 1,
+                  strokeWeight: 2,
+                  strokeColor: "white",
+                }}
+              />
+            )}
           </GoogleMap>
         ) : (
             <div className="flex items-center justify-center h-full bg-muted">
