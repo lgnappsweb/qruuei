@@ -40,6 +40,7 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
+  CardFooter,
 } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -281,6 +282,7 @@ export default function OcorrenciaTO01Page() {
   const router = useRouter();
   const [previewData, setPreviewData] = React.useState<z.infer<typeof formSchema> | null>(null);
   const [editingId, setEditingId] = React.useState<string | null>(null);
+  const [openVehicleItems, setOpenVehicleItems] = React.useState<string[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -299,6 +301,11 @@ export default function OcorrenciaTO01Page() {
       observacoes: '',
       auxilios: '',
     },
+  });
+  
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "vehicles",
   });
 
   React.useEffect(() => {
@@ -334,6 +341,9 @@ export default function OcorrenciaTO01Page() {
                         });
                         return newVehicle;
                     });
+                     if (reportToLoad.vehicles.length > 0) {
+                        setOpenVehicleItems(reportToLoad.vehicles.map((v: any, i: number) => `vehicle-${i}`));
+                    }
                 }
 
                 form.reset(reportToLoad);
@@ -346,11 +356,6 @@ export default function OcorrenciaTO01Page() {
         localStorage.removeItem('editOcorrenciaData');
     }
   }, [form]);
-
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "vehicles",
-  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const processedValues = fillEmptyWithNill(values);
@@ -580,119 +585,129 @@ export default function OcorrenciaTO01Page() {
           </Card>
 
           <div className="space-y-4">
-            {fields.map((item, index) => (
-              <Card key={item.id} className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle>Dados do Veículo {index + 1}</CardTitle>
-                  <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)}>
-                    <Trash2 className="h-5 w-5" />
-                    <span className="sr-only">Remover Veículo</span>
-                  </Button>
-                </CardHeader>
-                <CardContent className="space-y-6 pt-6">
-                    <FormField name={`vehicles.${index}.marca`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Marca</FormLabel><FormControl><Input placeholder="Ex: Vw" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField name={`vehicles.${index}.modelo`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Modelo</FormLabel><FormControl><Input placeholder="Ex: Gol" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField name={`vehicles.${index}.ano`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Ano</FormLabel><FormControl><Input placeholder="Ex: 2020" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField name={`vehicles.${index}.cor`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Cor</FormLabel><FormControl><Input placeholder="Ex: Preto" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField name={`vehicles.${index}.placa`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Placa</FormLabel><FormControl><Input placeholder="Ex: ABC-1234" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField name={`vehicles.${index}.cidadeEmplacamento`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Cidade Emplacamento</FormLabel><FormControl><Input placeholder="Ex: Campo Grande" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField name={`vehicles.${index}.eixos`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Quantidade de Eixos</FormLabel><FormControl><Input placeholder="Ex: 2" type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField
-                        control={form.control}
-                        name={`vehicles.${index}.tipoVeiculo`}
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Tipo de Veículo</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
-                                <FormControl>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Selecione o tipo" />
-                                </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    <SelectItem value="mo">MO</SelectItem>
-                                    <SelectItem value="ap">AP</SelectItem>
-                                    <SelectItem value="ca">CA</SelectItem>
-                                    <SelectItem value="on">ON</SelectItem>
-                                    <SelectItem value="car">CAR</SelectItem>
-                                    <SelectItem value="utilitaria">UTILITÁRIA</SelectItem>
-                                    <SelectItem value="romel_e_julieta">ROMEL E JULIETA</SelectItem>
-                                    <SelectItem value="carretinha_reboque">CARRETINHA / REBOQUE</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name={`vehicles.${index}.estadoPneu`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Estado do Pneu</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione o estado do pneu" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="Bom">Bom</SelectItem>
-                              <SelectItem value="Regular">Regular</SelectItem>
-                              <SelectItem value="Ruim">Ruim</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField name={`vehicles.${index}.tipoCarga`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Tipo de Carga</FormLabel><FormControl><Input placeholder="Ex: Soja, vazia, etc." {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField name={`vehicles.${index}.qraCondutor`} control={form.control} render={({ field }) => (<FormItem><FormLabel>QRA do Condutor(a)</FormLabel><FormControl><Input placeholder="Nome do condutor (se presente)" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    
-                    <FormField
-                      control={form.control}
-                      name={`vehicles.${index}.baixaFrequencia`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Baixa Frequência</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="(99) 99999-9999"
-                              {...field}
-                              onChange={(e) => {
-                                let value = e.target.value.replace(/\D/g, "");
-                                value = value.substring(0, 11);
-                                if (value.length > 10) {
-                                  value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-                                } else if (value.length > 6) {
-                                  value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-                                } else if (value.length > 2) {
-                                  value = value.replace(/(\d{2})(\d*)/, '($1) $2');
-                                } else if (value.length > 0) {
-                                  value = `(${value}`;
-                                }
-                                field.onChange(value);
-                              }}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Preencha com o número de telefone para contato.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+             <Accordion type="multiple" className="w-full space-y-4" value={openVehicleItems} onValueChange={setOpenVehicleItems}>
+                {fields.map((item, index) => (
+                     <AccordionItem value={`vehicle-${index}`} key={item.id} className="border-none">
+                        <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+                            <AccordionTrigger className="w-full p-6 text-left hover:no-underline">
+                                <CardTitle>Dados do Veículo {index + 1}</CardTitle>
+                            </AccordionTrigger>
+                            <AccordionContent>
+                                <CardContent className="space-y-6 pt-2">
+                                  <FormField name={`vehicles.${index}.marca`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Marca</FormLabel><FormControl><Input placeholder="Ex: Vw" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                  <FormField name={`vehicles.${index}.modelo`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Modelo</FormLabel><FormControl><Input placeholder="Ex: Gol" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                  <FormField name={`vehicles.${index}.ano`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Ano</FormLabel><FormControl><Input placeholder="Ex: 2020" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                  <FormField name={`vehicles.${index}.cor`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Cor</FormLabel><FormControl><Input placeholder="Ex: Preto" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                  <FormField name={`vehicles.${index}.placa`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Placa</FormLabel><FormControl><Input placeholder="Ex: ABC-1234" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                  <FormField name={`vehicles.${index}.cidadeEmplacamento`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Cidade Emplacamento</FormLabel><FormControl><Input placeholder="Ex: Campo Grande" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                  <FormField name={`vehicles.${index}.eixos`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Quantidade de Eixos</FormLabel><FormControl><Input placeholder="Ex: 2" type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                  <FormField
+                                      control={form.control}
+                                      name={`vehicles.${index}.tipoVeiculo`}
+                                      render={({ field }) => (
+                                          <FormItem>
+                                          <FormLabel>Tipo de Veículo</FormLabel>
+                                          <Select onValueChange={field.onChange} value={field.value}>
+                                              <FormControl>
+                                              <SelectTrigger>
+                                                  <SelectValue placeholder="Selecione o tipo" />
+                                              </SelectTrigger>
+                                              </FormControl>
+                                              <SelectContent>
+                                                  <SelectItem value="mo">MO</SelectItem>
+                                                  <SelectItem value="ap">AP</SelectItem>
+                                                  <SelectItem value="ca">CA</SelectItem>
+                                                  <SelectItem value="on">ON</SelectItem>
+                                                  <SelectItem value="car">CAR</SelectItem>
+                                                  <SelectItem value="utilitaria">UTILITÁRIA</SelectItem>
+                                                  <SelectItem value="romel_e_julieta">ROMEL E JULIETA</SelectItem>
+                                                  <SelectItem value="carretinha_reboque">CARRETINHA / REBOQUE</SelectItem>
+                                              </SelectContent>
+                                          </Select>
+                                          <FormMessage />
+                                          </FormItem>
+                                      )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name={`vehicles.${index}.estadoPneu`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>Estado do Pneu</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value}>
+                                          <FormControl>
+                                            <SelectTrigger>
+                                              <SelectValue placeholder="Selecione o estado do pneu" />
+                                            </SelectTrigger>
+                                          </FormControl>
+                                          <SelectContent>
+                                            <SelectItem value="Bom">Bom</SelectItem>
+                                            <SelectItem value="Regular">Regular</SelectItem>
+                                            <SelectItem value="Ruim">Ruim</SelectItem>
+                                          </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField name={`vehicles.${index}.tipoCarga`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Tipo de Carga</FormLabel><FormControl><Input placeholder="Ex: Soja, vazia, etc." {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                  <FormField name={`vehicles.${index}.qraCondutor`} control={form.control} render={({ field }) => (<FormItem><FormLabel>QRA do Condutor(a)</FormLabel><FormControl><Input placeholder="Nome do condutor (se presente)" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                  
+                                  <FormField
+                                    control={form.control}
+                                    name={`vehicles.${index}.baixaFrequencia`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>Baixa Frequência</FormLabel>
+                                        <FormControl>
+                                          <Input
+                                            placeholder="(99) 99999-9999"
+                                            {...field}
+                                            onChange={(e) => {
+                                              let value = e.target.value.replace(/\D/g, "");
+                                              value = value.substring(0, 11);
+                                              if (value.length > 10) {
+                                                value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                                              } else if (value.length > 6) {
+                                                value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+                                              } else if (value.length > 2) {
+                                                value = value.replace(/(\d{2})(\d*)/, '($1) $2');
+                                              } else if (value.length > 0) {
+                                                value = `(${value}`;
+                                              }
+                                              field.onChange(value);
+                                            }}
+                                          />
+                                        </FormControl>
+                                        <FormDescription>
+                                          Preencha com o número de telefone para contato.
+                                        </FormDescription>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
 
-                    <FormField name={`vehicles.${index}.ocupantes`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Nº de Ocupantes</FormLabel><FormControl><Input placeholder="Ex: 0" type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                </CardContent>
-              </Card>
-            ))}
-
+                                  <FormField name={`vehicles.${index}.ocupantes`} control={form.control} render={({ field }) => (<FormItem><FormLabel>Nº de Ocupantes</FormLabel><FormControl><Input placeholder="Ex: 0" type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                </CardContent>
+                                <CardFooter>
+                                    <Button type="button" variant="destructive" size="sm" onClick={() => remove(index)}>
+                                        <Trash2 className="mr-2 h-4 w-4"/>
+                                        Remover Veículo
+                                    </Button>
+                                </CardFooter>
+                            </AccordionContent>
+                        </Card>
+                    </AccordionItem>
+                ))}
+            </Accordion>
             <Button
               type="button"
               size="lg"
               className="w-full"
-              onClick={() => append({ marca: '', modelo: '', ano: '', cor: '', placa: '', cidadeEmplacamento: '', eixos: '', tipoVeiculo: '', estadoPneu: '', tipoCarga: '', qraCondutor: '', baixaFrequencia: '', ocupantes: '' })}
+              onClick={() => {
+                append({ marca: '', modelo: '', ano: '', cor: '', placa: '', cidadeEmplacamento: '', eixos: '', tipoVeiculo: '', estadoPneu: '', tipoCarga: '', qraCondutor: '', baixaFrequencia: '', ocupantes: '' });
+                 setOpenVehicleItems(prev => [...prev, `vehicle-${fields.length}`]);
+              }}
             >
               <PlusCircle className="mr-2 h-5 w-5" />
               {fields.length === 0 ? 'Adicionar Veículo' : 'Adicionar Outro Veículo'}
