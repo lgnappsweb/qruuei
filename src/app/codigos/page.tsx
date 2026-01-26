@@ -630,13 +630,13 @@ export default function CodigosPage() {
         </p>
       </div>
 
-      <Accordion type="single" collapsible className="w-full" value={openAccordion} onValueChange={setOpenAccordion}>
+      <Accordion type="single" collapsible className="w-full space-y-4" value={openAccordion} onValueChange={setOpenAccordion}>
         {codeSections.map((section) => (
-          <AccordionItem key={section.value} value={section.value}>
-            <AccordionTrigger className="text-lg font-medium font-condensed">
+          <AccordionItem key={section.value} value={section.value} className="rounded-lg border bg-card shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+            <AccordionTrigger className="text-lg font-medium font-condensed px-6 hover:no-underline">
               {section.title}
             </AccordionTrigger>
-            <AccordionContent>{section.content}</AccordionContent>
+            <AccordionContent className="px-6">{section.content}</AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>
