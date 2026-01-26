@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { GoogleMap, useJsApiLoader, KmlLayer, MarkerF } from '@react-google-maps/api';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 import { kmzLinks } from '@/lib/kmz-links';
 import { Map as MapIcon } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -25,7 +26,8 @@ export default function MapaPage() {
     googleMapsApiKey: "AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g",
     libraries,
   });
-
+  
+  const { toast } = useToast();
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [selectedKmzs, setSelectedKmzs] = useState<string[]>([]);
   const [currentPosition, setCurrentPosition] = useState<google.maps.LatLngLiteral | null>(null);
@@ -61,8 +63,13 @@ export default function MapaPage() {
             map.setZoom(15);
           }
         },
-        () => {
-          console.error("Error: The Geolocation service failed.");
+        (error) => {
+          console.error("Error: The Geolocation service failed.", error);
+          toast({
+            variant: "destructive",
+            title: "Erro de Geolocalização",
+            description: "Não foi possível obter sua localização. Verifique as permissões do seu navegador.",
+          });
         },
         {
           enableHighAccuracy: true,
@@ -77,7 +84,7 @@ export default function MapaPage() {
         navigator.geolocation.clearWatch(watchId);
       }
     };
-  }, [map]);
+  }, [map, toast]);
 
 
   if ("AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g" === 'SUA_CHAVE_DE_API_AQUI' || "AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g" === "") {
