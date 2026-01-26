@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, FileCode, ShieldAlert, Settings, Map } from "lucide-react";
+import { Home, FileCode, ShieldAlert, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import * as React from "react";
 
@@ -10,7 +10,6 @@ const navItems = [
   { href: "/", label: "Início", icon: Home },
   { href: "/codigos", label: "Códigos", icon: FileCode },
   { href: "/ocorrencias", label: "Ocorrências", icon: ShieldAlert },
-  { href: "/mapa", label: "Mapa", icon: Map },
   { href: "/ajustes", label: "Ajustes", icon: Settings },
 ];
 
@@ -24,15 +23,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const noNavPages = ['/login', '/signup', '/forgot-password'];
   const isAuthPage = isClient ? noNavPages.includes(pathname) : true; // Assume auth page on server to hide nav
-  const isMapPage = isClient ? pathname === '/mapa' : false;
 
   return (
     <div className="flex flex-col h-svh bg-background overflow-hidden">
       <main
         className={cn(
-          "flex-1 p-4 sm:p-6 lg:p-8",
-          isClient && !isAuthPage && "pb-[92px]",
-          isClient && isMapPage ? "flex flex-col gap-4 overflow-hidden" : "overflow-y-auto"
+          "flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto",
+          isClient && !isAuthPage && "pb-[92px]"
         )}
       >
         {children}
