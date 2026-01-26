@@ -2,51 +2,51 @@
   "placeholderImages": [
     {
       "id": "1",
-      "description": "Estrada sinuosa na montanha",
-      "imageUrl": "https://images.unsplash.com/photo-1421218108559-eb1ff78357f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3aW5kaW5nJTIwcm9hZHxlbnwwfHx8fDE3NjkzNjY3MDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "winding road"
+      "description": "Rodovia à noite com rastros de luz",
+      "imageUrl": "https://images.unsplash.com/photo-1544636331-e268a26e8d21?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoaWdod2F5JTIwbmlnaHR8ZW58MHx8fHwxNzY5NTQyMjg0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "highway night"
     },
     {
       "id": "2",
-      "description": "Caminhão em uma rodovia deserta",
-      "imageUrl": "https://images.unsplash.com/photo-1682033239272-6b60b828a9a2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxoaWdod2F5JTIwdHJ1Y2t8ZW58MHx8fHwxNzY5NDcwMjQxfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "highway truck"
+      "description": "Ambulância com luzes acesas",
+      "imageUrl": "https://images.unsplash.com/photo-1605289357111-82d33a692138?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhbWJ1bGFuY2V8ZW58MHx8fHwxNzY5NTQyMzM3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ambulance"
     },
     {
       "id": "3",
-      "description": "Pôr do sol sobre a estrada",
-      "imageUrl": "https://images.unsplash.com/photo-1685216037287-c9c70a919a3e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cm9hZCUyMHN1bnNldHxlbnwwfHx8fDE3Njk0MjI3MzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "road sunset"
+      "description": "Viatura policial em uma rua da cidade",
+      "imageUrl": "https://images.unsplash.com/photo-1605495521820-a2387a13a0e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb2xpY2UlMjBjYXJ8ZW58MHx8fHwxNzY5NTQyMzg4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "police car"
     },
     {
       "id": "4",
-      "description": "Tráfego noturno na cidade",
-      "imageUrl": "https://images.unsplash.com/photo-1665858521317-383aa4321cbe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bmlnaHQlMjB0cmFmZmljfGVufDB8fHx8MTc2OTQ3MDI0MXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "night traffic"
+      "description": "Caminhão de bombeiros em prontidão",
+      "imageUrl": "https://images.unsplash.com/photo-1570744923481-379a253507a2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmaXJlJTIwdHJ1Y2t8ZW58MHx8fHwxNzY5NTQyNDMyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "fire truck"
     },
     {
       "id": "5",
-      "description": "Ponte estaiada ao amanhecer",
-      "imageUrl": "https://images.unsplash.com/photo-1630266665290-3d9ed1e016b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjYWJsZS1zdGF5ZWQlMjBicmlkZ2V8ZW58MHx8fHwxNzY5NDcwMjQxfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "cable-stayed bridge"
+      "description": "Caminhão guincho em uma estrada rural",
+      "imageUrl": "https://images.unsplash.com/photo-1612853229861-f3b9e4a36f6b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0b3clMjB0cnVja3xlbnwwfHx8fDE3Njk1NDI0NjN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tow truck"
     },
     {
       "id": "6",
-      "description": "Trabalhadores da construção civil em uma rodovia",
-      "imageUrl": "https://images.unsplash.com/photo-1634114581762-c929b85a0aa1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxyb2FkJTIwd29ya2Vyc3xlbnwwfHx8fDE3Njk0NzAyNDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "road workers"
+      "description": "Equipe de construção trabalhando na rodovia",
+      "imageUrl": "https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxyb2FkJTIwY29uc3RydWN0aW9ufGVufDB8fHx8MTc2OTU0MjQ5NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "road construction"
     },
     {
       "id": "7",
-      "description": "Vista aérea de um trevo rodoviário",
-      "imageUrl": "https://images.unsplash.com/photo-1645964261980-3078e798b330?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoaWdod2F5JTIwanVuY3Rpb258ZW58MHx8fHwxNzY5NDcwMjQxfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "highway junction"
+      "description": "Rodovia vazia se estendendo até o horizonte",
+      "imageUrl": "https://images.unsplash.com/photo-1478088702736-2de25e682d36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxlbXB0eSUyMGhpZ2h3YXl8ZW58MHx8fHwxNzY5NTQyNTIyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "empty highway"
     },
     {
       "id": "8",
-      "description": "Ambulância em alta velocidade",
-      "imageUrl": "https://images.unsplash.com/photo-1560131614-8167a0cfa49c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YW1idWxhbmNlJTIwc3BlZWR8ZW58MHx8fHwxNzY5NDcwMjQxfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "ambulance speed"
+      "description": "Congestionamento de trânsito em uma rodovia",
+      "imageUrl": "https://images.unsplash.com/photo-1599423695299-3124a98341d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0cmFmZmljJTIwamFtfGVufDB8fHx8MTc2OTU0MjU1MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "traffic jam"
     }
   ]
 }
