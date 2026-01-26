@@ -21,13 +21,13 @@ export default function Home() {
             <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-foreground">
               QRU
             </h1>
-            <div className="h-24 md:h-32 flex justify-center gap-x-4">
+            <div className="h-24 md:h-32 flex justify-center gap-x-2">
               <div className="w-2 h-full bg-foreground"></div>
               <div
                 className="w-2 h-full animate-road-dashes"
                 style={{
                   background:
-                    "repeating-linear-gradient(to bottom, hsl(var(--foreground)), hsl(var(--foreground)) 20px, transparent 20px, transparent 40px)",
+                    "repeating-linear-gradient(to bottom, hsl(var(--foreground)), hsl(var(--foreground)) 30px, transparent 30px, transparent 60px)",
                 }}
               ></div>
             </div>
