@@ -22,9 +22,9 @@ export default function Home() {
               QRU
             </h1>
             <div className="h-24 flex justify-center gap-x-2">
-              <div className="w-3 h-full bg-foreground"></div>
+              <div className="w-4 h-full bg-foreground"></div>
               <div
-                className="w-3 h-full animate-road-dashes"
+                className="w-4 h-full animate-road-dashes"
                 style={{
                   background:
                     "repeating-linear-gradient(to bottom, hsl(var(--foreground)), hsl(var(--foreground)) 40px, transparent 40px, transparent 80px)",
