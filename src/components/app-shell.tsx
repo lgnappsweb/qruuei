@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, FileCode, ShieldAlert, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
 
 const navItems = [
   { href: "/", label: "Início", icon: Home },
@@ -15,14 +14,9 @@ const navItems = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const noNavPages = ['/login', '/signup', '/forgot-password'];
-  const isAuthPage = isMounted && noNavPages.includes(pathname);
+  const isAuthPage = noNavPages.includes(pathname);
 
   return (
     <div className="flex flex-col h-svh bg-background overflow-hidden">
@@ -33,7 +27,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-10 shadow-[0_-8px_16px_-4px_rgba(0,0,0,0.1)] dark:shadow-[0_-8px_16px_-4px_rgba(255,255,255,0.05)]">
           <div className="flex justify-around items-center h-[76px] mx-auto">
             {navItems.map((item) => {
-              const isActive = isMounted && pathname === item.href;
+              const isActive = pathname === item.href;
               return (
                 <Link
                   key={item.href}
