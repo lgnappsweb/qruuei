@@ -53,9 +53,25 @@ export default function ForgotPasswordPage() {
   return (
     <div className="flex items-center justify-center min-h-screen p-4">
       <Card className="w-full max-w-md shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
-        <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold">Esqueceu sua Senha?</CardTitle>
-          <CardDescription>Insira seu e-mail para receber um link de redefinição.</CardDescription>
+        <CardHeader>
+          <div className="relative flex justify-center items-center h-20 mb-4">
+            <div className="z-10 bg-card px-2 sm:px-4 flex items-center justify-center gap-x-12">
+              <h1 className="font-condensed text-6xl font-black tracking-tighter text-foreground">
+                QRU
+              </h1>
+              <div className="h-20 flex justify-center gap-x-1 overflow-hidden -my-4">
+                <div className="w-[6px] h-full bg-foreground"></div>
+                <div
+                  className="w-[6px] h-[calc(100%+40px)] animate-road-dashes"
+                ></div>
+              </div>
+              <h1 className="font-condensed text-6xl font-black tracking-tighter text-foreground">
+                UEI
+              </h1>
+            </div>
+          </div>
+          <CardTitle className="text-center text-3xl font-bold">Esqueceu sua Senha?</CardTitle>
+          <CardDescription className="text-center">Insira seu e-mail para receber um link de redefinição.</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
