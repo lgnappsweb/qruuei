@@ -569,7 +569,7 @@ function LinksTable() {
   return (
     <div className="space-y-4">
       <a
-        href="#"
+        href="http://portalweb.way112.com.br/web/app/RH/PortalMeuRH/#/login"
         target="_blank"
         rel="noopener noreferrer"
         className="block"
