@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, FileCode, ShieldAlert, Settings, Map } from "lucide-react";
 import { cn } from "@/lib/utils";
+import * as React from "react";
 
 const navItems = [
   { href: "/", label: "Início", icon: Home },
@@ -15,21 +16,28 @@ const navItems = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [isClient, setIsClient] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const noNavPages = ['/login', '/signup', '/forgot-password'];
-  const isAuthPage = noNavPages.includes(pathname);
-  const isMapPage = pathname === '/mapa';
+  const isAuthPage = isClient ? noNavPages.includes(pathname) : true; // Assume auth page on server to hide nav
+  const isMapPage = isClient ? pathname === '/mapa' : false;
 
   return (
     <div className="flex flex-col h-svh bg-background overflow-hidden">
-      <main className={cn(
-        "flex-1 p-4 sm:p-6 lg:p-8",
-        !isAuthPage && "pb-[92px]",
-        isMapPage ? "overflow-hidden" : "overflow-y-auto"
-      )}>
+      <main
+        className={cn(
+          "flex-1 p-4 sm:p-6 lg:p-8",
+          isClient && !isAuthPage && "pb-[92px]",
+          isClient && isMapPage ? "overflow-hidden" : "overflow-y-auto"
+        )}
+      >
         {children}
       </main>
-      {!isAuthPage && (
+      {isClient && !isAuthPage && (
         <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-10 shadow-[0_-8px_16px_-4px_rgba(0,0,0,0.1)] dark:shadow-[0_-8px_16px_-4px_rgba(255,255,255,0.05)]">
           <div className="flex justify-around items-center h-[76px] mx-auto">
             {navItems.map((item) => {
