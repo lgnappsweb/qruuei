@@ -60,6 +60,7 @@ const formSchema = z.object({
   qth: z.string().optional(),
   sentido: z.string().optional(),
   localArea: z.string().optional(),
+  tipoDefeito: z.string().optional(),
   qthInicio: z.string().optional(),
   qthTermino: z.string().optional(),
   dimensoes: z.string().optional(),
@@ -134,7 +135,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
     let text = `*${formTitle.toUpperCase()}*\n\n`;
     
     const sections: { title: string, fields: (keyof z.infer<typeof formSchema>)[] }[] = [
-        { title: 'Informações Gerais', fields: ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'qthInicio', 'qthTermino', 'dimensoes', 'quantidade'] },
+        { title: 'Informações Gerais', fields: ['rodovia', 'ocorrencia', 'qth', 'sentido', 'localArea', 'tipoDefeito', 'qthInicio', 'qthTermino', 'dimensoes', 'quantidade'] },
         { title: 'Outras Informações', fields: ['vtrApoio', 'vtrApoioDescricao', 'observacoes', 'auxilios'] }
     ];
 
@@ -178,6 +179,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                         <Field label="qth" value={data.qth} />
                         <Field label="sentido" value={data.sentido} />
                         <Field label="localArea" value={data.localArea} />
+                        <Field label="tipoDefeito" value={data.tipoDefeito} />
                         <Field label="qthInicio" value={data.qthInicio} />
                         <Field label="qthTermino" value={data.qthTermino} />
                         <Field label="dimensoes" value={data.dimensoes} />
@@ -235,6 +237,7 @@ export default function OcorrenciaTO34Page() {
       qth: '',
       sentido: '',
       localArea: '',
+      tipoDefeito: '',
       qthInicio: '',
       qthTermino: '',
       dimensoes: '',
@@ -435,6 +438,27 @@ export default function OcorrenciaTO34Page() {
                         <SelectItem value="Terceira Faixa">Terceira Faixa</SelectItem>
                         <SelectItem value="Acostamento">Acostamento</SelectItem>
                         <SelectItem value="Faixa de Bordo">Faixa de Bordo</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="tipoDefeito"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tipo de Defeito</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o tipo de defeito" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Buraco">Buraco</SelectItem>
+                        <SelectItem value="Deformidade">Deformidade</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
