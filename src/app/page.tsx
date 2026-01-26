@@ -20,10 +20,10 @@ export default function Home() {
           <h1 className="font-condensed text-7xl font-black tracking-tighter text-foreground">
             QRU
           </h1>
-          <div className="h-24 flex justify-center gap-x-1">
-            <div className="w-2 h-full bg-foreground"></div>
+          <div className="h-24 flex justify-center gap-x-1 overflow-hidden">
+            <div className="w-1 h-full bg-foreground"></div>
             <div
-              className="w-2 h-full animate-road-dashes"
+              className="w-1 h-[110%] my-[-5%] animate-road-dashes"
               style={{
                 background:
                   "repeating-linear-gradient(to bottom, hsl(var(--foreground)), hsl(var(--foreground)) 20px, transparent 20px, transparent 40px)",
