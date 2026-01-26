@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Trash2, ArrowLeft, Edit, Share2, ShieldAlert, Road, MapPin, Calendar, Car } from 'lucide-react';
+import { Trash2, ArrowLeft, Edit, Share2, ShieldAlert, Route, MapPin, Calendar, Car } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
   AlertDialog,
@@ -240,7 +240,7 @@ export default function OcorrenciasPage() {
                   </CardHeader>
                   <CardContent className="space-y-3 pt-2">
                       <div className="text-sm text-muted-foreground flex items-center gap-2">
-                          <Road className="h-4 w-4 text-primary" />
+                          <Route className="h-4 w-4 text-primary" />
                           <span><span className="font-semibold text-foreground">Rodovia:</span> {ocorrencia.rodovia}</span>
                       </div>
                       <div className="text-sm text-muted-foreground flex items-center gap-2">
