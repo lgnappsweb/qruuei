@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, LinkIcon } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -55,7 +55,6 @@ const tiposDeOcorrenciaData = [
     { codigo: 'TO37', mensagem: 'Sinalização Vertical', grupo: 'Todos' },
     { codigo: 'TO38', mensagem: 'Placas De Propaganda', grupo: 'Todos' },
     { codigo: 'TO39', mensagem: 'Destombamento De Veículo', grupo: 'Todos' },
-    { codigo: 'TO40', mensagem: 'Manifestação', grupo: 'Incidentes' },
     { codigo: 'TO50', mensagem: 'Nível De Serviço, Manutenção Frota / Bases', grupo: 'Avarias, Panes' },
 ];
 
@@ -566,6 +565,16 @@ function RelacionamentosContent({ setOpenAccordion }: { setOpenAccordion: (value
   )
 }
 
+function LinksTable() {
+  return (
+    <div className="space-y-4">
+      <p className="text-muted-foreground">
+        Esta é uma seção para links úteis. Me diga quais links você gostaria de adicionar e eu os colocarei aqui!
+      </p>
+    </div>
+  );
+}
+
 export default function CodigosPage() {
   const [openAccordion, setOpenAccordion] = React.useState<string>();
 
@@ -609,6 +618,11 @@ export default function CodigosPage() {
       value: 'item-8',
       title: 'Pontos de Apoio',
       content: <PontosDeApoioTable />,
+    },
+    {
+      value: 'item-9',
+      title: 'Links Úteis',
+      content: <LinksTable />,
     },
   ];
 
