@@ -5,6 +5,7 @@ import { GoogleMap, useJsApiLoader, KmlLayer } from '@react-google-maps/api';
 import { Button } from '@/components/ui/button';
 import { kmzLinks } from '@/lib/kmz-links';
 import { Map as MapIcon } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const containerStyle = {
   width: '100%',
@@ -19,7 +20,7 @@ const center = {
 export default function MapaPage() {
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""
+    googleMapsApiKey: "AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g"
   });
 
   const [selectedKmzs, setSelectedKmzs] = useState<string[]>([]);
@@ -29,7 +30,7 @@ export default function MapaPage() {
     setSelectedKmzs(kmzLinks.map(link => link.url));
   }, []);
 
-  if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY === 'SUA_CHAVE_DE_API_AQUI') {
+  if ("AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g" === 'SUA_CHAVE_DE_API_AQUI' || "AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g" === "") {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-4">
         <MapIcon className="h-16 w-16 text-destructive mb-4" />
@@ -68,28 +69,29 @@ export default function MapaPage() {
   };
 
   return (
-    <div className="h-full flex flex-col space-y-4">
-      <div className="space-y-2 text-center">
-          <h1 className="font-condensed text-3xl font-bold tracking-tight">
-          MAPA DAS RODOVIAS
-          </h1>
-          <p className="text-muted-foreground">
-          Selecione um ou mais trechos para visualizar no mapa.
-          </p>
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        {kmzLinks.map((link) => (
-          <Button 
-            key={link.name} 
-            onClick={() => toggleKmz(link.url)}
-            variant={selectedKmzs.includes(link.url) ? "default" : "outline"}
-            size="sm"
-          >
-            {link.name}
-          </Button>
-        ))}
-      </div>
-      <div className="flex-1 rounded-lg overflow-hidden shadow-xl border">
+    <div className="flex h-full flex-col gap-4">
+      <Card className="shadow-xl">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-center font-condensed text-2xl font-bold tracking-tight">MAPA DAS RODOVIAS</CardTitle>
+          <CardDescription className="text-center">
+            Selecione os trechos para visualizar.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {kmzLinks.map((link) => (
+            <Button 
+              key={link.name} 
+              onClick={() => toggleKmz(link.url)}
+              variant={selectedKmzs.includes(link.url) ? "default" : "outline"}
+              size="sm"
+            >
+              {link.name}
+            </Button>
+          ))}
+        </CardContent>
+      </Card>
+      
+      <div className="flex-1 rounded-lg border shadow-xl overflow-hidden">
         {isLoaded ? (
           <GoogleMap
             mapContainerStyle={containerStyle}
@@ -115,12 +117,13 @@ export default function MapaPage() {
             </div>
         )}
         {loadError && (
-             <div className="flex items-center justify-center h-full bg-destructive text-destructive-foreground">
+             <div className="flex items-center justify-center h-full bg-destructive text-destructive-foreground p-4 text-center">
                 Erro ao carregar o mapa. Verifique sua chave de API e as configurações de referenciador.
             </div>
         )}
       </div>
-       <p className="text-xs text-center text-muted-foreground pt-2">
+      
+       <p className="text-xs text-center text-muted-foreground !mt-2">
           Atenção: A exibição dos mapas KMZ depende das permissões de compartilhamento do Google Drive.
         </p>
     </div>
