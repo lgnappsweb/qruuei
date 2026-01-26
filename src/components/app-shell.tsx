@@ -30,7 +30,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       {!isAuthPage && (
-        <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-10">
+        <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-10 shadow-[0_-8px_16px_-4px_rgba(0,0,0,0.1)] dark:shadow-[0_-8px_16px_-4px_rgba(255,255,255,0.05)]">
           <div className="flex justify-around items-center h-16 max-w-lg mx-auto">
             {navItems.map((item) => {
               const isActive = isMounted && pathname === item.href;
@@ -46,7 +46,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   )}
                 >
                   <item.icon className="h-5 w-5" />
-                  <span className="font-condensed font-bold text-sm">
+                  <span className="font-condensed font-bold text-base">
                     {item.label}
                   </span>
                 </Link>
