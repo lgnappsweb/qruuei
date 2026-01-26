@@ -20,7 +20,7 @@ const center = {
 
 const libraries: "maps"[] = ["maps"];
 
-const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g";
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
 export default function MapaPage() {
   const { isLoaded, loadError } = useJsApiLoader({
@@ -51,13 +51,17 @@ export default function MapaPage() {
     }
   }, [map, isTracking]);
 
-  const handleLocationError = useCallback((error: GeolocationPositionError) => {
+  const handleLocationError = useCallback(() => {
     toast({
       variant: "destructive",
       title: "Erro de Geolocalização",
       description: "Não foi possível obter sua localização. Verifique as permissões do seu navegador e tente novamente.",
     });
     setIsTracking(false);
+    if (watchIdRef.current !== null) {
+      navigator.geolocation.clearWatch(watchIdRef.current);
+      watchIdRef.current = null;
+    }
   }, [toast]);
 
   const onLoad = useCallback((mapInstance: google.maps.Map) => {
@@ -73,6 +77,7 @@ export default function MapaPage() {
 
   const startTracking = useCallback(() => {
     if (navigator.geolocation) {
+      // First, get the current position to center the map
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const pos = {
@@ -87,6 +92,7 @@ export default function MapaPage() {
             }
           }
 
+          // Then, start watching for changes
           if (watchIdRef.current !== null) {
             navigator.geolocation.clearWatch(watchIdRef.current);
           }
@@ -129,6 +135,7 @@ export default function MapaPage() {
   }, [toast]);
 
   useEffect(() => {
+    // Cleanup on component unmount
     return () => {
       if (watchIdRef.current !== null && navigator.geolocation) {
         navigator.geolocation.clearWatch(watchIdRef.current);
@@ -136,7 +143,7 @@ export default function MapaPage() {
     };
   }, []);
 
-  if (GOOGLE_MAPS_API_KEY === 'SUA_CHAVE_DE_API_AQUI' || GOOGLE_MAPS_API_KEY === "") {
+  if (GOOGLE_MAPS_API_KEY === "") {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-4">
         <MapIcon className="h-16 w-16 text-destructive mb-4" />
@@ -175,7 +182,7 @@ export default function MapaPage() {
   };
 
   return (
-    <div className="grid grid-rows-[auto_1fr] h-full gap-4">
+    <div className="flex flex-col h-full gap-4">
       <Card className="shadow-xl flex-shrink-0">
         <CardHeader className="pb-4">
           <CardTitle className="text-center font-condensed text-2xl font-bold tracking-tight">MAPA DAS RODOVIAS</CardTitle>
@@ -206,7 +213,7 @@ export default function MapaPage() {
         </CardFooter>
       </Card>
       
-      <div className="rounded-lg border shadow-xl overflow-hidden relative">
+      <div className="flex-1 rounded-lg border shadow-xl overflow-hidden relative">
         <div className="absolute inset-0">
           {isLoaded ? (
             <GoogleMap
