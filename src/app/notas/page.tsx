@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Edit, PlusCircle, Save, Share2, Trash2, X } from 'lucide-react';
+import { ArrowLeft, Edit, PlusCircle, Save, Share2, Trash2, X, Notebook } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -262,7 +262,11 @@ export default function NotasPage() {
       <div className="space-y-6 pt-8">
         <h2 className="text-2xl font-bold text-center font-condensed">Minhas Notas</h2>
         {notes.length === 0 ? (
-          <p className="text-center text-muted-foreground py-10">Nenhuma nota salva ainda.</p>
+          <div className="text-center text-muted-foreground py-24 border-2 border-dashed rounded-lg flex flex-col items-center justify-center">
+            <Notebook className="h-12 w-12 mb-4 text-primary" />
+            <h3 className="text-2xl font-semibold text-foreground">Nenhuma nota criada</h3>
+            <p className="text-lg">Comece a criar novas notas para visualizá-las aqui.</p>
+          </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2">
             {notes.map((note) => (
