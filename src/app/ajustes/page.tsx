@@ -26,7 +26,7 @@ export default function AjustesPage() {
   const [name, setName] = useState('');
   const { theme, setTheme } = useTheme();
   
-  const [selectedTheme, setSelectedTheme] = useState(theme);
+  const [selectedTheme, setSelectedTheme] = useState<string | undefined>();
   
   const [mounted, setMounted] = useState(false);
 
