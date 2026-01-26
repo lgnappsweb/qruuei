@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 
 interface Note {
   id: string;
@@ -45,8 +46,21 @@ export default function NotasPage() {
   const [showCreateForm, setShowCreateForm] = React.useState(false);
   const [noteToDelete, setNoteToDelete] = React.useState<string | null>(null);
   const [hasLoaded, setHasLoaded] = React.useState(false);
+  const [expandedNotes, setExpandedNotes] = React.useState<Set<string>>(new Set());
   const { toast } = useToast();
   const formRef = React.useRef<HTMLDivElement>(null);
+
+  const toggleNoteExpansion = (id: string) => {
+    setExpandedNotes(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
 
   React.useEffect(() => {
     try {
@@ -269,34 +283,37 @@ export default function NotasPage() {
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2">
-            {notes.map((note) => (
-              <Card key={note.id} className="flex flex-col shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
-                <CardHeader>
-                  <CardTitle className="truncate">{note.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <p className="line-clamp-4 text-muted-foreground whitespace-pre-wrap">{note.content}</p>
-                </CardContent>
-                <CardFooter className="flex flex-col items-start gap-4 pt-4 border-t">
-                  <div className="flex justify-between w-full items-center">
-                    <p className="text-xs text-muted-foreground">
-                      {`Atualizado em ${format(new Date(note.updatedAt), "dd/MM/yy, HH:mm", { locale: ptBR })}`}
-                    </p>
-                    <div className="flex gap-1">
-                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleShare(note)}>
-                        <Share2 className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(note)}>
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => setNoteToDelete(note.id)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardFooter>
-              </Card>
-            ))}
+            {notes.map((note) => {
+                const isExpanded = expandedNotes.has(note.id);
+                return (
+                <Card key={note.id} onClick={() => toggleNoteExpansion(note.id)} className="cursor-pointer flex flex-col shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+                    <CardHeader>
+                        <div className="flex justify-between items-start gap-4">
+                            <div className="flex-1">
+                                <CardTitle className="truncate">{note.title}</CardTitle>
+                                <p className="text-xs text-muted-foreground pt-1">
+                                {`Atualizado em ${format(new Date(note.updatedAt), "dd/MM/yy, HH:mm", { locale: ptBR })}`}
+                                </p>
+                            </div>
+                            <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+                                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleShare(note)}>
+                                    <Share2 className="h-4 w-4" />
+                                </Button>
+                                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(note)}>
+                                    <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => setNoteToDelete(note.id)}>
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </div>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="pt-4 flex-grow">
+                    <p className={cn("text-muted-foreground whitespace-pre-wrap", !isExpanded && "line-clamp-4")}>{note.content}</p>
+                    </CardContent>
+                </Card>
+                )
+            })}
           </div>
         )}
       </div>
