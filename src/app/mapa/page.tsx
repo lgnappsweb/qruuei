@@ -45,32 +45,36 @@ export default function MapaPage() {
     setMap(null)
   }, [])
 
+  const handleLocationSuccess = useCallback((position: GeolocationPosition) => {
+    if (!map) return;
+    const pos = {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude,
+    };
+    setCurrentPosition(pos);
+    
+    map.panTo(pos);
+    if (map.getZoom()! < 15) {
+      map.setZoom(15);
+    }
+  }, [map]);
+
+  const handleLocationError = useCallback((error: GeolocationPositionError) => {
+    toast({
+      variant: "destructive",
+      title: "Erro de Geolocalização",
+      description: "Não foi possível obter sua localização. Verifique as permissões do seu navegador.",
+    });
+  }, [toast]);
+
   useEffect(() => {
     if (!map) return;
     
     let watchId: number;
     if (navigator.geolocation) {
       watchId = navigator.geolocation.watchPosition(
-        (position) => {
-          const pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          setCurrentPosition(pos);
-          
-          map.panTo(pos);
-          if (map.getZoom()! < 15) {
-            map.setZoom(15);
-          }
-        },
-        (error) => {
-          console.error("Error: The Geolocation service failed.", error);
-          toast({
-            variant: "destructive",
-            title: "Erro de Geolocalização",
-            description: "Não foi possível obter sua localização. Verifique as permissões do seu navegador.",
-          });
-        },
+        handleLocationSuccess,
+        handleLocationError,
         {
           enableHighAccuracy: true,
           timeout: 5000,
@@ -84,7 +88,7 @@ export default function MapaPage() {
         navigator.geolocation.clearWatch(watchId);
       }
     };
-  }, [map, toast]);
+  }, [map, handleLocationSuccess, handleLocationError]);
 
 
   if ("AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g" === 'SUA_CHAVE_DE_API_AQUI' || "AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g" === "") {
