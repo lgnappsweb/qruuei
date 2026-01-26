@@ -23,11 +23,15 @@ export default function AjustesPage() {
   const { toast } = useToast();
   const [name, setName] = useState('');
   const { theme, setTheme } = useTheme();
+  
+  const [selectedTheme, setSelectedTheme] = useState(theme);
+  
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    setSelectedTheme(theme);
+  }, [theme]);
 
   useEffect(() => {
     if (!initialising && !user) {
@@ -38,33 +42,41 @@ export default function AjustesPage() {
     }
   }, [user, initialising, router]);
 
-  const handleSignOut = () => {
-    if (auth) {
-      signOut(auth).then(() => {
-        router.push('/login');
-      });
-    }
-  };
-
-  const handleProfileUpdate = async () => {
-    if (auth?.currentUser && firestore && name.trim() !== '') {
+  const handleSaveChanges = async () => {
+    if (auth?.currentUser && firestore && name.trim() !== '' && user?.displayName !== name.trim()) {
         try {
             await updateProfile(auth.currentUser, { displayName: name });
 
             const userDocRef = doc(firestore, 'users', auth.currentUser.uid);
             await updateDoc(userDocRef, { name: name });
 
-            toast({
-                title: "Perfil atualizado!",
-                description: "Seu nome foi atualizado com sucesso.",
-            });
         } catch (error: any) {
             toast({
                 variant: "destructive",
-                title: "Erro ao atualizar",
+                title: "Erro ao atualizar o perfil",
                 description: error.message,
             });
+            return; // Don't proceed if profile update fails
         }
+    }
+
+    if (selectedTheme) {
+        setTheme(selectedTheme);
+    }
+
+    toast({
+        title: "Ajustes salvos!",
+        description: "Suas preferências foram atualizadas.",
+    });
+
+    router.push('/');
+  };
+  
+  const handleSignOut = () => {
+    if (auth) {
+      signOut(auth).then(() => {
+        router.push('/login');
+      });
     }
   };
   
@@ -115,9 +127,21 @@ export default function AjustesPage() {
                 </div>
             </div>
         </CardContent>
-        <CardFooter>
-            <Button onClick={handleProfileUpdate}>Salvar Alterações</Button>
-        </CardFooter>
+      </Card>
+
+      <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+        <CardHeader>
+          <CardTitle>Bloco de Notas</CardTitle>
+          <CardDescription>Acesse suas anotações rápidas.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button asChild className="w-full sm:w-auto">
+            <Link href="/notas">
+              <Notebook className="mr-2 h-4 w-4" />
+              Abrir Bloco de Notas
+            </Link>
+          </Button>
+        </CardContent>
       </Card>
       
       <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
@@ -127,8 +151,8 @@ export default function AjustesPage() {
         </CardHeader>
         <CardContent>
           <RadioGroup 
-            value={theme} 
-            onValueChange={setTheme} 
+            value={selectedTheme} 
+            onValueChange={setSelectedTheme} 
             className="grid grid-cols-3 gap-4"
           >
             <div>
@@ -154,21 +178,9 @@ export default function AjustesPage() {
             </div>
           </RadioGroup>
         </CardContent>
-      </Card>
-
-      <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
-        <CardHeader>
-          <CardTitle>Bloco de Notas</CardTitle>
-          <CardDescription>Acesse suas anotações rápidas.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button asChild className="w-full sm:w-auto">
-            <Link href="/notas">
-              <Notebook className="mr-2 h-4 w-4" />
-              Abrir Bloco de Notas
-            </Link>
-          </Button>
-        </CardContent>
+        <CardFooter>
+            <Button onClick={handleSaveChanges}>Salvar Alterações</Button>
+        </CardFooter>
       </Card>
 
       <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
