@@ -234,9 +234,28 @@ export default function OcorrenciasPage() {
                       <CardTitle className="text-lg font-bold">{ocorrencia.codOcorrencia}</CardTitle>
                       <CardDescription className="text-xs">{ocorrencia.type}</CardDescription>
                     </div>
-                    <Badge variant={ocorrencia.status === 'Finalizada' ? 'secondary' : 'destructive'}>
-                      {ocorrencia.status}
-                    </Badge>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive" size="icon" className="shrink-0" onClick={(e) => e.stopPropagation()}>
+                          <Trash2 className="h-5 w-5" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Esta ação não pode ser desfeita. Isso irá apagar permanentemente
+                            a ocorrência da lista.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete(ocorrencia.id)}>
+                            Apagar
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </CardHeader>
                   <CardContent className="space-y-3 pt-2">
                       <div className="text-sm text-muted-foreground flex items-center gap-2">
@@ -296,28 +315,6 @@ export default function OcorrenciasPage() {
                        <Button variant="default" size="sm" onClick={() => handleShare(ocorrencia)} className="bg-green-600 hover:bg-green-700" disabled={!ocorrencia.numeroOcorrencia || ocorrencia.numeroOcorrencia === 'NILL'}>
                         <Share2 className="mr-2 h-4 w-4"/> Compartilhar
                       </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="destructive" size="icon" className="shrink-0 ml-auto">
-                            <Trash2 className="h-5 w-5" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Esta ação não pode ser desfeita. Isso irá apagar permanentemente
-                              a ocorrência da lista.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDelete(ocorrencia.id)}>
-                              Apagar
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
                     </CardFooter>
                   </div>
                 )}
