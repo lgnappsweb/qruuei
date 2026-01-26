@@ -584,7 +584,7 @@ function LinksTable() {
         </Card>
       </a>
       <a
-        href="#"
+        href="http://checklist.way306.com.br:8091/CheckList/app3_login/"
         target="_blank"
         rel="noopener noreferrer"
         className="block"
