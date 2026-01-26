@@ -22,9 +22,9 @@ export default function MapaPage() {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""
   });
 
-  const [selectedKmz, setSelectedKmz] = useState<string | null>(null);
+  const [selectedKmzs, setSelectedKmzs] = useState<string[]>([kmzLinks[0].url]);
 
-  if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
+  if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY === 'SUA_CHAVE_DE_API_AQUI') {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-4">
         <MapIcon className="h-16 w-16 text-destructive mb-4" />
@@ -54,6 +54,14 @@ export default function MapaPage() {
     );
   }
 
+  const toggleKmz = (url: string) => {
+    setSelectedKmzs((prev) =>
+      prev.includes(url)
+        ? prev.filter((item) => item !== url)
+        : [...prev, url]
+    );
+  };
+
   return (
     <div className="h-full flex flex-col space-y-4">
       <div className="space-y-2 text-center">
@@ -61,15 +69,15 @@ export default function MapaPage() {
           MAPA DAS RODOVIAS
           </h1>
           <p className="text-muted-foreground">
-          Selecione um trecho para visualizar no mapa.
+          Selecione um ou mais trechos para visualizar no mapa.
           </p>
       </div>
       <div className="flex flex-wrap justify-center gap-2">
         {kmzLinks.map((link) => (
           <Button 
             key={link.name} 
-            onClick={() => setSelectedKmz(link.url === selectedKmz ? null : link.url)}
-            variant={selectedKmz === link.url ? "default" : "outline"}
+            onClick={() => toggleKmz(link.url)}
+            variant={selectedKmzs.includes(link.url) ? "default" : "outline"}
           >
             {link.name}
           </Button>
@@ -86,7 +94,9 @@ export default function MapaPage() {
                 streetViewControl: false,
             }}
           >
-            {selectedKmz && <KmlLayer url={selectedKmz} options={{ preserveViewport: false }} />}
+            {selectedKmzs.map((url) => (
+              <KmlLayer key={url} url={url} options={{ preserveViewport: false }} />
+            ))}
           </GoogleMap>
         ) : (
             <div className="flex items-center justify-center h-full bg-muted">
@@ -100,7 +110,7 @@ export default function MapaPage() {
         )}
         {loadError && (
              <div className="flex items-center justify-center h-full bg-destructive text-destructive-foreground">
-                Erro ao carregar o mapa. Verifique sua chave de API.
+                Erro ao carregar o mapa. Verifique sua chave de API e as configurações de referenciador.
             </div>
         )}
       </div>
