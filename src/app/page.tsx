@@ -15,19 +15,15 @@ export default function Home() {
 
   return (
     <div className="space-y-8 md:pb-24">
-      <div className="relative flex justify-center items-center h-32 my-4 overflow-hidden">
+      <div className="relative flex justify-center items-center h-32 my-4">
         <div className="z-10 bg-background px-2 sm:px-4 flex items-center justify-center gap-x-12">
           <h1 className="font-condensed text-7xl font-black tracking-tighter text-foreground">
             QRU
           </h1>
-          <div className="h-24 flex justify-center gap-x-1 overflow-hidden">
+          <div className="h-20 flex justify-center gap-x-1">
             <div className="w-1 h-full bg-foreground"></div>
             <div
-              className="w-1 h-[110%] my-[-5%] animate-road-dashes"
-              style={{
-                background:
-                  "repeating-linear-gradient(to bottom, hsl(var(--foreground)), hsl(var(--foreground)) 20px, transparent 20px, transparent 40px)",
-              }}
+              className="w-1 h-full animate-road-dashes"
             ></div>
           </div>
           <h1 className="font-condensed text-7xl font-black tracking-tighter text-foreground">

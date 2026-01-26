@@ -91,7 +91,9 @@
   }
 
   .animate-road-dashes {
-    animation: move-dashes 1.5s linear infinite;
+    background: repeating-linear-gradient(to bottom, hsl(var(--foreground)), hsl(var(--foreground)) 20px, transparent 20px, transparent 40px);
+    background-size: 100% 40px;
+    animation: move-dashes 1s linear infinite;
     will-change: background-position;
   }
 }
