@@ -5,7 +5,7 @@ import { GoogleMap, useJsApiLoader, KmlLayer } from '@react-google-maps/api';
 import { Button } from '@/components/ui/button';
 import { kmzLinks } from '@/lib/kmz-links';
 import { Map as MapIcon } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 
 const containerStyle = {
   width: '100%',
@@ -89,6 +89,11 @@ export default function MapaPage() {
             </Button>
           ))}
         </CardContent>
+        <CardFooter className="justify-center p-4 pt-2">
+          <p className="text-xs text-muted-foreground text-center">
+            Atenção: A exibição dos mapas KMZ depende das permissões de compartilhamento do Google Drive.
+          </p>
+        </CardFooter>
       </Card>
       
       <div className="flex-1 rounded-lg border shadow-xl overflow-hidden">
@@ -122,10 +127,6 @@ export default function MapaPage() {
             </div>
         )}
       </div>
-      
-       <p className="text-xs text-center text-muted-foreground !mt-2">
-          Atenção: A exibição dos mapas KMZ depende das permissões de compartilhamento do Google Drive.
-        </p>
     </div>
   );
 }
