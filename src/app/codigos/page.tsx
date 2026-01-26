@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, LinkIcon, Map } from 'lucide-react';
+import { ArrowLeft, LinkIcon } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -566,12 +566,6 @@ function RelacionamentosContent({ setOpenAccordion }: { setOpenAccordion: (value
 }
 
 function LinksTable() {
-  const kmzLinks = [
-    { name: "MAPS.ME MS-112", url: "https://drive.google.com/file/d/1yVELomsDcrt-mbwbtvDJu9kf_tEaUxdF/view?usp=sharing" },
-    { name: "MAPS.ME BR-158", url: "https://drive.google.com/file/d/1OstJycDgfNiyhQoQat1IMe-MCgZ1x5ax/view?usp=sharing" },
-    { name: "MAPS.ME MS-306", url: "https://drive.google.com/file/d/1XxT-gsTMC7hFWo94FBRzKUQaysRTEQrO/view?usp=sharing" },
-    { name: "MAPS.ME BR-436", url: "https://drive.google.com/file/d/1J7QYvnowqK60XWkA6I-XbwaUYABgWezg/view?usp=sharing" }
-  ];
   return (
     <div className="space-y-4">
       <a
@@ -604,35 +598,6 @@ function LinksTable() {
           </CardHeader>
         </Card>
       </a>
-      <Accordion type="single" collapsible className="w-full">
-        <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
-          <AccordionItem value="maps-me" className="border-none">
-            <AccordionTrigger className="p-6 hover:no-underline">
-              <CardTitle className="flex items-center gap-2 text-xl">
-                <Map className="h-5 w-5 text-primary" />
-                MAPS.ME (Arquivos KMZ)
-              </CardTitle>
-            </AccordionTrigger>
-            <AccordionContent className="px-6 pb-6">
-              <div className="space-y-2">
-                {kmzLinks.map((link) => (
-                    <a
-                    key={link.name}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
-                  >
-                    <Button variant="outline" className="w-full justify-start text-base">
-                      {link.name}
-                    </Button>
-                  </a>
-                ))}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Card>
-      </Accordion>
     </div>
   );
 }
