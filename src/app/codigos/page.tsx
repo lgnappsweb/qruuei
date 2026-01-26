@@ -568,9 +568,36 @@ function RelacionamentosContent({ setOpenAccordion }: { setOpenAccordion: (value
 function LinksTable() {
   return (
     <div className="space-y-4">
-      <p className="text-muted-foreground">
-        Esta é uma seção para links úteis. Me diga quais links você gostaria de adicionar e eu os colocarei aqui!
-      </p>
+      <a
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block"
+      >
+        <Card className="hover:bg-accent hover:border-primary/50 transition-colors shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <LinkIcon className="h-5 w-5 text-primary" />
+              Portal Meu RH
+            </CardTitle>
+          </CardHeader>
+        </Card>
+      </a>
+      <a
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block"
+      >
+        <Card className="hover:bg-accent hover:border-primary/50 transition-colors shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <LinkIcon className="h-5 w-5 text-primary" />
+              CheckList
+            </CardTitle>
+          </CardHeader>
+        </Card>
+      </a>
     </div>
   );
 }
