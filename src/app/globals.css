@@ -89,11 +89,11 @@
       background-position: 0 0;
     }
     to {
-      background-position: 0 80px;
+      background-position: 0 40px;
     }
   }
 
   .animate-road-dashes {
-    animation: move-dashes 1.5s linear infinite;
+    animation: move-dashes 1s linear infinite;
   }
 }
