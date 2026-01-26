@@ -22,7 +22,7 @@ export default function MapaPage() {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""
   });
 
-  const [selectedKmzs, setSelectedKmzs] = useState<string[]>([kmzLinks[0].url]);
+  const [selectedKmzs, setSelectedKmzs] = useState<string[]>(kmzLinks.map(link => link.url));
 
   if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY === 'SUA_CHAVE_DE_API_AQUI') {
     return (
