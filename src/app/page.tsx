@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { occurrences } from "@/lib/occurrences";
@@ -9,12 +9,6 @@ import { OccurrenceCard } from "@/components/occurrence-card";
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (searchInputRef.current) {
-      searchInputRef.current.blur();
-    }
-  }, []);
 
   const filteredOccurrences = occurrences.filter((occurrence) =>
     occurrence.title.toLowerCase().includes(searchTerm.toLowerCase())
