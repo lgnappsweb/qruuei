@@ -9,7 +9,7 @@ import { signOut, updateProfile } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { LogOut, Sun, Moon, Laptop, ArrowLeft } from "lucide-react";
+import { LogOut, Sun, Moon, Laptop, ArrowLeft, Notebook } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "next-themes";
@@ -118,6 +118,21 @@ export default function AjustesPage() {
         <CardFooter>
             <Button onClick={handleProfileUpdate}>Salvar Alterações</Button>
         </CardFooter>
+      </Card>
+
+      <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+        <CardHeader>
+          <CardTitle>Bloco de Notas</CardTitle>
+          <CardDescription>Acesse suas anotações rápidas.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button asChild className="w-full sm:w-auto">
+            <Link href="/notas">
+              <Notebook className="mr-2 h-4 w-4" />
+              Abrir Bloco de Notas
+            </Link>
+          </Button>
+        </CardContent>
       </Card>
 
       <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
