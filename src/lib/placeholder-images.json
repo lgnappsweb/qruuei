@@ -2,9 +2,9 @@
   "placeholderImages": [
     {
       "id": "1",
-      "description": "Rodovia à noite com rastros de luz",
-      "imageUrl": "https://images.unsplash.com/photo-1544636331-e268a26e8d21?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoaWdod2F5JTIwbmlnaHR8ZW58MHx8fHwxNzY5NTQyMjg0fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "highway night"
+      "description": "Placas de Regulamentação",
+      "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_reg1-294x300-1.png",
+      "imageHint": "traffic signs"
     },
     {
       "id": "2",
