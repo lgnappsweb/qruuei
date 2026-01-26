@@ -18,10 +18,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const noNavPages = ['/login', '/signup', '/forgot-password'];
   const isAuthPage = noNavPages.includes(pathname);
+  const isMapPage = pathname === '/mapa';
 
   return (
     <div className="flex flex-col h-svh bg-background overflow-hidden">
-      <main className={cn("flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto", !isAuthPage && "pb-[92px]")}>
+      <main className={cn(
+        "flex-1 p-4 sm:p-6 lg:p-8",
+        !isAuthPage && "pb-[92px]",
+        isMapPage ? "overflow-hidden" : "overflow-y-auto"
+      )}>
         {children}
       </main>
       {!isAuthPage && (
