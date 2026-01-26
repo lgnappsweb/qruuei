@@ -17,21 +17,21 @@ export default function Home() {
     <div className="space-y-8 md:pb-24">
       <div className="text-center space-y-4">
         <div className="relative flex justify-center items-center h-32 my-4 overflow-hidden">
-          <div className="z-10 bg-background px-2 sm:px-4 flex items-center justify-center gap-x-8">
-            <h1 className="font-condensed text-8xl font-black tracking-tighter text-foreground">
+          <div className="z-10 bg-background px-2 sm:px-4 flex items-center justify-center gap-x-12">
+            <h1 className="font-condensed text-7xl font-black tracking-tighter text-foreground">
               QRU
             </h1>
             <div className="h-24 flex justify-center gap-x-2">
-              <div className="w-2 h-full bg-foreground"></div>
+              <div className="w-1 h-full bg-foreground"></div>
               <div
-                className="w-2 h-full animate-road-dashes"
+                className="w-1 h-full animate-road-dashes"
                 style={{
                   background:
-                    "repeating-linear-gradient(to bottom, hsl(var(--foreground)), hsl(var(--foreground)) 40px, transparent 40px, transparent 80px)",
+                    "repeating-linear-gradient(to bottom, hsl(var(--foreground)), hsl(var(--foreground)) 20px, transparent 20px, transparent 40px)",
                 }}
               ></div>
             </div>
-            <h1 className="font-condensed text-8xl font-black tracking-tighter text-foreground">
+            <h1 className="font-condensed text-7xl font-black tracking-tighter text-foreground">
               UEI
             </h1>
           </div>
