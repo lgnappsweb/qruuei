@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ArrowLeft, Edit, PlusCircle, Save, Share2, Trash2, X, Notebook } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -28,27 +29,43 @@ import {
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import { useUser, useFirestore, useCollection } from '@/firebase';
+import { collection, addDoc, serverTimestamp, doc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore';
+import type { User } from 'firebase/auth';
 
 interface Note {
   id: string;
   title: string;
   content: string;
-  updatedAt: string;
+  updatedAt: Timestamp;
+  userId: string;
 }
 
-const STORAGE_KEY = 'app_notes_v3'; // Using a new key to avoid parsing issues with old structure
+function NotesContent({ user }: { user: User }) {
+  const firestore = useFirestore();
+  const notesCollectionPath = `users/${user.uid}/notes`;
+  const { data: notesData, loading: notesLoading } = useCollection<Note>(notesCollectionPath);
 
-export default function NotasPage() {
   const [notes, setNotes] = React.useState<Note[]>([]);
   const [title, setTitle] = React.useState('');
   const [content, setContent] = React.useState('');
   const [editingNoteId, setEditingNoteId] = React.useState<string | null>(null);
   const [showCreateForm, setShowCreateForm] = React.useState(false);
   const [noteToDelete, setNoteToDelete] = React.useState<string | null>(null);
-  const [hasLoaded, setHasLoaded] = React.useState(false);
   const [expandedNotes, setExpandedNotes] = React.useState<Set<string>>(new Set());
   const { toast } = useToast();
   const formRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (notesData) {
+      const sortedNotes = [...notesData].sort((a, b) => {
+        const timeA = a.updatedAt?.toMillis() || 0;
+        const timeB = b.updatedAt?.toMillis() || 0;
+        return timeB - timeA;
+      });
+      setNotes(sortedNotes);
+    }
+  }, [notesData]);
 
   const toggleNoteExpansion = (id: string) => {
     setExpandedNotes(prev => {
@@ -62,31 +79,11 @@ export default function NotasPage() {
     });
   };
 
-  React.useEffect(() => {
-    try {
-      const savedNotes = localStorage.getItem(STORAGE_KEY);
-      if (savedNotes) {
-        setNotes(JSON.parse(savedNotes));
-      }
-    } catch (error) {
-      console.error("Failed to parse notes from localStorage", error);
-      toast({
-        variant: "destructive",
-        title: "Erro ao carregar notas",
-        description: "Não foi possível carregar suas notas salvas.",
-      });
+  const handleSave = async () => {
+    if (!firestore) {
+        toast({ variant: "destructive", title: "Erro", description: "Serviço de banco de dados indisponível." });
+        return;
     }
-    setHasLoaded(true);
-  }, [toast]);
-
-  const updateNotesAndStorage = (newNotes: Note[]) => {
-    // Sort notes by most recent
-    const sortedNotes = newNotes.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
-    setNotes(sortedNotes);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(sortedNotes));
-  };
-
-  const handleSave = () => {
     if (!title.trim() && !content.trim()) {
       toast({
         variant: "destructive",
@@ -96,37 +93,39 @@ export default function NotasPage() {
       return;
     }
 
-    const now = new Date().toISOString();
-
-    if (editingNoteId) {
-      // Update existing note
-      const updatedNotes = notes.map(note =>
-        note.id === editingNoteId
-          ? { ...note, title: title.trim(), content: content.trim(), updatedAt: now }
-          : note
-      );
-      updateNotesAndStorage(updatedNotes);
-      toast({
-        title: 'Nota Atualizada',
-        description: 'Sua nota foi atualizada com sucesso.',
-      });
-    } else {
-      // Create new note
-      const newNote: Note = {
-        id: now,
-        title: title.trim() || `Nota de ${format(new Date(now), "dd/MM/yy 'às' HH:mm")}`,
-        content: content.trim(),
-        updatedAt: now,
-      };
-      const updatedNotes = [newNote, ...notes];
-      updateNotesAndStorage(updatedNotes);
-      toast({
-        title: 'Nota Salva',
-        description: 'Sua nova nota foi salva com sucesso.',
+    try {
+      if (editingNoteId) {
+        const noteRef = doc(firestore, 'users', user.uid, 'notes', editingNoteId);
+        await updateDoc(noteRef, {
+          title: title.trim() || `Nota de ${format(new Date(), "dd/MM/yy 'às' HH:mm")}`,
+          content: content.trim(),
+          updatedAt: serverTimestamp(),
+        });
+        toast({
+          title: 'Nota Atualizada',
+          description: 'Sua nota foi atualizada com sucesso.',
+        });
+      } else {
+        const notesCollectionRef = collection(firestore, 'users', user.uid, 'notes');
+        await addDoc(notesCollectionRef, {
+          title: title.trim() || `Nota de ${format(new Date(), "dd/MM/yy 'às' HH:mm")}`,
+          content: content.trim(),
+          updatedAt: serverTimestamp(),
+          userId: user.uid,
+        });
+        toast({
+          title: 'Nota Salva',
+          description: 'Sua nova nota foi salva com sucesso.',
+        });
+      }
+    } catch (error: any) {
+       toast({
+        variant: "destructive",
+        title: "Erro ao salvar nota",
+        description: error.message,
       });
     }
 
-    // Reset form and hide it
     setTitle('');
     setContent('');
     setEditingNoteId(null);
@@ -148,15 +147,23 @@ export default function NotasPage() {
     setContent('');
   }
 
-  const handleDeleteConfirm = () => {
-    if (noteToDelete) {
-        const updatedNotes = notes.filter(note => note.id !== noteToDelete);
-        updateNotesAndStorage(updatedNotes);
+  const handleDeleteConfirm = async () => {
+    if (noteToDelete && firestore) {
+      try {
+        const noteRef = doc(firestore, 'users', user.uid, 'notes', noteToDelete);
+        await deleteDoc(noteRef);
         toast({
             title: 'Nota Apagada',
             description: 'A nota foi removida permanentemente.',
         });
-        setNoteToDelete(null); // Close dialog
+        setNoteToDelete(null);
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: "Erro ao apagar nota",
+          description: error.message,
+        });
+      }
     }
   };
 
@@ -174,8 +181,7 @@ export default function NotasPage() {
     setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth' }), 0);
   };
 
-
-  if (!hasLoaded) {
+   if (notesLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="h-24 flex justify-center gap-x-1 overflow-hidden -my-4">
@@ -268,9 +274,11 @@ export default function NotasPage() {
                         <div className="flex justify-between items-start gap-4">
                             <div className="flex-1">
                                 <CardTitle className="truncate">{note.title}</CardTitle>
+                                {note.updatedAt && (
                                 <p className="text-xs text-muted-foreground pt-1">
-                                {`Atualizado em ${format(new Date(note.updatedAt), "dd/MM/yy, HH:mm", { locale: ptBR })}`}
+                                  {`Atualizado em ${format(note.updatedAt.toDate(), "dd/MM/yy, HH:mm", { locale: ptBR })}`}
                                 </p>
+                                )}
                             </div>
                             {!isExpanded && (
                                 <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
@@ -315,4 +323,28 @@ export default function NotasPage() {
       </AlertDialog>
     </div>
   );
+}
+
+export default function NotasPage() {
+  const { user, initialising } = useUser();
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (!initialising && !user) {
+      router.push('/login');
+    }
+  }, [user, initialising, router]);
+
+  if (initialising || !user) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-24 flex justify-center gap-x-1 overflow-hidden -my-4">
+            <div className="w-[6px] h-full bg-foreground"></div>
+            <div className="w-[6px] h-[calc(100%+40px)] animate-road-dashes"></div>
+        </div>
+      </div>
+    );
+  }
+  
+  return <NotesContent user={user} />;
 }

@@ -20,6 +20,34 @@
           "description": "URL of the user's profile picture."
         }
       }
+    },
+    "note": {
+      "title": "Note",
+      "description": "A user's note.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the note."
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the note."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The last updated timestamp of the note."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who owns the note."
+        }
+      },
+      "required": [
+        "userId",
+        "updatedAt"
+      ]
     }
   },
   "auth": {
@@ -34,6 +62,12 @@
         "$ref": "#/backend/entities/user"
       },
       "description": "Stores public profile information for each user."
+    },
+    "/users/{userId}/notes/{noteId}": {
+      "schema": {
+        "$ref": "#/backend/entities/note"
+      },
+      "description": "Stores notes for each user."
     }
   }
 }
