@@ -41,17 +41,13 @@ export default function MapaPage() {
   }, []);
 
   const handleLocationSuccess = useCallback((position: GeolocationPosition) => {
-    if (!map) return;
     const pos = {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
     };
     setCurrentPosition(pos);
-    if (isTracking) {
+    if (isTracking && map) {
         map.panTo(pos);
-        if (map.getZoom()! < 15) {
-            map.setZoom(15);
-        }
     }
   }, [map, isTracking]);
 
@@ -66,27 +62,7 @@ export default function MapaPage() {
 
   const onLoad = useCallback((mapInstance: google.maps.Map) => {
     setMap(mapInstance);
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          setCurrentPosition(pos);
-          mapInstance.setCenter(pos);
-          mapInstance.setZoom(15);
-        },
-        () => {
-          toast({
-              title: "Não foi possível obter a localização inicial.",
-              description: "Você pode ativar o seguimento manual clicando no botão.",
-          })
-        },
-        { enableHighAccuracy: true, timeout: 5000, maximumAge: 60000 }
-      );
-    }
-  }, [toast]);
+  }, []);
 
   const onUnmount = useCallback(function callback(mapInstance: google.maps.Map) {
     setMap(null);
@@ -97,31 +73,41 @@ export default function MapaPage() {
 
   const startTracking = useCallback(() => {
     if (navigator.geolocation) {
-      if (watchIdRef.current !== null) {
-        navigator.geolocation.clearWatch(watchIdRef.current);
-      }
-      
-      watchIdRef.current = navigator.geolocation.watchPosition(
-        handleLocationSuccess,
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setCurrentPosition(pos);
+          if (map) {
+            map.panTo(pos);
+            if (map.getZoom()! < 15) {
+                map.setZoom(15);
+            }
+          }
+
+          if (watchIdRef.current !== null) {
+            navigator.geolocation.clearWatch(watchIdRef.current);
+          }
+          watchIdRef.current = navigator.geolocation.watchPosition(
+            handleLocationSuccess,
+            handleLocationError,
+            {
+              enableHighAccuracy: true,
+              timeout: 10000,
+              maximumAge: 0,
+            }
+          );
+          setIsTracking(true);
+          toast({
+            title: "Rastreamento Ativado",
+            description: "O mapa agora seguirá sua localização.",
+          });
+        },
         handleLocationError,
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0,
-        }
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
       );
-      setIsTracking(true);
-      toast({
-        title: "Rastreamento Ativado",
-        description: "O mapa agora seguirá sua localização.",
-      });
-      // Immediately pan to current location if available
-      if (currentPosition) {
-        map?.panTo(currentPosition);
-        if(map?.getZoom()! < 15) {
-            map?.setZoom(15);
-        }
-      }
     } else {
       toast({
         variant: "destructive",
@@ -129,7 +115,7 @@ export default function MapaPage() {
         description: "Seu navegador não suporta geolocalização.",
       });
     }
-  }, [handleLocationSuccess, handleLocationError, toast, currentPosition, map]);
+  }, [map, handleLocationSuccess, handleLocationError, toast]);
 
   const stopTracking = useCallback(() => {
     if (watchIdRef.current !== null && navigator.geolocation) {
@@ -232,6 +218,7 @@ export default function MapaPage() {
               options={{
                   mapTypeControl: false,
                   streetViewControl: false,
+                  preserveViewport: true
               }}
             >
               {selectedKmzs.map((url) => (
