@@ -238,10 +238,10 @@ export default function AjustesPage() {
 
       <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
         <CardHeader>
-          <CardTitle>Sobre</CardTitle>
+          <CardTitle>Conta</CardTitle>
         </CardHeader>
-        <CardContent>
-          <style>{`
+        <CardContent className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <style>{`
               @keyframes move-dashes-about {
                   to { background-position: 0 20px; }
               }
@@ -266,14 +266,6 @@ export default function AjustesPage() {
                   UEI v1.0.0
               </h1>
           </div>
-        </CardContent>
-      </Card>
-
-      <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
-        <CardHeader>
-          <CardTitle>Conta</CardTitle>
-        </CardHeader>
-        <CardContent>
           <Button variant="outline" onClick={handleSignOut} className="w-full sm:w-auto">
             <LogOut className="mr-2 h-4 w-4" />
             Sair da conta
