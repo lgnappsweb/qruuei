@@ -214,7 +214,7 @@ export default function NotasPage() {
       </div>
 
       <div className="text-center">
-        <Button onClick={handleCreateNewNoteClick}>
+        <Button onClick={handleCreateNewNoteClick} className="w-full">
             <PlusCircle className="mr-2 h-4 w-4" />
             Criar Nova Nota
         </Button>
