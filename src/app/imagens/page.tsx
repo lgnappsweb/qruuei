@@ -6,6 +6,8 @@ import { ImageIcon as ImageIconLucide } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
@@ -136,14 +138,19 @@ export default function ImagensPage() {
       <Dialog open={!!selectedImage} onOpenChange={(isOpen) => !isOpen && setSelectedImage(null)}>
         <DialogContent className="max-w-[90vw] max-h-[85vh] p-2">
           {selectedImage && (
-            <div className="relative w-full h-[80vh]">
-              <NextImage
-                src={selectedImage.imageUrl}
-                alt={selectedImage.description}
-                fill
-                className="object-contain"
-              />
-            </div>
+            <>
+              <DialogHeader>
+                <DialogTitle className="sr-only">{selectedImage.description}</DialogTitle>
+              </DialogHeader>
+              <div className="relative w-full h-[80vh]">
+                <NextImage
+                  src={selectedImage.imageUrl}
+                  alt={selectedImage.description}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </>
           )}
         </DialogContent>
       </Dialog>
