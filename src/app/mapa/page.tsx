@@ -20,10 +20,12 @@ const center = {
 
 const libraries: "maps"[] = ["maps"];
 
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g";
+
 export default function MapaPage() {
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g",
+    googleMapsApiKey: GOOGLE_MAPS_API_KEY,
     libraries,
   });
   
@@ -45,11 +47,13 @@ export default function MapaPage() {
       lng: position.coords.longitude,
     };
     setCurrentPosition(pos);
-    map.panTo(pos);
-    if (map.getZoom()! < 15) {
-      map.setZoom(15);
+    if (isTracking) {
+        map.panTo(pos);
+        if (map.getZoom()! < 15) {
+            map.setZoom(15);
+        }
     }
-  }, [map]);
+  }, [map, isTracking]);
 
   const handleLocationError = useCallback((error: GeolocationPositionError) => {
     toast({
@@ -70,10 +74,8 @@ export default function MapaPage() {
             lng: position.coords.longitude,
           };
           setCurrentPosition(pos);
-          mapInstance.panTo(pos);
-          if (mapInstance.getZoom()! < 15) {
-            mapInstance.setZoom(15);
-          }
+          mapInstance.setCenter(pos);
+          mapInstance.setZoom(15);
         },
         () => {
           toast({
@@ -113,6 +115,13 @@ export default function MapaPage() {
         title: "Rastreamento Ativado",
         description: "O mapa agora seguirá sua localização.",
       });
+      // Immediately pan to current location if available
+      if (currentPosition) {
+        map?.panTo(currentPosition);
+        if(map?.getZoom()! < 15) {
+            map?.setZoom(15);
+        }
+      }
     } else {
       toast({
         variant: "destructive",
@@ -120,7 +129,7 @@ export default function MapaPage() {
         description: "Seu navegador não suporta geolocalização.",
       });
     }
-  }, [handleLocationSuccess, handleLocationError, toast]);
+  }, [handleLocationSuccess, handleLocationError, toast, currentPosition, map]);
 
   const stopTracking = useCallback(() => {
     if (watchIdRef.current !== null && navigator.geolocation) {
@@ -141,7 +150,7 @@ export default function MapaPage() {
     };
   }, []);
 
-  if ("AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g" === 'SUA_CHAVE_DE_API_AQUI' || "AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g" === "") {
+  if (GOOGLE_MAPS_API_KEY === 'SUA_CHAVE_DE_API_AQUI' || GOOGLE_MAPS_API_KEY === "") {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-4">
         <MapIcon className="h-16 w-16 text-destructive mb-4" />
@@ -180,7 +189,7 @@ export default function MapaPage() {
   };
 
   return (
-    <div className="flex flex-col h-full gap-4">
+    <div className="grid grid-rows-[auto_1fr] h-full gap-4">
       <Card className="shadow-xl flex-shrink-0">
         <CardHeader className="pb-4">
           <CardTitle className="text-center font-condensed text-2xl font-bold tracking-tight">MAPA DAS RODOVIAS</CardTitle>
@@ -211,7 +220,7 @@ export default function MapaPage() {
         </CardFooter>
       </Card>
       
-      <div className="flex-1 rounded-lg border shadow-xl overflow-hidden relative">
+      <div className="rounded-lg border shadow-xl overflow-hidden relative">
         <div className="absolute inset-0">
           {isLoaded ? (
             <GoogleMap
@@ -223,11 +232,10 @@ export default function MapaPage() {
               options={{
                   mapTypeControl: false,
                   streetViewControl: false,
-                  preserveViewport: true,
               }}
             >
               {selectedKmzs.map((url) => (
-                <KmlLayer key={url} url={url} options={{ preserveViewport: true }} />
+                <KmlLayer key={url} url={url} options={{ preserveViewport: true, suppressInfoWindows: true }} />
               ))}
               {currentPosition && (
                 <MarkerF
