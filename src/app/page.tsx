@@ -15,11 +15,23 @@ export default function Home() {
 
   return (
     <div className="space-y-8 md:pb-24">
-      <div className="text-center">
-        <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-foreground">
-          QRU UEI
-        </h1>
-        <p className="text-muted-foreground mt-2">
+      <div className="text-center space-y-4">
+        <div className="relative flex justify-center items-center h-32 md:h-40 my-4 overflow-hidden">
+          <h1 className="text-7xl md:text-8xl font-black tracking-tighter text-foreground z-10 bg-background px-2 sm:px-4">
+            QRU <span className="text-primary">UEI</span>
+          </h1>
+          <div className="absolute top-0 w-full h-full flex justify-center gap-x-28 sm:gap-x-40">
+            <div className="w-2 h-full bg-amber-400"></div>
+            <div
+              className="w-2 h-full animate-road-dashes"
+              style={{
+                background:
+                  "repeating-linear-gradient(to bottom, #facc15, #facc15 40px, transparent 40px, transparent 80px)",
+              }}
+            ></div>
+          </div>
+        </div>
+        <p className="text-muted-foreground -mt-4">
           Selecione o tipo de ocorrência para gerar o relatório
         </p>
       </div>
