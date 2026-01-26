@@ -160,33 +160,10 @@ export default function NotasPage() {
     }
   };
 
-  const handleShare = async (note: Note) => {
-    const shareData = {
-      title: note.title,
-      text: note.content,
-    };
-    if (navigator.share && navigator.canShare(shareData)) {
-      try {
-        await navigator.share(shareData);
-      } catch (error) {
-        console.error('Error sharing:', error);
-      }
-    } else {
-      // Fallback for browsers that don't support Web Share API
-      try {
-        await navigator.clipboard.writeText(`${note.title}\n\n${note.content}`);
-        toast({
-          title: 'Copiado!',
-          description: 'O conteúdo da nota foi copiado para a área de transferência.',
-        });
-      } catch (err) {
-        toast({
-          variant: "destructive",
-          title: 'Erro ao copiar',
-          description: 'Não foi possível copiar o conteúdo da nota.',
-        });
-      }
-    }
+  const handleShare = (note: Note) => {
+    const text = `*${note.title}*\n\n${note.content}`;
+    const encodedText = encodeURIComponent(text);
+    window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
   };
 
   const handleCreateNewNoteClick = () => {
