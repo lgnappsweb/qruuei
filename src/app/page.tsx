@@ -17,18 +17,23 @@ export default function Home() {
     <div className="space-y-8 md:pb-24">
       <div className="text-center space-y-4">
         <div className="relative flex justify-center items-center h-32 md:h-40 my-4 overflow-hidden">
-          <h1 className="text-7xl md:text-8xl font-black tracking-tighter text-foreground z-10 bg-background px-2 sm:px-4">
-            QRU <span className="text-primary">UEI</span>
-          </h1>
-          <div className="absolute top-0 w-full h-full flex justify-center gap-x-28 sm:gap-x-40">
-            <div className="w-2 h-full bg-amber-400"></div>
-            <div
-              className="w-2 h-full animate-road-dashes"
-              style={{
-                background:
-                  "repeating-linear-gradient(to bottom, #facc15, #facc15 40px, transparent 40px, transparent 80px)",
-              }}
-            ></div>
+          <div className="z-10 bg-background px-2 sm:px-4 flex items-center justify-center gap-x-4 sm:gap-x-8">
+            <h1 className="text-7xl md:text-8xl font-black tracking-tighter text-foreground">
+              QRU
+            </h1>
+            <div className="h-24 md:h-32 flex justify-center gap-x-4">
+              <div className="w-1 h-full bg-foreground"></div>
+              <div
+                className="w-1 h-full animate-road-dashes"
+                style={{
+                  background:
+                    "repeating-linear-gradient(to bottom, hsl(var(--foreground)), hsl(var(--foreground)) 40px, transparent 40px, transparent 80px)",
+                }}
+              ></div>
+            </div>
+            <h1 className="text-7xl md:text-8xl font-black tracking-tighter text-foreground">
+              UEI
+            </h1>
           </div>
         </div>
         <p className="text-muted-foreground -mt-4">
