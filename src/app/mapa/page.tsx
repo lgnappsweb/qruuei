@@ -72,12 +72,13 @@ export default function MapaPage() {
           Selecione um ou mais trechos para visualizar no mapa.
           </p>
       </div>
-      <div className="flex flex-wrap justify-center gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         {kmzLinks.map((link) => (
           <Button 
             key={link.name} 
             onClick={() => toggleKmz(link.url)}
             variant={selectedKmzs.includes(link.url) ? "default" : "outline"}
+            size="sm"
           >
             {link.name}
           </Button>
