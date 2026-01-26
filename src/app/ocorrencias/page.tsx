@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Trash2, ArrowLeft, Edit, Share2, ShieldAlert } from 'lucide-react';
+import { Trash2, ArrowLeft, Edit, Share2, ShieldAlert, Road, MapPin, Calendar, Car } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
   AlertDialog,
@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { tiposPane } from '@/lib/tipos-pane';
 
 interface Ocorrencia {
@@ -197,7 +198,7 @@ export default function OcorrenciasPage() {
 
   return (
     <div className="space-y-8 pb-24">
-       <Button asChild variant="ghost" className="pl-0">
+      <Button asChild variant="ghost" className="pl-0">
         <Link href="/">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Voltar para o início
@@ -212,54 +213,66 @@ export default function OcorrenciasPage() {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {ocorrencias.map((ocorrencia) => {
-           const isExpanded = expandedCards.has(ocorrencia.id);
-           const fieldOrder = fieldOrders[ocorrencia.formPath] || Object.keys(ocorrencia.fullReport);
-           const vehicleOrder = ocorrencia.formPath === '/ocorrencias/qud-operacao' || ocorrencia.formPath === '/ocorrencias/to11' || ocorrencia.formPath === '/ocorrencias/to19' ? vehicleWithPersonalDataFieldOrder : vehicleFieldOrder;
+      {ocorrencias.length === 0 ? (
+        <div className="col-span-full text-center text-muted-foreground py-24 border-2 border-dashed rounded-lg flex flex-col items-center justify-center">
+          <ShieldAlert className="h-12 w-12 mb-4 text-primary" />
+          <h3 className="text-2xl font-semibold text-foreground">Nenhuma ocorrência registrada</h3>
+          <p className="text-lg">Comece a registrar novas ocorrências para visualizá-las aqui.</p>
+        </div>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {ocorrencias.map((ocorrencia) => {
+            const isExpanded = expandedCards.has(ocorrencia.id);
+            const fieldOrder = fieldOrders[ocorrencia.formPath] || Object.keys(ocorrencia.fullReport);
+            const vehicleOrder = ocorrencia.formPath === '/ocorrencias/qud-operacao' || ocorrencia.formPath === '/ocorrencias/to11' || ocorrencia.formPath === '/ocorrencias/to19' ? vehicleWithPersonalDataFieldOrder : vehicleFieldOrder;
 
-           return (
-            <Card key={ocorrencia.id} className="flex flex-col shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
-              <div onClick={() => toggleCardExpansion(ocorrencia.id)} className="cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span>{ocorrencia.codOcorrencia}</span>
+            return (
+              <Card key={ocorrencia.id} className="flex flex-col shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10 transition-all duration-300">
+                <div onClick={() => toggleCardExpansion(ocorrencia.id)} className="cursor-pointer flex-grow">
+                  <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
+                    <div>
+                      <CardTitle className="text-lg font-bold">{ocorrencia.codOcorrencia}</CardTitle>
+                      <CardDescription className="text-xs">{ocorrencia.type}</CardDescription>
+                    </div>
                     <Badge variant={ocorrencia.status === 'Finalizada' ? 'secondary' : 'destructive'}>
                       {ocorrencia.status}
                     </Badge>
-                  </CardTitle>
-                  <CardDescription>{ocorrencia.type}</CardDescription>
-                </CardHeader>
-                {!isExpanded && (
-                    <CardContent className="space-y-2">
-                        <p className="text-base text-muted-foreground">
-                            <span className="font-semibold text-foreground">Rodovia:</span> {ocorrencia.rodovia}
-                        </p>
-                        <p className="text-base text-muted-foreground">
-                            <span className="font-semibold text-foreground">KM:</span> {ocorrencia.km}
-                        </p>
-                        <p className="text-base text-muted-foreground">
-                            <span className="font-semibold text-foreground">Data/Hora:</span> {ocorrencia.timestamp}
-                        </p>
-                    </CardContent>
-                )}
-              </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3 pt-2">
+                      <div className="text-sm text-muted-foreground flex items-center gap-2">
+                          <Road className="h-4 w-4 text-primary" />
+                          <span><span className="font-semibold text-foreground">Rodovia:</span> {ocorrencia.rodovia}</span>
+                      </div>
+                      <div className="text-sm text-muted-foreground flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-primary" />
+                          <span><span className="font-semibold text-foreground">KM:</span> {ocorrencia.km}</span>
+                      </div>
+                      <div className="text-sm text-muted-foreground flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-primary" />
+                          <span><span className="font-semibold text-foreground">Data:</span> {ocorrencia.timestamp}</span>
+                      </div>
+                  </CardContent>
+                </div>
 
-              {isExpanded && (
-                <div className="flex flex-col flex-grow">
-                  <CardContent className="border-t pt-4 flex-grow">
-                      <div className="space-y-2 text-sm text-muted-foreground max-h-96 overflow-y-auto">
-                         <h4 className="font-semibold text-base text-foreground mb-2">Relatório Completo:</h4>
+                {isExpanded && (
+                  <div className="flex flex-col flex-grow">
+                    <CardContent className="border-t pt-4 mt-4 flex-grow">
+                        <ScrollArea className="h-96 pr-4">
+                           <h4 className="font-semibold text-lg text-foreground mb-4 border-b pb-2">Relatório Completo</h4>
                             {fieldOrder.map(key => {
                                 if (key === '---VEHICLES---') {
                                     return Array.isArray(ocorrencia.fullReport.vehicles) && ocorrencia.fullReport.vehicles.map((vehicle: any, index: number) => (
-                                        <div key={index} className="pt-2 mt-2 border-t">
-                                            <h5 className="font-semibold text-foreground">Veículo {index + 1}</h5>
-                                            {vehicleOrder.map(vKey => {
-                                                if (!(vKey in vehicle)) return null;
-                                                return <ReportField key={`${index}-${vKey}`} fieldKey={vKey} value={vehicle[vKey]} />;
-                                            })}
-                                        </div>
+                                        <Card key={index} className="pt-2 mt-4 bg-muted/50 shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+                                            <CardHeader>
+                                                <CardTitle className="flex items-center gap-2 text-base"><Car className="h-5 w-5"/> Veículo {index + 1}</CardTitle>
+                                            </CardHeader>
+                                            <CardContent className="space-y-1 text-xs">
+                                                {vehicleOrder.map(vKey => {
+                                                    if (!(vKey in vehicle)) return null;
+                                                    return <ReportField key={`${index}-${vKey}`} fieldKey={vKey} value={vehicle[vKey]} />;
+                                                })}
+                                            </CardContent>
+                                        </Card>
                                     ));
                                 }
 
@@ -267,58 +280,52 @@ export default function OcorrenciasPage() {
                                 return <ReportField key={key} fieldKey={key} value={ocorrencia.fullReport[key]} />;
                             })}
                             {ocorrencia.numeroOcorrencia && ocorrencia.numeroOcorrencia !== 'NILL' && (
-                                <div className="pt-2 mt-2 border-t">
-                                    <p>
-                                        <span className="font-semibold text-foreground">Número da Ocorrência:</span>{' '}
-                                        {String(ocorrencia.numeroOcorrencia).toUpperCase()}
+                                <div className="pt-2 mt-4 border-t">
+                                    <p className="font-semibold text-foreground">
+                                        Número da Ocorrência:{' '}
+                                        <span className="font-mono bg-accent p-1 rounded-md">{String(ocorrencia.numeroOcorrencia).toUpperCase()}</span>
                                     </p>
                                 </div>
                             )}
-                      </div>
-                  </CardContent>
-                  <CardFooter className="flex gap-2 border-t pt-4 mt-auto">
-                    <Button variant="outline" size="sm" onClick={() => handleEdit(ocorrencia)}>
-                      <Edit className="mr-2 h-4 w-4"/> Editar
-                    </Button>
-                     <Button variant="default" size="sm" onClick={() => handleShare(ocorrencia)} className="bg-green-600 hover:bg-green-700" disabled={!ocorrencia.numeroOcorrencia || ocorrencia.numeroOcorrencia === 'NILL'}>
-                      <Share2 className="mr-2 h-4 w-4"/> Compartilhar
-                    </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="destructive" size="icon" className="shrink-0 ml-auto">
-                          <Trash2 className="h-5 w-5" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Esta ação não pode ser desfeita. Isso irá apagar permanentemente
-                            a ocorrência da lista.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleDelete(ocorrencia.id)}>
-                            Apagar
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </CardFooter>
-                </div>
-              )}
-            </Card>
-          )
-        })}
-         {ocorrencias.length === 0 && (
-          <div className="col-span-full text-center text-muted-foreground py-12 border-2 border-dashed rounded-lg flex flex-col items-center justify-center">
-            <ShieldAlert className="h-10 w-10 mb-4" />
-            <h3 className="text-xl font-semibold text-foreground">Nenhuma ocorrência registrada</h3>
-            <p>Comece a registrar novas ocorrências para visualizá-las aqui.</p>
-          </div>
-        )}
-      </div>
+                        </ScrollArea>
+                    </CardContent>
+                    <CardFooter className="flex gap-2 border-t pt-4 mt-auto">
+                      <Button variant="outline" size="sm" onClick={() => handleEdit(ocorrencia)}>
+                        <Edit className="mr-2 h-4 w-4"/> Editar
+                      </Button>
+                       <Button variant="default" size="sm" onClick={() => handleShare(ocorrencia)} className="bg-green-600 hover:bg-green-700" disabled={!ocorrencia.numeroOcorrencia || ocorrencia.numeroOcorrencia === 'NILL'}>
+                        <Share2 className="mr-2 h-4 w-4"/> Compartilhar
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="destructive" size="icon" className="shrink-0 ml-auto">
+                            <Trash2 className="h-5 w-5" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Esta ação não pode ser desfeita. Isso irá apagar permanentemente
+                              a ocorrência da lista.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDelete(ocorrencia.id)}>
+                              Apagar
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </CardFooter>
+                  </div>
+                )}
+              </Card>
+            )
+          })}
+        </div>
+      )}
     </div>
   );
 }
