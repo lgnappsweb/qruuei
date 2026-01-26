@@ -25,8 +25,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isAuthPage = isMounted && noNavPages.includes(pathname);
 
   return (
-    <div className="flex flex-col min-h-svh bg-background">
-      <main className={cn("flex-1 p-4 sm:p-6 lg:p-8", !isAuthPage && "pb-[92px]")}>
+    <div className="flex flex-col h-svh bg-background overflow-hidden">
+      <main className={cn("flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto", !isAuthPage && "pb-[92px]")}>
         {children}
       </main>
       {!isAuthPage && (
