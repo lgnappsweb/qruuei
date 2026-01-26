@@ -567,10 +567,10 @@ function RelacionamentosContent({ setOpenAccordion }: { setOpenAccordion: (value
 
 function LinksTable() {
   const kmzLinks = [
-    { name: "Arquivo KMZ 1", url: "https://drive.google.com/file/d/1yVELomsDcrt-mbwbtvDJu9kf_tEaUxdF/view?usp=sharing" },
-    { name: "Arquivo KMZ 2", url: "https://drive.google.com/file/d/1OstJycDgfNiyhQoQat1IMe-MCgZ1x5ax/view?usp=sharing" },
-    { name: "Arquivo KMZ 3", url: "https://drive.google.com/file/d/1XxT-gsTMC7hFWo94FBRzKUQaysRTEQrO/view?usp=sharing" },
-    { name: "Arquivo KMZ 4", url: "https://drive.google.com/file/d/1J7QYvnowqK60XWkA6I-XbwaUYABgWezg/view?usp=sharing" }
+    { name: "MAPS.ME MS-112", url: "https://drive.google.com/file/d/1yVELomsDcrt-mbwbtvDJu9kf_tEaUxdF/view?usp=sharing" },
+    { name: "MAPS.ME BR-158", url: "https://drive.google.com/file/d/1OstJycDgfNiyhQoQat1IMe-MCgZ1x5ax/view?usp=sharing" },
+    { name: "MAPS.ME MS-306", url: "https://drive.google.com/file/d/1XxT-gsTMC7hFWo94FBRzKUQaysRTEQrO/view?usp=sharing" },
+    { name: "MAPS.ME BR-436", url: "https://drive.google.com/file/d/1J7QYvnowqK60XWkA6I-XbwaUYABgWezg/view?usp=sharing" }
   ];
   return (
     <div className="space-y-4">
