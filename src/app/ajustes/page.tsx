@@ -193,7 +193,7 @@ export default function AjustesPage() {
                   to { background-position: 0 20px; }
               }
           `}</style>
-          <div className="flex justify-center items-center gap-x-4 text-muted-foreground">
+          <div className="flex justify-start items-center gap-x-4 text-muted-foreground">
               <h1 className="font-condensed text-lg font-black tracking-tighter">
                   QRU
               </h1>
