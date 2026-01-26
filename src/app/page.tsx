@@ -26,7 +26,7 @@ export default function Home() {
               className="w-2 h-full animate-road-dashes"
               style={{
                 background:
-                  "repeating-linear-gradient(to bottom, hsl(var(--foreground)), hsl(var(--foreground)) 30px, transparent 30px, transparent 60px)",
+                  "repeating-linear-gradient(to bottom, hsl(var(--foreground)), hsl(var(--foreground)) 20px, transparent 20px, transparent 40px)",
               }}
             ></div>
           </div>
