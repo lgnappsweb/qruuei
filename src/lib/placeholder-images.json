@@ -1,6 +1,12 @@
 {
   "placeholderImages": [
     {
+      "id": "9",
+      "description": "Formatos das Placas",
+      "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_reg_forma2.png",
+      "imageHint": "traffic signs"
+    },
+    {
       "id": "1",
       "description": "Placas de Regulamentação",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_reg1-294x300-1.png",
