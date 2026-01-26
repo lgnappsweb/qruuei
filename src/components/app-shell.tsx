@@ -32,7 +32,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         className={cn(
           "flex-1 p-4 sm:p-6 lg:p-8",
           isClient && !isAuthPage && "pb-[92px]",
-          isClient && isMapPage ? "overflow-hidden" : "overflow-y-auto"
+          isClient && isMapPage ? "flex flex-col gap-4 overflow-hidden" : "overflow-y-auto"
         )}
       >
         {children}

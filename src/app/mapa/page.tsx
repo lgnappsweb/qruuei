@@ -182,8 +182,8 @@ export default function MapaPage() {
   };
 
   return (
-    <div className="flex flex-col h-full gap-4">
-      <Card className="shadow-xl flex-shrink-0">
+    <>
+      <Card className="shadow-xl">
         <CardHeader className="pb-4">
           <CardTitle className="text-center font-condensed text-2xl font-bold tracking-tight">MAPA DAS RODOVIAS</CardTitle>
           <CardDescription className="text-center">
@@ -262,6 +262,6 @@ export default function MapaPage() {
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 }
