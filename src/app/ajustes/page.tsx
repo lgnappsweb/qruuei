@@ -71,8 +71,11 @@ export default function AjustesPage() {
   if (initialising || !user || !mounted) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold">Carregando...</h2>
+        <div className="h-24 flex justify-center gap-x-1 overflow-hidden -my-4">
+            <div className="w-[6px] h-full bg-foreground"></div>
+            <div
+                className="w-[6px] h-[calc(100%+40px)] animate-road-dashes"
+            ></div>
         </div>
       </div>
     );

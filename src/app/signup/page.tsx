@@ -99,9 +99,11 @@ export default function SignupPage() {
   if (initialising || user) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold">Carregando...</h2>
-          <p className="text-muted-foreground">Você já está logado. Redirecionando...</p>
+        <div className="h-24 flex justify-center gap-x-1 overflow-hidden -my-4">
+            <div className="w-[6px] h-full bg-foreground"></div>
+            <div
+                className="w-[6px] h-[calc(100%+40px)] animate-road-dashes"
+            ></div>
         </div>
       </div>
     );
