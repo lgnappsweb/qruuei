@@ -85,15 +85,13 @@
 
 @layer utilities {
   @keyframes move-dashes {
-    from {
-      background-position: 0 0;
-    }
     to {
-      background-position: 0 60px;
+      background-position: 0 80px;
     }
   }
 
   .animate-road-dashes {
-    animation: move-dashes 1s linear infinite;
+    animation: move-dashes 1.2s linear infinite;
+    will-change: background-position;
   }
 }
