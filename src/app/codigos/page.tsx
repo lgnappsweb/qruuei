@@ -566,6 +566,12 @@ function RelacionamentosContent({ setOpenAccordion }: { setOpenAccordion: (value
 }
 
 function LinksTable() {
+  const kmzLinks = [
+    { name: "Arquivo KMZ 1", url: "https://drive.google.com/file/d/1yVELomsDcrt-mbwbtvDJu9kf_tEaUxdF/view?usp=sharing" },
+    { name: "Arquivo KMZ 2", url: "https://drive.google.com/file/d/1OstJycDgfNiyhQoQat1IMe-MCgZ1x5ax/view?usp=sharing" },
+    { name: "Arquivo KMZ 3", url: "https://drive.google.com/file/d/1XxT-gsTMC7hFWo94FBRzKUQaysRTEQrO/view?usp=sharing" },
+    { name: "Arquivo KMZ 4", url: "https://drive.google.com/file/d/1J7QYvnowqK60XWkA6I-XbwaUYABgWezg/view?usp=sharing" }
+  ];
   return (
     <div className="space-y-4">
       <a
@@ -608,9 +614,21 @@ function LinksTable() {
               </CardTitle>
             </AccordionTrigger>
             <AccordionContent className="px-6 pb-6">
-              <p className="text-muted-foreground">
-                Em breve, os links para os arquivos KMZ estarão disponíveis aqui.
-              </p>
+              <div className="space-y-2">
+                {kmzLinks.map((link) => (
+                    <a
+                    key={link.name}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
+                    <Button variant="outline" className="w-full justify-start text-base">
+                      {link.name}
+                    </Button>
+                  </a>
+                ))}
+              </div>
             </AccordionContent>
           </AccordionItem>
         </Card>
