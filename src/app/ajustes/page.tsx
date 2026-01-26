@@ -131,21 +131,6 @@ export default function AjustesPage() {
 
       <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
         <CardHeader>
-          <CardTitle>Bloco de Notas</CardTitle>
-          <CardDescription>Acesse suas anotações rápidas.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button asChild className="w-full sm:w-auto">
-            <Link href="/notas">
-              <Notebook className="mr-2 h-4 w-4" />
-              Abrir Bloco de Notas
-            </Link>
-          </Button>
-        </CardContent>
-      </Card>
-      
-      <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
-        <CardHeader>
           <CardTitle>Aparência</CardTitle>
           <CardDescription>Personalize a aparência do aplicativo.</CardDescription>
         </CardHeader>
@@ -182,13 +167,52 @@ export default function AjustesPage() {
             <Button onClick={handleSaveChanges}>Salvar Alterações</Button>
         </CardFooter>
       </Card>
+      
+      <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+        <CardHeader>
+          <CardTitle>Bloco de Notas</CardTitle>
+          <CardDescription>Acesse suas anotações rápidas.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button asChild className="w-full sm:w-auto">
+            <Link href="/notas">
+              <Notebook className="mr-2 h-4 w-4" />
+              Abrir Bloco de Notas
+            </Link>
+          </Button>
+        </CardContent>
+      </Card>
 
       <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
         <CardHeader>
           <CardTitle>Sobre</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">QRU Prioridade v1.0.0</p>
+          <style>{`
+              @keyframes move-dashes-about {
+                  to { background-position: 0 20px; }
+              }
+          `}</style>
+          <div className="flex justify-center items-center gap-x-4 text-muted-foreground">
+              <h1 className="font-condensed text-lg font-black tracking-tighter">
+                  QRU
+              </h1>
+              <div className="h-6 flex justify-center gap-x-px overflow-hidden -my-1">
+                  <div className="w-px h-full bg-current"></div>
+                  <div
+                  className="w-px h-[calc(100%+20px)]"
+                  style={{
+                      background: 'repeating-linear-gradient(to bottom, currentColor, currentColor 10px, transparent 10px, transparent 20px)',
+                      backgroundSize: '100% 20px',
+                      animation: 'move-dashes-about 0.5s linear infinite',
+                      willChange: 'background-position'
+                  }}
+                  ></div>
+              </div>
+              <h1 className="font-condensed text-lg font-black tracking-tighter">
+                  UEI v1.0.0
+              </h1>
+          </div>
         </CardContent>
       </Card>
 
