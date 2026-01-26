@@ -119,22 +119,7 @@ export default function AjustesPage() {
             <Button onClick={handleProfileUpdate}>Salvar Alterações</Button>
         </CardFooter>
       </Card>
-
-      <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
-        <CardHeader>
-          <CardTitle>Bloco de Notas</CardTitle>
-          <CardDescription>Acesse suas anotações rápidas.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button asChild className="w-full sm:w-auto">
-            <Link href="/notas">
-              <Notebook className="mr-2 h-4 w-4" />
-              Abrir Bloco de Notas
-            </Link>
-          </Button>
-        </CardContent>
-      </Card>
-
+      
       <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
         <CardHeader>
           <CardTitle>Aparência</CardTitle>
@@ -170,7 +155,22 @@ export default function AjustesPage() {
           </RadioGroup>
         </CardContent>
       </Card>
-      
+
+      <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+        <CardHeader>
+          <CardTitle>Bloco de Notas</CardTitle>
+          <CardDescription>Acesse suas anotações rápidas.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button asChild className="w-full sm:w-auto">
+            <Link href="/notas">
+              <Notebook className="mr-2 h-4 w-4" />
+              Abrir Bloco de Notas
+            </Link>
+          </Button>
+        </CardContent>
+      </Card>
+
       <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
         <CardHeader>
           <CardTitle>Sobre</CardTitle>
