@@ -29,7 +29,7 @@ export default function Home() {
         <Input
           type="search"
           placeholder="Buscar por ocorrência, código ou PR..."
-          className="pl-12 pr-4 h-12 text-base bg-card border-0 focus-visible:ring-primary"
+          className="pl-12 pr-4 h-12 text-base bg-card focus-visible:ring-primary shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
