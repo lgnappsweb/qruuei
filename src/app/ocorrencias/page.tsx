@@ -280,20 +280,6 @@ export default function OcorrenciasPage() {
                   <div className="flex flex-col flex-grow">
                     <CardHeader>
                         <CardTitle>{ocorrencia.type}</CardTitle>
-                        <div className="text-sm text-muted-foreground pt-2 space-y-1">
-                            <div className="flex items-center gap-2">
-                                <Route className="h-4 w-4 text-primary" />
-                                <span><span className="font-semibold text-foreground">Rodovia:</span> {ocorrencia.rodovia}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <MapPin className="h-4 w-4 text-primary" />
-                                <span><span className="font-semibold text-foreground">KM:</span> {ocorrencia.km}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Calendar className="h-4 w-4 text-primary" />
-                                <span><span className="font-semibold text-foreground">Data:</span> {ocorrencia.timestamp}</span>
-                            </div>
-                        </div>
                     </CardHeader>
                     <CardContent className="border-t pt-4 mt-4 flex-grow">
                         <ScrollArea className="h-96 pr-4">
