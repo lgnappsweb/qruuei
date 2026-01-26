@@ -295,22 +295,26 @@ export default function NotasPage() {
                                 {`Atualizado em ${format(new Date(note.updatedAt), "dd/MM/yy, HH:mm", { locale: ptBR })}`}
                                 </p>
                             </div>
-                            <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
-                                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleShare(note)}>
-                                    <Share2 className="h-4 w-4" />
-                                </Button>
-                                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(note)}>
-                                    <Edit className="h-4 w-4" />
-                                </Button>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => setNoteToDelete(note.id)}>
-                                    <Trash2 className="h-4 w-4" />
-                                </Button>
-                            </div>
+                            {!isExpanded && (
+                                <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+                                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleShare(note)}>
+                                        <Share2 className="h-4 w-4" />
+                                    </Button>
+                                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(note)}>
+                                        <Edit className="h-4 w-4" />
+                                    </Button>
+                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => setNoteToDelete(note.id)}>
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </CardHeader>
-                    <CardContent className="pt-4 flex-grow">
-                    <p className={cn("text-muted-foreground whitespace-pre-wrap", !isExpanded && "line-clamp-4")}>{note.content}</p>
-                    </CardContent>
+                    {isExpanded && (
+                      <CardContent className="pt-4 flex-grow">
+                        <p className="text-muted-foreground whitespace-pre-wrap">{note.content}</p>
+                      </CardContent>
+                    )}
                 </Card>
                 )
             })}
