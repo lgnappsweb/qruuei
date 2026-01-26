@@ -12,13 +12,8 @@ import { useFirestore } from '../provider';
 import { errorEmitter } from '../error-emitter';
 import { FirestorePermissionError } from '../errors';
 
-interface UseDocOptions {
-  // Define any options here
-}
-
 export function useDoc<T = DocumentData>(
-  docPath: string,
-  options?: UseDocOptions
+  docPath: string | null
 ) {
   const firestore = useFirestore();
   const [data, setData] = useState<T | null>(null);
@@ -26,14 +21,14 @@ export function useDoc<T = DocumentData>(
   const [error, setError] = useState<FirestoreError | null>(null);
 
   const docRef = useMemo(() => {
-    if (!firestore) return null;
+    if (!firestore || !docPath) return null;
     return doc(firestore, docPath);
   }, [firestore, docPath]);
 
 
   useEffect(() => {
     if (!docRef) {
-        if (!firestore) {
+        if (!firestore || !docPath) {
             setLoading(false);
         }
         return;
@@ -48,10 +43,11 @@ export function useDoc<T = DocumentData>(
           setData(null);
         }
         setLoading(false);
+        setError(null);
       },
       async (err: FirestoreError) => {
         const permissionError = new FirestorePermissionError({
-            path: docPath,
+            path: docPath!,
             operation: 'get',
         });
         errorEmitter.emit('permission-error', permissionError);

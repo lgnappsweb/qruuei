@@ -14,13 +14,8 @@ import { useFirestore } from '../provider';
 import { errorEmitter } from '../error-emitter';
 import { FirestorePermissionError } from '../errors';
 
-interface UseCollectionOptions {
-  // Define any options here, e.g., filters, sorting
-}
-
 export function useCollection<T = DocumentData>(
-  collectionPath: string,
-  options?: UseCollectionOptions
+  collectionPath: string | null
 ) {
   const firestore = useFirestore();
   const [data, setData] = useState<T[] | null>(null);
@@ -28,13 +23,13 @@ export function useCollection<T = DocumentData>(
   const [error, setError] = useState<FirestoreError | null>(null);
 
   const q = useMemo(() => {
-    if (!firestore) return null;
+    if (!firestore || !collectionPath) return null;
     return query(collection(firestore, collectionPath));
   }, [firestore, collectionPath]);
 
   useEffect(() => {
     if (!q) {
-      if (!firestore) {
+      if (!firestore || !collectionPath) {
         setLoading(false);
       }
       return;
@@ -49,10 +44,11 @@ export function useCollection<T = DocumentData>(
         })) as T[];
         setData(documents);
         setLoading(false);
+        setError(null);
       },
       async (err: FirestoreError) => {
         const permissionError = new FirestorePermissionError({
-            path: collectionPath,
+            path: collectionPath!,
             operation: 'list',
         });
         errorEmitter.emit('permission-error', permissionError);
