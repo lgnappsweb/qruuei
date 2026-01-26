@@ -5,7 +5,7 @@ import { GoogleMap, useJsApiLoader, KmlLayer, MarkerF } from '@react-google-maps
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { kmzLinks } from '@/lib/kmz-links';
-import { Map as MapIcon } from 'lucide-react';
+import { Map as MapIcon, LocateFixed, LocateOff } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 
 const containerStyle = {
@@ -31,19 +31,13 @@ export default function MapaPage() {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [selectedKmzs, setSelectedKmzs] = useState<string[]>([]);
   const [currentPosition, setCurrentPosition] = useState<google.maps.LatLngLiteral | null>(null);
+  const [isTracking, setIsTracking] = useState(false);
+  const watchIdRef = React.useRef<number | null>(null);
   
   useEffect(() => {
     // Carrega todas as rotas por padrão ao montar o componente
     setSelectedKmzs(kmzLinks.map(link => link.url));
   }, []);
-
-  const onLoad = useCallback(function callback(mapInstance: google.maps.Map) {
-    setMap(mapInstance)
-  }, [])
-
-  const onUnmount = useCallback(function callback(mapInstance: google.maps.Map) {
-    setMap(null)
-  }, [])
 
   const handleLocationSuccess = useCallback((position: GeolocationPosition) => {
     if (!map) return;
@@ -52,7 +46,6 @@ export default function MapaPage() {
       lng: position.coords.longitude,
     };
     setCurrentPosition(pos);
-    
     map.panTo(pos);
     if (map.getZoom()! < 15) {
       map.setZoom(15);
@@ -63,33 +56,95 @@ export default function MapaPage() {
     toast({
       variant: "destructive",
       title: "Erro de Geolocalização",
-      description: "Não foi possível obter sua localização. Verifique as permissões do seu navegador.",
+      description: "Não foi possível obter sua localização. Verifique as permissões do seu navegador e tente novamente.",
     });
+    setIsTracking(false);
   }, [toast]);
 
-  useEffect(() => {
-    if (!map) return;
-    
-    let watchId: number;
+  const onLoad = useCallback((mapInstance: google.maps.Map) => {
+    setMap(mapInstance);
+    // Get initial position to center map
     if (navigator.geolocation) {
-      watchId = navigator.geolocation.watchPosition(
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setCurrentPosition(pos);
+          mapInstance.panTo(pos);
+          if (mapInstance.getZoom()! < 15) {
+            mapInstance.setZoom(15);
+          }
+        },
+        () => {
+          toast({
+              title: "Não foi possível obter a localização inicial.",
+              description: "Você pode ativar o seguimento manual clicando no botão.",
+          })
+        },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 60000 }
+      );
+    }
+  }, [toast]);
+
+  const onUnmount = useCallback(function callback(mapInstance: google.maps.Map) {
+    setMap(null);
+    // Clear watch on unmount
+     if (watchIdRef.current !== null && navigator.geolocation) {
+      navigator.geolocation.clearWatch(watchIdRef.current);
+    }
+  }, [])
+
+  const startTracking = useCallback(() => {
+    if (navigator.geolocation) {
+      // Clear any existing watch
+      if (watchIdRef.current !== null) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+      }
+      
+      watchIdRef.current = navigator.geolocation.watchPosition(
         handleLocationSuccess,
         handleLocationError,
         {
           enableHighAccuracy: true,
-          timeout: 5000,
+          timeout: 10000,
           maximumAge: 0,
         }
       );
+      setIsTracking(true);
+      toast({
+        title: "Rastreamento Ativado",
+        description: "O mapa agora seguirá sua localização.",
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Geolocalização não suportada",
+        description: "Seu navegador não suporta geolocalização.",
+      });
     }
+  }, [handleLocationSuccess, handleLocationError, toast]);
 
+  const stopTracking = useCallback(() => {
+    if (watchIdRef.current !== null && navigator.geolocation) {
+      navigator.geolocation.clearWatch(watchIdRef.current);
+      watchIdRef.current = null;
+      setIsTracking(false);
+      toast({
+        title: "Rastreamento Desativado",
+      });
+    }
+  }, [toast]);
+
+  // Clean up on component unmount
+  useEffect(() => {
     return () => {
-      if (watchId && navigator.geolocation) {
-        navigator.geolocation.clearWatch(watchId);
+      if (watchIdRef.current !== null && navigator.geolocation) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
       }
     };
-  }, [map, handleLocationSuccess, handleLocationError]);
-
+  }, []);
 
   if ("AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g" === 'SUA_CHAVE_DE_API_AQUI' || "AIzaSyCjCAHA3kUSrwwbgh-WLvgEQaopMBsZ68g" === "") {
     return (
@@ -131,7 +186,7 @@ export default function MapaPage() {
 
   return (
     <div className="flex flex-col h-full gap-4">
-      <Card className="shadow-xl">
+      <Card className="flex-shrink-0 shadow-xl">
         <CardHeader className="pb-4">
           <CardTitle className="text-center font-condensed text-2xl font-bold tracking-tight">MAPA DAS RODOVIAS</CardTitle>
           <CardDescription className="text-center">
@@ -150,8 +205,12 @@ export default function MapaPage() {
             </Button>
           ))}
         </CardContent>
-         <CardFooter className="justify-center p-4 pt-2">
-          <p className="text-xs text-muted-foreground text-center">
+         <CardFooter className="flex-col sm:flex-row justify-center items-center gap-4 p-4 pt-2">
+           <Button onClick={isTracking ? stopTracking : startTracking} variant="secondary" className="w-full sm:w-auto">
+                {isTracking ? <LocateOff className="mr-2" /> : <LocateFixed className="mr-2" />}
+                {isTracking ? "Parar de Seguir" : "Seguir Localização"}
+            </Button>
+          <p className="text-xs text-muted-foreground text-center sm:text-left">
             Atenção: A exibição dos mapas KMZ depende das permissões de compartilhamento do Google Drive.
           </p>
         </CardFooter>
@@ -168,7 +227,6 @@ export default function MapaPage() {
             options={{
                 mapTypeControl: false,
                 streetViewControl: false,
-                preserveViewport: true,
             }}
           >
             {selectedKmzs.map((url) => (
