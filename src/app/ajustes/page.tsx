@@ -14,7 +14,8 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "next-themes";
 import Link from "next/link";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function AjustesPage() {
   const { user, initialising } = useUser();
@@ -184,53 +185,56 @@ export default function AjustesPage() {
         </CardContent>
       </Card>
 
-      <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
-        <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="item-1" className="border-none">
-                <AccordionTrigger className="p-6 hover:no-underline">
-                    <CardHeader className="p-0 text-left">
-                        <CardTitle className="flex items-center gap-2"><BookMarked className="h-6 w-6" /> POLÍTICAS DO SGI</CardTitle>
-                        <CardDescription>Sistema de Gestão Integrada</CardDescription>
-                    </CardHeader>
-                </AccordionTrigger>
-                <AccordionContent className="px-6 pb-6">
-                    <div className="space-y-4 text-muted-foreground">
-                        <p>A Política do Sistema de Gestão Integrada da Way Brasil é definida pela integração dos seus Sistemas de Gestão e pela harmonização das políticas específicas. Todas as políticas foram desenvolvidas pela alta direção, que comprometimento. A comunicação e publicização são realizadas de forma clara e compreensível a todas as partes interessadas, clientes e comunidade em geral. Elas estão disponíveis no manual do motorista, na página da internet e afixadas em pontos estratégicos das instalações da empresa.</p>
-                        
-                        <div>
-                            <h3 className="font-semibold text-foreground mb-1">Satisfação do Usuário</h3>
-                            <p>A Way Brasil tem sua conduta pautada nos compromissos contratuais e regulamentares, e visa promover a satisfação do usuário da Rodovia, sempre em busca da melhoria contínua dos processos e da qualidade dos serviços prestados.</p>
-                        </div>
-                        
-                        <div>
-                            <h3 className="font-semibold text-foreground mb-1">Segurança Ocupacional e Viária</h3>
-                            <p>A alta direção objetiva e se compromete com o cumprimento dos requisitos legais e com a redução de mortes e lesões graves. Essas práticas serão apoiadas através de programas de treinamentos efetivos e eficientes, com o desenvolvimento de planos anuais para melhoria contínua, além da aplicação das lições aprendidas no tratamento das não conformidades e investigação de acidentes.</p>
-                        </div>
+      <Dialog>
+        <DialogTrigger asChild>
+            <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10 cursor-pointer">
+                <CardHeader className="p-6 text-left">
+                    <CardTitle className="flex items-center gap-2"><BookMarked className="h-6 w-6" /> POLÍTICAS DO SGI</CardTitle>
+                    <CardDescription>Sistema de Gestão Integrada</CardDescription>
+                </CardHeader>
+            </Card>
+        </DialogTrigger>
+        <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">POLÍTICAS DO SISTEMA DE GESTÃO INTEGRADA</DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="flex-1 pr-6 -mr-6 mt-4">
+              <div className="space-y-6 text-muted-foreground">
+                  <p>A Política do Sistema de Gestão Integrada da Way Brasil é definida pela integração dos seus Sistemas de Gestão e pela harmonização das políticas específicas. Todas as políticas foram desenvolvidas pela alta direção, que comprometimento. A comunicação e publicização são realizadas de forma clara e compreensível a todas as partes interessadas, clientes e comunidade em geral. Elas estão disponíveis no manual do motorista, na página da internet e afixadas em pontos estratégicos das instalações da empresa.</p>
+                  
+                  <div>
+                      <h3 className="font-semibold text-foreground mb-2 text-lg">Satisfação do Usuário</h3>
+                      <p>A Way Brasil tem sua conduta pautada nos compromissos contratuais e regulamentares, e visa promover a satisfação do usuário da Rodovia, sempre em busca da melhoria contínua dos processos e da qualidade dos serviços prestados.</p>
+                  </div>
+                  
+                  <div>
+                      <h3 className="font-semibold text-foreground mb-2 text-lg">Segurança Ocupacional e Viária</h3>
+                      <p>A alta direção objetiva e se compromete com o cumprimento dos requisitos legais e com a redução de mortes e lesões graves. Essas práticas serão apoiadas através de programas de treinamentos efetivos e eficientes, com o desenvolvimento de planos anuais para melhoria contínua, além da aplicação das lições aprendidas no tratamento das não conformidades e investigação de acidentes.</p>
+                  </div>
 
-                        <div>
-                            <h3 className="font-semibold text-foreground mb-1">Gestão Responsável</h3>
-                            <p>Alcançar a solidez administrativa, econômica, operacional, segurança de dados e compliance e preservação da imagem da Concessionária com objetivo de assegurar o atendimento às expectativas de seus públicos interessados.</p>
-                        </div>
+                  <div>
+                      <h3 className="font-semibold text-foreground mb-2 text-lg">Gestão Responsável</h3>
+                      <p>Alcançar a solidez administrativa, econômica, operacional, segurança de dados e compliance e preservação da imagem da Concessionária com objetivo de assegurar o atendimento às expectativas de seus públicos interessados.</p>
+                  </div>
 
-                        <div>
-                            <h3 className="font-semibold text-foreground mb-1">Socioambiental e Sustentabilidade</h3>
-                            <p>Nos comprometemos a adotar práticas de gestão socioambiental responsáveis, considerando as melhores práticas globais e aos requisitos legais aplicáveis. Reconhecemos a urgência das mudanças climáticas e a importância da defesa dos direitos humanos como pilares fundamentais para um futuro sustentável. Defendemos a equidade, a inclusão e o respeito à dignidade humana, promovendo o bem-estar e a justiça social para todas as comunidades impactadas por nossas ações. Nossa abordagem visa equilibrar crescimento econômico, proteção ambiental e avanço social.</p>
-                        </div>
-                        
-                        <div>
-                            <h3 className="font-semibold text-foreground mb-1">Qualidade</h3>
-                            <p>Comprometimento com a gestão dos processos das atividades, realização de revisões periódicas, para sua melhoria contínua e garantir a perpetuidade do negócio, além da manutenção do foco na satisfação de todos.</p>
-                        </div>
-                        
-                        <div>
-                            <h3 className="font-semibold text-foreground mb-1">Reconhecimento e Valorização das Pessoas</h3>
-                            <p>Promover a qualificação e a conscientização dos colaboradores e demais envolvidos, de modo a motivar desenvolvimento de competências para atuação responsável e adequada.</p>
-                        </div>
-                    </div>
-                </AccordionContent>
-            </AccordionItem>
-        </Accordion>
-      </Card>
+                  <div>
+                      <h3 className="font-semibold text-foreground mb-2 text-lg">Socioambiental e Sustentabilidade</h3>
+                      <p>Nos comprometemos a adotar práticas de gestão socioambiental responsáveis, considerando as melhores práticas globais e aos requisitos legais aplicáveis. Reconhecemos a urgência das mudanças climáticas e a importância da defesa dos direitos humanos como pilares fundamentais para um futuro sustentável. Defendemos a equidade, a inclusão e o respeito à dignidade humana, promovendo o bem-estar e a justiça social para todas as comunidades impactadas por nossas ações. Nossa abordagem visa equilibrar crescimento econômico, proteção ambiental e avanço social.</p>
+                  </div>
+                  
+                  <div>
+                      <h3 className="font-semibold text-foreground mb-2 text-lg">Qualidade</h3>
+                      <p>Comprometimento com a gestão dos processos das atividades, realização de revisões periódicas, para sua melhoria contínua e garantir a perpetuidade do negócio, além da manutenção do foco na satisfação de todos.</p>
+                  </div>
+                  
+                  <div>
+                      <h3 className="font-semibold text-foreground mb-2 text-lg">Reconhecimento e Valorização das Pessoas</h3>
+                      <p>Promover a qualificação e a conscientização dos colaboradores e demais envolvidos, de modo a motivar desenvolvimento de competências para atuação responsável e adequada.</p>
+                  </div>
+              </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
 
       <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
         <CardHeader>
