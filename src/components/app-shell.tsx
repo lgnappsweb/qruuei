@@ -25,13 +25,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isAuthPage = isMounted && noNavPages.includes(pathname);
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <main className={cn("flex-1 p-4 sm:p-6 lg:p-8", !isAuthPage && "pb-28")}>
+    <div className="flex flex-col min-h-svh bg-background">
+      <main className={cn("flex-1 p-4 sm:p-6 lg:p-8", !isAuthPage && "pb-[92px]")}>
         {children}
       </main>
       {!isAuthPage && (
         <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-10 shadow-[0_-8px_16px_-4px_rgba(0,0,0,0.1)] dark:shadow-[0_-8px_16px_-4px_rgba(255,255,255,0.05)]">
-          <div className="flex justify-around items-center h-20 mx-auto">
+          <div className="flex justify-around items-center h-[76px] mx-auto">
             {navItems.map((item) => {
               const isActive = isMounted && pathname === item.href;
               return (
