@@ -22,8 +22,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     setIsClient(true);
   }, []);
   
-  const noNavPages = ['/login', '/signup', '/forgot-password', '/admin', '/supervisor', '/admin/operators', '/admin/supervisors'];
-  const isSpecialPage = isClient ? noNavPages.includes(pathname) : true;
+  const noNavPages = ['/login', '/signup', '/forgot-password', '/admin', '/supervisor'];
+  const isSpecialPage = isClient ? noNavPages.some(page => pathname.startsWith(page)) : true;
 
   return (
     <div className="flex flex-col h-svh bg-background overflow-hidden">

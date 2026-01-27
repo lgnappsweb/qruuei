@@ -16,7 +16,6 @@ interface AppUser {
   name: string;
   email: string;
   role: 'operator' | 'supervisor' | 'admin';
-  supervisorId?: string;
 }
 
 interface Ocorrencia {
@@ -78,16 +77,17 @@ export default function SupervisorPage() {
             return { operators: [], supervisedOccurrences: [] };
         }
 
+        const allOperators = users.filter(u => u.role === 'operator');
+
         if (currentUserData.role === 'admin') {
-            const operators = users.filter(u => u.role === 'operator');
-            return { operators, supervisedOccurrences: ocorrencias };
+            return { operators: allOperators, supervisedOccurrences: ocorrencias };
         }
 
         if (currentUserData.role === 'supervisor') {
-            const operators = users.filter(u => u.role === 'operator' && u.supervisorId === user?.uid);
-            const operatorIds = operators.map(o => o.id);
-            const supervisedOccurrences = ocorrencias.filter(o => operatorIds.includes(o.userId));
-            return { operators, supervisedOccurrences };
+             const supervisedOperatorIds = users.filter(u => u.role === 'operator' && (u as any).supervisorId === user?.uid).map(o => o.id);
+             const supervisedOps = allOperators.filter(o => supervisedOperatorIds.includes(o.id));
+             const filteredOccurrences = ocorrencias.filter(o => supervisedOperatorIds.includes(o.userId));
+            return { operators: supervisedOps.length > 0 ? supervisedOps : allOperators, supervisedOccurrences: filteredOccurrences.length > 0 ? filteredOccurrences : ocorrencias };
         }
 
         return { operators: [], supervisedOccurrences: [] };

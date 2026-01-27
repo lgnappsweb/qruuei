@@ -1,134 +1,79 @@
 'use client';
-import { useUser, useFirestore, useDoc, useCollection } from '@/firebase';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCollection } from '@/firebase';
 import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { useToast } from '@/hooks/use-toast';
-import { Briefcase, FileText, Users, ArrowLeft } from 'lucide-react';
+import { Users, FileText, CheckCircle, Clock } from 'lucide-react';
+import type { Timestamp } from 'firebase/firestore';
 
-
-interface AppUser {
-  id: string;
-  name: string;
-  email: string;
-  role: 'operator' | 'supervisor' | 'admin';
-  status: 'active' | 'inactive';
-  supervisorId?: string;
-}
-
+interface AppUser { id: string; }
 interface Ocorrencia {
     id: string;
+    codOcorrencia: string;
+    rodovia: string;
+    km: string;
+    status: 'Em Andamento' | 'Finalizada';
+    createdAt: Timestamp;
 }
 
-export default function AdminPage() {
-    const { user, initialising: userInitialising } = useUser();
+export default function AdminDashboardPage() {
     const { data: users, loading: usersLoading } = useCollection<AppUser>('users');
     const { data: ocorrencias, loading: ocorrenciasLoading } = useCollection<Ocorrencia>('occurrences');
-    const { toast } = useToast();
-    const firestore = useFirestore();
 
-    const [messageTitle, setMessageTitle] = useState('');
-    const [messageContent, setMessageContent] = useState('');
-    const [selectedSupervisorForMessage, setSelectedSupervisorForMessage] = useState('');
-
-    const handleSendMessage = async () => {
-        if (!firestore || !selectedSupervisorForMessage || !messageTitle || !messageContent) {
-             toast({ variant: 'destructive', title: 'Erro', description: 'Por favor, preencha todos os campos da mensagem.' });
-            return;
-        }
-
-        const supervisors = users?.filter(u => u.role === 'supervisor') || [];
-
-        const targetUserIds = selectedSupervisorForMessage === 'all_supervisors' 
-            ? supervisors.map(s => s.id)
-            : [selectedSupervisorForMessage];
-
-        try {
-            for (const userId of targetUserIds) {
-                const messagesCollectionRef = collection(firestore, 'users', userId, 'messages');
-                await addDoc(messagesCollectionRef, {
-                    title: messageTitle,
-                    content: messageContent,
-                    createdAt: serverTimestamp(),
-                    read: false,
-                    userId: userId
-                });
-            }
-
-            if (selectedSupervisorForMessage === 'all_supervisors') {
-                toast({ title: 'Sucesso', description: 'Recado enviado para todos os supervisores.' });
-            } else {
-                 toast({ title: 'Sucesso', description: 'Recado enviado para o supervisor.' });
-            }
-           
-            setMessageTitle('');
-            setMessageContent('');
-            setSelectedSupervisorForMessage('');
-        } catch (error: any) {
-             toast({ variant: 'destructive', title: 'Erro', description: error.message });
-        }
-    };
-
-    if (userInitialising || usersLoading || ocorrenciasLoading) {
+    if (usersLoading || ocorrenciasLoading) {
         return <div className="flex h-screen items-center justify-center">Carregando...</div>;
     }
     
-    const supervisors = users?.filter(u => u.role === 'supervisor') || [];
-    const operators = users?.filter(u => u.role === 'operator') || [];
-
     const stats = {
-        operators: operators.length,
-        supervisors: supervisors.length,
-        occurrences: ocorrencias?.length || 0
+        totalUsers: users?.length || 0,
+        totalOccurrences: ocorrencias?.length || 0,
+        openOccurrences: ocorrencias?.filter(o => o.status === 'Em Andamento').length || 0,
+        resolvedOccurrences: ocorrencias?.filter(o => o.status === 'Finalizada').length || 0,
     };
+
+    const recentOccurrences = ocorrencias?.sort((a,b) => b.createdAt.toMillis() - a.createdAt.toMillis()).slice(0, 5) || [];
 
     return (
         <div className="space-y-8">
-            <Button asChild variant="ghost" className="mb-4 pl-0">
-                <Link href="/">
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    Voltar para o Painel do Operador
-                </Link>
-            </Button>
             <h1 className="text-3xl font-bold">Painel do Administrador</h1>
 
-            <div className="grid gap-4 md:grid-cols-3">
-                <Link href="/admin/operators">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total de Ocorrências</CardTitle>
+                        <FileText className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.totalOccurrences}</div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Ocorrências Abertas</CardTitle>
+                        <Clock className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.openOccurrences}</div>
+                    </CardContent>
+                </Card>
+                 <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Ocorrências Resolvidas</CardTitle>
+                        <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.resolvedOccurrences}</div>
+                    </CardContent>
+                </Card>
+                <Link href="/admin/users">
                     <Card className="cursor-pointer hover:bg-accent transition-colors">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Operadores</CardTitle>
+                            <CardTitle className="text-sm font-medium">Total de Usuários</CardTitle>
                             <Users className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{stats.operators}</div>
-                        </CardContent>
-                    </Card>
-                </Link>
-                <Link href="/admin/supervisors">
-                    <Card className="cursor-pointer hover:bg-accent transition-colors">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Supervisores</CardTitle>
-                            <Briefcase className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stats.supervisors}</div>
-                        </CardContent>
-                    </Card>
-                </Link>
-                <Link href="/ocorrencias">
-                     <Card className="cursor-pointer hover:bg-accent transition-colors">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Ocorrências</CardTitle>
-                            <FileText className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stats.occurrences}</div>
+                            <div className="text-2xl font-bold">{stats.totalUsers}</div>
                         </CardContent>
                     </Card>
                 </Link>
@@ -136,25 +81,43 @@ export default function AdminPage() {
             
             <Card>
                 <CardHeader>
-                    <CardTitle>Comunicação Institucional</CardTitle>
-                    <CardDescription>Envie recados para supervisores.</CardDescription>
+                    <CardTitle>Ocorrências Recentes</CardTitle>
+                    <CardDescription>As 5 ocorrências mais recentes registradas no sistema.</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                    <Select value={selectedSupervisorForMessage} onValueChange={setSelectedSupervisorForMessage}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Selecione um destinatário" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all_supervisors">Todos os Supervisores</SelectItem>
-                            {supervisors.map(s => (
-                                <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <Input placeholder="Título do recado" value={messageTitle} onChange={(e) => setMessageTitle(e.target.value)} />
-                    <Textarea placeholder="Conteúdo do recado" value={messageContent} onChange={(e) => setMessageContent(e.target.value)} />
-                    <Button onClick={handleSendMessage}>Enviar Recado</Button>
+                <CardContent>
+                     <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Tipo</TableHead>
+                                <TableHead>Local</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead>Data</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {recentOccurrences.length > 0 ? (
+                                recentOccurrences.map(o => (
+                                <TableRow key={o.id}>
+                                    <TableCell>{o.codOcorrencia}</TableCell>
+                                    <TableCell>{o.rodovia} - {o.km}</TableCell>
+                                    <TableCell>{o.status}</TableCell>
+                                    <TableCell>{o.createdAt.toDate().toLocaleDateString('pt-BR')}</TableCell>
+                                </TableRow>
+                            ))) : (
+                                <TableRow>
+                                    <TableCell colSpan={4} className="h-24 text-center">Nenhuma ocorrência recente.</TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
                 </CardContent>
+                 <CardFooter className="flex justify-end">
+                    <Button asChild>
+                        <Link href="/admin/occurrences">
+                            Ver Todas as Ocorrências
+                        </Link>
+                    </Button>
+                </CardFooter>
             </Card>
         </div>
     );
