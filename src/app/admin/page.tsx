@@ -59,7 +59,7 @@ export default function AdminPage() {
     const [selectedSupervisorForMessage, setSelectedSupervisorForMessage] = useState('');
 
     const [isAddSupervisorDialogOpen, setIsAddSupervisorDialogOpen] = useState(false);
-    const [emailToPromote, setEmailToPromote] = useState('');
+    const [operatorToPromote, setOperatorToPromote] = useState('');
     const [newSupervisorName, setNewSupervisorName] = useState('');
     const [supervisorToDelete, setSupervisorToDelete] = useState<AppUser | null>(null);
 
@@ -75,32 +75,15 @@ export default function AdminPage() {
     };
     
     const handleAddSupervisor = async () => {
-        if (!firestore || !emailToPromote.trim()) {
-            toast({ variant: 'destructive', title: 'Erro', description: 'Por favor, insira um e-mail.' });
+        if (!firestore || !operatorToPromote) {
+            toast({ variant: 'destructive', title: 'Erro', description: 'Por favor, selecione um operador.' });
             return;
         }
 
-        const usersRef = collection(firestore, 'users');
-        const q = query(usersRef, where("email", "==", emailToPromote.trim()));
+        const userDocRef = doc(firestore, 'users', operatorToPromote);
+        const userToPromoteData = users?.find(u => u.id === operatorToPromote);
 
         try {
-            const querySnapshot = await getDocs(q);
-
-            if (querySnapshot.empty) {
-                toast({ variant: 'destructive', title: 'Usuário não encontrado', description: 'Nenhum usuário com este e-mail foi encontrado no sistema.' });
-                return;
-            }
-
-            const userDoc = querySnapshot.docs[0];
-            const userData = userDoc.data();
-
-            if (userData.role === 'supervisor' || userData.role === 'admin') {
-                toast({ title: 'Informação', description: 'Este usuário já é um supervisor ou administrador.' });
-                return;
-            }
-
-            const userDocRef = doc(firestore, 'users', userDoc.id);
-            
             const updateData: { role: string; name?: string } = { role: 'supervisor' };
             if (newSupervisorName.trim()) {
                 updateData.name = newSupervisorName.trim();
@@ -108,11 +91,11 @@ export default function AdminPage() {
 
             await updateDoc(userDocRef, updateData);
             
-            const finalName = newSupervisorName.trim() || userData.name || 'Usuário';
+            const finalName = newSupervisorName.trim() || userToPromoteData?.name || 'Usuário';
 
             toast({ title: 'Sucesso', description: `${finalName} promovido a supervisor.` });
             setIsAddSupervisorDialogOpen(false);
-            setEmailToPromote('');
+            setOperatorToPromote('');
             setNewSupervisorName('');
 
         } catch (error: any) {
@@ -240,7 +223,7 @@ export default function AdminPage() {
                     <Dialog open={isAddSupervisorDialogOpen} onOpenChange={(isOpen) => {
                         setIsAddSupervisorDialogOpen(isOpen);
                         if (!isOpen) {
-                            setEmailToPromote('');
+                            setOperatorToPromote('');
                             setNewSupervisorName('');
                         }
                     }}>
@@ -254,7 +237,7 @@ export default function AdminPage() {
                             <DialogHeader>
                                 <DialogTitle>Adicionar Novo Supervisor</DialogTitle>
                                 <DialogDescription>
-                                    Digite o e-mail do operador para promovê-lo a supervisor. O nome será atualizado se preenchido.
+                                    Selecione um operador para promovê-lo a supervisor. O nome será atualizado se preenchido.
                                 </DialogDescription>
                             </DialogHeader>
                             <div className="py-4 space-y-4">
@@ -268,13 +251,17 @@ export default function AdminPage() {
                                     />
                                 </div>
                                 <div>
-                                    <Label htmlFor="email-promote">Email do usuário</Label>
-                                    <Input 
-                                        id="email-promote"
-                                        placeholder="email.do.operador@example.com" 
-                                        value={emailToPromote} 
-                                        onChange={(e) => setEmailToPromote(e.target.value)} 
-                                    />
+                                    <Label htmlFor="operator-select">Selecione o Operador</Label>
+                                    <Select value={operatorToPromote} onValueChange={setOperatorToPromote}>
+                                        <SelectTrigger id="operator-select">
+                                            <SelectValue placeholder="Selecione um operador" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {operators.map(o => (
+                                                <SelectItem key={o.id} value={o.id}>{o.name} ({o.email})</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                             </div>
                             <DialogFooter>
