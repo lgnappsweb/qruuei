@@ -13,6 +13,34 @@
       "imageUrl": "https://blog.deltafiat.com.br/wp-content/uploads/2025/09/placas-de-regulamentacao-r24-ate-r46.webp",
       "imageHint": "placas regulamentacao",
       "category": "regulamentacao"
+    },
+    {
+      "id": "placa-regulamentacao-3",
+      "description": "Placas de Regulamentação",
+      "imageUrl": "https://images.noticiasautomotivas.com.br/img/f/placas-de-regulamentacao-4.jpg",
+      "imageHint": "placas regulamentacao",
+      "category": "regulamentacao"
+    },
+    {
+      "id": "placa-indicacao-1",
+      "description": "Placas de Indicação",
+      "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_ind1-600x374-1.png",
+      "imageHint": "placas indicacao",
+      "category": "indicacao"
+    },
+    {
+      "id": "placa-indicacao-2",
+      "description": "Placas de Indicação",
+      "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_ind2-600x380-1.png",
+      "imageHint": "placas indicacao",
+      "category": "indicacao"
+    },
+    {
+      "id": "placa-advertencia-1",
+      "description": "Placas de Advertência (A1 a A10)",
+      "imageUrl": "https://blog.deltafiat.com.br/wp-content/uploads/2025/09/placas-de-advertencia-a1-ate-a10.webp",
+      "imageHint": "placas advertencia",
+      "category": "advertencia"
     }
   ]
 }
