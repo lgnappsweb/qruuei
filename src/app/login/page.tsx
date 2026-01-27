@@ -61,18 +61,17 @@ export default function LoginPage() {
       const userDocRef = doc(firestore, "users", user.uid);
       const userDoc = await getDoc(userDocRef);
       
-      const isAdmin = user.email === 'lgngregorio92@gmail.com';
-      const userRole = isAdmin ? 'admin' : 'operator';
-
-      if (!userDoc.exists()) {
-          await setDoc(userDocRef, {
-              name: user.displayName,
-              email: user.email,
-              photoURL: user.photoURL,
-              role: userRole,
-          }, { merge: true });
-      } else if (isAdmin) {
+      if (user.email === 'lgngregorio92@gmail.com') {
           await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+      } else {
+        if (!userDoc.exists()) {
+            await setDoc(userDocRef, {
+                name: user.displayName,
+                email: user.email,
+                photoURL: user.photoURL,
+                role: 'operator',
+            }, { merge: true });
+        }
       }
     } catch (error: any) {
       toast({
@@ -94,8 +93,10 @@ export default function LoginPage() {
     }
     try {
       const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
-      if (userCredential.user && userCredential.user.email === 'lgngregorio92@gmail.com') {
-          const userDocRef = doc(firestore, "users", userCredential.user.uid);
+      const user = userCredential.user;
+
+      if (user.email === 'lgngregorio92@gmail.com') {
+          const userDocRef = doc(firestore, "users", user.uid);
           await setDoc(userDocRef, { role: 'admin' }, { merge: true });
       }
     } catch (error: any) {
