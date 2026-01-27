@@ -145,7 +145,7 @@ export default function ImagensPage() {
   const accordionSections = [
     {
       value: 'item-1',
-      title: 'Placas de Regulamentação',
+      title: 'Placas de regulamentação – Placas vermelhas',
       images: regulamentacaoImages,
       content: <PlacasRegulamentacaoTable />,
     },
