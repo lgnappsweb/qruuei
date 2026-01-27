@@ -27,6 +27,18 @@
             "supervisor",
             "admin"
           ]
+        },
+        "supervisorId": {
+          "type": "string",
+          "description": "The ID of the operator's supervisor."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "inactive"
+          ],
+          "description": "The user's status in the system."
         }
       }
     },

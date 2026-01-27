@@ -10,18 +10,28 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { doc, updateDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
+import { Briefcase, FileText, Users, ShieldCheck } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 interface AppUser {
   id: string;
   name: string;
   email: string;
   role: 'operator' | 'supervisor' | 'admin';
+  status: 'active' | 'inactive';
+  supervisorId?: string;
+}
+
+interface Ocorrencia {
+    id: string;
 }
 
 export default function AdminPage() {
     const { user, initialising: userInitialising } = useUser();
     const { data: currentUserData, loading: currentUserLoading } = useDoc<AppUser>(user ? `users/${user.uid}` : null);
     const { data: users, loading: usersLoading } = useCollection<AppUser>('users');
+    const { data: ocorrencias, loading: ocorrenciasLoading } = useCollection<Ocorrencia>('occurrences');
     const router = useRouter();
     const { toast } = useToast();
     const firestore = useFirestore();
@@ -30,13 +40,13 @@ export default function AdminPage() {
     const [messageContent, setMessageContent] = useState('');
     const [selectedSupervisor, setSelectedSupervisor] = useState('');
 
-    // useEffect(() => {
-    //     if (!userInitialising && !currentUserLoading) {
-    //         if (!user || currentUserData?.role !== 'admin') {
-    //             router.push('/');
-    //         }
-    //     }
-    // }, [user, userInitialising, currentUserData, currentUserLoading, router]);
+    useEffect(() => {
+        if (!userInitialising && !currentUserLoading) {
+            if (!user || currentUserData?.role !== 'admin') {
+                router.push('/');
+            }
+        }
+    }, [user, userInitialising, currentUserData, currentUserLoading, router]);
 
     const handleRoleChange = async (userId: string, role: string) => {
         if (!firestore) return;
@@ -44,6 +54,28 @@ export default function AdminPage() {
         try {
             await updateDoc(userDocRef, { role });
             toast({ title: 'Sucesso', description: `Função do usuário atualizada para ${role}.` });
+        } catch (error: any) {
+            toast({ variant: 'destructive', title: 'Erro', description: error.message });
+        }
+    };
+
+    const handleStatusChange = async (userId: string, status: boolean) => {
+        if (!firestore) return;
+        const userDocRef = doc(firestore, 'users', userId);
+        try {
+            await updateDoc(userDocRef, { status: status ? 'active' : 'inactive' });
+            toast({ title: 'Sucesso', description: `Status do usuário atualizado.` });
+        } catch (error: any) {
+            toast({ variant: 'destructive', title: 'Erro', description: error.message });
+        }
+    };
+    
+    const handleSupervisorChange = async (operatorId: string, supervisorId: string) => {
+        if (!firestore) return;
+        const userDocRef = doc(firestore, 'users', operatorId);
+        try {
+            await updateDoc(userDocRef, { supervisorId });
+            toast({ title: 'Sucesso', description: `Supervisor atribuído.` });
         } catch (error: any) {
             toast({ variant: 'destructive', title: 'Erro', description: error.message });
         }
@@ -72,24 +104,61 @@ export default function AdminPage() {
         }
     };
 
-    if (userInitialising || currentUserLoading || usersLoading) {
+    if (userInitialising || currentUserLoading || usersLoading || ocorrenciasLoading) {
         return <div className="flex h-screen items-center justify-center">Carregando...</div>;
     }
     
-    // if (currentUserData?.role !== 'admin') {
-    //     return null;
-    // }
+    if (currentUserData?.role !== 'admin') {
+        return null;
+    }
     
     const supervisors = users?.filter(u => u.role === 'supervisor') || [];
+    const operators = users?.filter(u => u.role === 'operator') || [];
+
+    const stats = {
+        operators: operators.length,
+        supervisors: supervisors.length,
+        occurrences: ocorrencias?.length || 0
+    };
 
     return (
         <div className="space-y-8">
             <h1 className="text-3xl font-bold">Painel do Administrador</h1>
+
+            <div className="grid gap-4 md:grid-cols-3">
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Operadores</CardTitle>
+                        <Users className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.operators}</div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Supervisores</CardTitle>
+                        <Briefcase className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.supervisors}</div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Ocorrências</CardTitle>
+                        <FileText className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.occurrences}</div>
+                    </CardContent>
+                </Card>
+            </div>
             
             <Card>
                 <CardHeader>
                     <CardTitle>Gerenciamento de Usuários</CardTitle>
-                    <CardDescription>Gerencie as funções dos usuários do sistema.</CardDescription>
+                    <CardDescription>Gerencie as funções, status e vínculos dos usuários do sistema.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Table>
@@ -98,6 +167,8 @@ export default function AdminPage() {
                                 <TableHead>Nome</TableHead>
                                 <TableHead>Email</TableHead>
                                 <TableHead>Função</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead>Supervisor</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -117,6 +188,31 @@ export default function AdminPage() {
                                             </SelectContent>
                                         </Select>
                                     </TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center space-x-2">
+                                            <Switch
+                                                id={`status-${u.id}`}
+                                                checked={u.status === 'active'}
+                                                onCheckedChange={(checked) => handleStatusChange(u.id, checked)}
+                                            />
+                                            <Label htmlFor={`status-${u.id}`}>{u.status === 'active' ? 'Ativo' : 'Inativo'}</Label>
+                                        </div>
+                                    </TableCell>
+                                     <TableCell>
+                                        {u.role === 'operator' && (
+                                            <Select value={u.supervisorId || ''} onValueChange={(value) => handleSupervisorChange(u.id, value)}>
+                                                <SelectTrigger className="w-[180px]">
+                                                    <SelectValue placeholder="Atribuir supervisor" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="">Nenhum</SelectItem>
+                                                    {supervisors.map(s => (
+                                                        <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -126,7 +222,8 @@ export default function AdminPage() {
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Enviar Recado para Supervisor</CardTitle>
+                    <CardTitle>Comunicação Institucional</CardTitle>
+                    <CardDescription>Envie recados para todos os supervisores.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <Select value={selectedSupervisor} onValueChange={setSelectedSupervisor}>
