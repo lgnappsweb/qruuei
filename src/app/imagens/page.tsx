@@ -54,7 +54,7 @@ export default function ImagensPage() {
           <h1 className="font-condensed text-3xl font-bold tracking-tight">
             Placas de Sinalização
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-center">
             Consulte as placas de sinalização de trânsito.
           </p>
         </div>
@@ -89,7 +89,12 @@ export default function ImagensPage() {
                             />
                           </CardContent>
                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                            <CardTitle className="text-lg text-white truncate">{image.description}</CardTitle>
+                            <CardTitle className="text-lg text-white truncate flex justify-between items-center">
+                                <span>{image.description}</span>
+                                {image.code && (
+                                    <span className="font-mono bg-black/50 text-sm px-2 py-1 rounded-md">{image.code}</span>
+                                )}
+                            </CardTitle>
                           </div>
                         </Card>
                       ))}
