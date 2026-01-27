@@ -10,7 +10,7 @@ const navItems = [
   { href: "/", label: "Início", icon: Home },
   { href: "/codigos", label: "Códigos", icon: FileCode },
   { href: "/ocorrencias", label: "Ocorrências", icon: ShieldAlert },
-  { href: "/imagens", label: "Imagens", icon: ImageIcon },
+  { href: "/imagens", label: "Placas", icon: ImageIcon },
   { href: "/ajustes", label: "Ajustes", icon: Settings },
 ];
 

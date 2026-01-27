@@ -61,10 +61,10 @@ export default function ImagensPage() {
       <div className="space-y-8 max-w-7xl mx-auto pb-24">
         <div className="space-y-2">
           <h1 className="font-condensed text-3xl font-bold tracking-tight">
-            Galeria de Imagens
+            Placas de Sinalização
           </h1>
           <p className="text-muted-foreground">
-            Uma coleção de imagens inspiradoras.
+            Consulte as placas de sinalização de trânsito.
           </p>
         </div>
 
