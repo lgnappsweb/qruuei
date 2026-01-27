@@ -1,3 +1,11 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "placa-regulamentacao-1",
+      "description": "Placas de Regulamentação (R-1 a R-23)",
+      "imageUrl": "https://blog.deltafiat.com.br/wp-content/uploads/2025/09/placas-de-regulamentacao-r1-ate-r23.webp",
+      "imageHint": "placas regulamentacao",
+      "category": "regulamentacao"
+    }
+  ]
 }
