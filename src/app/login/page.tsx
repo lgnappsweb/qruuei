@@ -63,12 +63,14 @@ export default function LoginPage() {
       const userDocSnap = await getDoc(userDocRef);
 
       const adminEmails = ['lgngregorio@icloud.com', 'lgngregorio92@gmail.com'];
-      let userRole = 'operator';
-
-      if (user.email && adminEmails.includes(user.email.toLowerCase())) {
-          userRole = 'admin';
-      } else if (userDocSnap.exists()) {
-        userRole = userDocSnap.data().role;
+      const isUserAdmin = user.email && adminEmails.includes(user.email.toLowerCase());
+      
+      let userRole = 'operator'; // default for new user
+      if (userDocSnap.exists()) {
+        userRole = userDocSnap.data().role; // preserve existing role
+      }
+      if (isUserAdmin) {
+        userRole = 'admin'; // override to admin if they are in the list
       }
       
       await setDoc(userDocRef, {
@@ -104,18 +106,21 @@ export default function LoginPage() {
       const userDocSnap = await getDoc(userDocRef);
 
       const adminEmails = ['lgngregorio@icloud.com', 'lgngregorio92@gmail.com'];
-      let userRole = 'operator';
+      const isUserAdmin = user.email && adminEmails.includes(user.email.toLowerCase());
 
-      if (user.email && adminEmails.includes(user.email.toLowerCase())) {
-        userRole = 'admin';
-      } else if (userDocSnap.exists()) {
+      let userRole = 'operator';
+      if (userDocSnap.exists()) {
         userRole = userDocSnap.data().role;
       }
+      if (isUserAdmin) {
+        userRole = 'admin';
+      }
       
+      const existingData = userDocSnap.exists() ? userDocSnap.data() : {};
+
       await setDoc(userDocRef, {
-        name: user.displayName,
+        ...existingData,
         email: user.email,
-        photoURL: user.photoURL,
         role: userRole,
       }, { merge: true });
 

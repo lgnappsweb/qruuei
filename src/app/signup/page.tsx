@@ -66,22 +66,13 @@ export default function SignupPage() {
         const adminEmails = ['lgngregorio@icloud.com', 'lgngregorio92@gmail.com'];
         const userRole = adminEmails.includes(values.email.toLowerCase()) ? 'admin' : 'operator';
 
-        // Create user document in Firestore
         const userDocRef = doc(firestore, "users", newUser.uid);
-        try {
-            await setDoc(userDocRef, {
-              name: values.name,
-              email: newUser.email,
-              photoURL: newUser.photoURL ?? null,
-              role: userRole,
-            });
-        } catch (dbError: any) {
-             toast({
-              variant: "destructive",
-              title: "Erro ao criar perfil",
-              description: `Sua conta foi criada, mas não foi possível salvar seu perfil: ${dbError.message}`,
-            });
-        }
+        await setDoc(userDocRef, {
+          name: values.name,
+          email: newUser.email,
+          photoURL: newUser.photoURL ?? null,
+          role: userRole,
+        });
         
         await newUser.reload();
       }
