@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Users, FileText, CheckCircle, Clock } from 'lucide-react';
+import { Users, FileText, CheckCircle, Clock, ArrowLeft } from 'lucide-react';
 import type { Timestamp } from 'firebase/firestore';
 
 interface AppUser { id: string; }
@@ -36,6 +36,12 @@ export default function AdminDashboardPage() {
 
     return (
         <div className="space-y-8">
+            <Button asChild variant="ghost" className="mb-4 pl-0">
+                <Link href="/">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Voltar para a página do operador
+                </Link>
+            </Button>
             <h1 className="text-3xl font-bold">Painel do Administrador</h1>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
