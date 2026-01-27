@@ -22,7 +22,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     setIsClient(true);
   }, []);
   
-  const noNavPages = ['/login', '/signup', '/forgot-password', '/admin', '/supervisor', '/admin/operators'];
+  const noNavPages = ['/login', '/signup', '/forgot-password', '/admin', '/supervisor', '/admin/operators', '/admin/supervisors'];
   const isSpecialPage = isClient ? noNavPages.includes(pathname) : true;
 
   return (
