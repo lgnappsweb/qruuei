@@ -180,17 +180,6 @@ export default function AdminPage() {
         }
     };
 
-    const handleSupervisorChange = async (userId: string, supervisorId: string) => {
-        if (!firestore) return;
-        const userDocRef = doc(firestore, 'users', userId);
-        try {
-            await updateDoc(userDocRef, { supervisorId: supervisorId === 'none' ? null : supervisorId });
-            toast({ title: 'Sucesso', description: `Supervisor do operador atualizado.` });
-        } catch (error: any) {
-            toast({ variant: 'destructive', title: 'Erro', description: error.message });
-        }
-    };
-
     if (userInitialising || usersLoading || ocorrenciasLoading) {
         return <div className="flex h-screen items-center justify-center">Carregando...</div>;
     }
@@ -215,17 +204,15 @@ export default function AdminPage() {
             <h1 className="text-3xl font-bold">Painel do Administrador</h1>
 
             <div className="grid gap-4 md:grid-cols-3">
-                <Link href="#operators-management">
-                    <Card className="cursor-pointer hover:bg-accent transition-colors">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Operadores</CardTitle>
-                            <Users className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stats.operators}</div>
-                        </CardContent>
-                    </Card>
-                </Link>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Operadores</CardTitle>
+                        <Users className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.operators}</div>
+                    </CardContent>
+                </Card>
                 <Link href="#supervisors-management">
                     <Card className="cursor-pointer hover:bg-accent transition-colors">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -332,59 +319,6 @@ export default function AdminPage() {
                                         <Button variant="ghost" size="icon" onClick={() => setSupervisorToDelete(s)}>
                                             <Trash2 className="h-4 w-4 text-destructive" />
                                         </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
-
-            <Card id="operators-management">
-                <CardHeader>
-                    <CardTitle>Gerenciamento de Operadores</CardTitle>
-                    <CardDescription>Atribua supervisores e gerencie o status dos operadores.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Nome</TableHead>
-                                <TableHead>Email</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Supervisor</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {operators.map(op => (
-                                <TableRow key={op.id}>
-                                    <TableCell>{op.name}</TableCell>
-                                    <TableCell>{op.email}</TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center space-x-2">
-                                            <Switch
-                                                id={`status-op-${op.id}`}
-                                                checked={op.status === 'active'}
-                                                onCheckedChange={(checked) => handleStatusChange(op.id, checked)}
-                                            />
-                                            <Label htmlFor={`status-op-${op.id}`}>{op.status === 'active' ? 'Ativo' : 'Inativo'}</Label>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Select
-                                            value={op.supervisorId || 'none'}
-                                            onValueChange={(value) => handleSupervisorChange(op.id, value)}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Selecione um supervisor" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="none">Nenhum</SelectItem>
-                                                {supervisors.map(s => (
-                                                    <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
                                     </TableCell>
                                 </TableRow>
                             ))}
