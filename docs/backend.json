@@ -18,6 +18,15 @@
           "type": "string",
           "format": "uri",
           "description": "URL of the user's profile picture."
+        },
+        "role": {
+          "type": "string",
+          "description": "The user's role.",
+          "enum": [
+            "operator",
+            "supervisor",
+            "admin"
+          ]
         }
       }
     },
@@ -82,6 +91,48 @@
         "title",
         "content"
       ]
+    },
+    "occurrence": {
+      "title": "Occurrence",
+      "description": "A recorded occurrence report.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "codOcorrencia": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "rodovia": {
+          "type": "string"
+        },
+        "km": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "formPath": {
+          "type": "string"
+        },
+        "numeroOcorrencia": {
+          "type": "string"
+        },
+        "fullReport": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "userId",
+        "createdAt"
+      ]
     }
   },
   "auth": {
@@ -95,7 +146,7 @@
       "schema": {
         "$ref": "#/backend/entities/user"
       },
-      "description": "Stores public profile information for each user."
+      "description": "Stores public profile information and role for each user."
     },
     "/users/{userId}/notes/{noteId}": {
       "schema": {
@@ -108,6 +159,12 @@
         "$ref": "#/backend/entities/message"
       },
       "description": "Stores messages for each user."
+    },
+    "/occurrences/{occurrenceId}": {
+      "schema": {
+        "$ref": "#/backend/entities/occurrence"
+      },
+      "description": "Stores all occurrence reports from all users."
     }
   }
 }

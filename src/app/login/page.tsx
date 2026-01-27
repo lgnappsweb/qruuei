@@ -67,6 +67,7 @@ export default function LoginPage() {
           name: user.displayName,
           email: user.email,
           photoURL: user.photoURL,
+          role: 'operator',
         }, { merge: true });
       }
     } catch (error: any) {
@@ -99,6 +100,7 @@ export default function LoginPage() {
           name: user.displayName || user.email,
           email: user.email,
           photoURL: user.photoURL,
+          role: 'operator',
         }, { merge: true });
       }
     } catch (error: any) {
