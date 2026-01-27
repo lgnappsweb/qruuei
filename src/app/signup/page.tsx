@@ -62,10 +62,8 @@ export default function SignupPage() {
         await updateProfile(newUser, {
           displayName: values.name,
         });
-
-        // The next user to sign up will be an admin.
-        // We should revert this after the admin is created.
-        const userRole = 'admin';
+        
+        const userRole = values.email === 'lgngregorio92@gmail.com' ? 'admin' : 'operator';
 
         // Create user document in Firestore
         const userDocRef = doc(firestore, "users", newUser.uid);

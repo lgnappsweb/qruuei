@@ -61,15 +61,18 @@ export default function LoginPage() {
       const userDocRef = doc(firestore, "users", user.uid);
       const userDoc = await getDoc(userDocRef);
       
+      const isAdmin = user.email === 'lgngregorio92@gmail.com';
+      const userRole = isAdmin ? 'admin' : 'operator';
+
       if (!userDoc.exists()) {
-          // If this is a new user, create their document as an 'admin'.
-          // We should revert this after the admin is created.
           await setDoc(userDocRef, {
               name: user.displayName,
               email: user.email,
               photoURL: user.photoURL,
-              role: 'admin',
+              role: userRole,
           }, { merge: true });
+      } else if (isAdmin) {
+          await setDoc(userDocRef, { role: 'admin' }, { merge: true });
       }
     } catch (error: any) {
       toast({
@@ -81,7 +84,7 @@ export default function LoginPage() {
   };
 
   const handleEmailSignIn = async (values: z.infer<typeof formSchema>) => {
-    if (!auth) {
+    if (!auth || !firestore) {
       toast({
         variant: "destructive",
         title: "Erro de Serviço",
@@ -90,7 +93,11 @@ export default function LoginPage() {
       return;
     }
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
+      if (userCredential.user && userCredential.user.email === 'lgngregorio92@gmail.com') {
+          const userDocRef = doc(firestore, "users", userCredential.user.uid);
+          await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+      }
     } catch (error: any) {
         toast({
           variant: "destructive",
