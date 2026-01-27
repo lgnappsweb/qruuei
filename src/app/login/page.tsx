@@ -59,25 +59,22 @@ export default function LoginPage() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       const userDocRef = doc(firestore, "users", user.uid);
+      const userDoc = await getDoc(userDocRef);
 
-      if (user.email === 'lgngregorio@icloud.com') {
-          await setDoc(userDocRef, {
-              name: user.displayName,
-              email: user.email,
-              photoURL: user.photoURL,
-              role: 'admin'
-          }, { merge: true });
-      } else {
-          const userDoc = await getDoc(userDocRef);
-          if (!userDoc.exists()) {
-              await setDoc(userDocRef, {
-                  name: user.displayName,
-                  email: user.email,
-                  photoURL: user.photoURL,
-                  role: 'operator',
-              }, { merge: true });
-          }
+      const isAdmin = user.email === 'lgngregorio@icloud.com' || user.email === 'lgngregorio92@gmail.com';
+      const userRole = isAdmin ? 'admin' : 'operator';
+
+      if (!userDoc.exists()) {
+        await setDoc(userDocRef, {
+            name: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+            role: userRole,
+        }, { merge: true });
+      } else if (isAdmin) {
+         await setDoc(userDocRef, { role: 'admin' }, { merge: true });
       }
+
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -99,9 +96,10 @@ export default function LoginPage() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
       const user = userCredential.user;
-      const userDocRef = doc(firestore, "users", user.uid);
-
-      if (user.email === 'lgngregorio@icloud.com') {
+      
+      const isAdmin = user.email === 'lgngregorio@icloud.com' || user.email === 'lgngregorio92@gmail.com';
+      if (isAdmin) {
+          const userDocRef = doc(firestore, "users", user.uid);
           await setDoc(userDocRef, { role: 'admin' }, { merge: true });
       }
       

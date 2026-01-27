@@ -63,7 +63,8 @@ export default function SignupPage() {
           displayName: values.name,
         });
         
-        const userRole = values.email === 'lgngregorio@icloud.com' ? 'admin' : 'operator';
+        const isAdmin = values.email === 'lgngregorio@icloud.com' || values.email === 'lgngregorio92@gmail.com';
+        const userRole = isAdmin ? 'admin' : 'operator';
 
         // Create user document in Firestore
         const userDocRef = doc(firestore, "users", newUser.uid);
@@ -74,7 +75,6 @@ export default function SignupPage() {
           role: userRole,
         });
         
-        // Force refresh user data
         await newUser.reload();
       }
       toast({
