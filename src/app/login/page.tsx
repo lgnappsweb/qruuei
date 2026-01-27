@@ -61,7 +61,7 @@ export default function LoginPage() {
       const userDocRef = doc(firestore, "users", user.uid);
       const userDoc = await getDoc(userDocRef);
       
-      if (user.email === 'lgngregorio92@gmail.com') {
+      if (user.email === 'lgngregorio@icloud.com') {
           await setDoc(userDocRef, { role: 'admin' }, { merge: true });
       } else {
         if (!userDoc.exists()) {
@@ -95,7 +95,7 @@ export default function LoginPage() {
       const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
       const user = userCredential.user;
 
-      if (user.email === 'lgngregorio92@gmail.com') {
+      if (user.email === 'lgngregorio@icloud.com') {
           const userDocRef = doc(firestore, "users", user.uid);
           await setDoc(userDocRef, { role: 'admin' }, { merge: true });
       }

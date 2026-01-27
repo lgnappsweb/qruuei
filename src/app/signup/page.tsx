@@ -63,7 +63,7 @@ export default function SignupPage() {
           displayName: values.name,
         });
         
-        const userRole = values.email === 'lgngregorio92@gmail.com' ? 'admin' : 'operator';
+        const userRole = values.email === 'lgngregorio@icloud.com' ? 'admin' : 'operator';
 
         // Create user document in Firestore
         const userDocRef = doc(firestore, "users", newUser.uid);
