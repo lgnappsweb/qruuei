@@ -93,7 +93,7 @@ export function OccurrenceCard({ occurrence }: OccurrenceCardProps) {
       )}>
         <div
           className={cn(
-            "rounded-full p-4 transition-transform group-hover:scale-110",
+            "rounded-full p-4 transition-transform group-hover:scale-110 animate-pulse-zoom",
             "shadow-2xl shadow-black/50",
             "dark:shadow-xl dark:hover:shadow-2xl dark:shadow-white/10 dark:ring-1 dark:ring-white/20",
             occurrence.color
