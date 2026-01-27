@@ -278,7 +278,7 @@ export default function ImagensPage() {
     },
     {
       value: 'item-3',
-      title: 'Indicação',
+      title: 'Placas de identificação – Placas Azuis',
       images: indicacaoImages,
       content: <p className="text-center text-muted-foreground py-12">Nenhum código nesta categoria ainda.</p>,
     },
