@@ -1,6 +1,7 @@
 'use client';
-import { useUser, useFirestore, useCollection } from '@/firebase';
-import { useState } from 'react';
+import { useUser, useFirestore, useDoc, useCollection } from '@/firebase';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -47,7 +48,7 @@ interface Ocorrencia {
 }
 
 export default function AdminPage() {
-    const { initialising: userInitialising } = useUser();
+    const { user, initialising: userInitialising } = useUser();
     const { data: users, loading: usersLoading } = useCollection<AppUser>('users');
     const { data: ocorrencias, loading: ocorrenciasLoading } = useCollection<Ocorrencia>('occurrences');
     const { toast } = useToast();
@@ -122,14 +123,6 @@ export default function AdminPage() {
 
     const handleDeleteSupervisor = async () => {
         if (!firestore || !supervisorToDelete) return;
-        
-        const operatorsOfSupervisor = users?.filter(u => u.supervisorId === supervisorToDelete.id);
-        if (operatorsOfSupervisor) {
-            for (const operator of operatorsOfSupervisor) {
-                const operatorDocRef = doc(firestore, 'users', operator.id);
-                await updateDoc(operatorDocRef, { supervisorId: null });
-            }
-        }
 
         const userDocRef = doc(firestore, 'users', supervisorToDelete.id);
         try {
@@ -203,7 +196,7 @@ export default function AdminPage() {
             <h1 className="text-3xl font-bold">Painel do Administrador</h1>
 
             <div className="grid gap-4 md:grid-cols-3">
-                <Link href="#">
+                <Link href="/admin/operators">
                     <Card className="cursor-pointer hover:bg-accent transition-colors">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Operadores</CardTitle>
@@ -356,7 +349,7 @@ export default function AdminPage() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Confirmar Ação</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Você tem certeza que deseja rebaixar {supervisorToDelete?.name} para a função de operador?
+                           Você tem certeza que deseja rebaixar {supervisorToDelete?.name} para a função de operador? A atribuição de supervisor para os operadores dele será removida.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
