@@ -1,7 +1,7 @@
 'use client';
-import { useUser, useFirestore, useDoc, useCollection } from '@/firebase';
+import { useUser, useFirestore, useCollection } from '@/firebase';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { doc, updateDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
-import { Briefcase, FileText, Users, ShieldCheck } from 'lucide-react';
+import { Briefcase, FileText, Users } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
@@ -29,24 +29,14 @@ interface Ocorrencia {
 
 export default function AdminPage() {
     const { user, initialising: userInitialising } = useUser();
-    const { data: currentUserData, loading: currentUserLoading } = useDoc<AppUser>(user ? `users/${user.uid}` : null);
     const { data: users, loading: usersLoading } = useCollection<AppUser>('users');
     const { data: ocorrencias, loading: ocorrenciasLoading } = useCollection<Ocorrencia>('occurrences');
-    const router = useRouter();
     const { toast } = useToast();
     const firestore = useFirestore();
 
     const [messageTitle, setMessageTitle] = useState('');
     const [messageContent, setMessageContent] = useState('');
-    const [selectedSupervisor, setSelectedSupervisor] = useState('');
-
-    useEffect(() => {
-        if (!userInitialising && !currentUserLoading) {
-            if (!user || currentUserData?.role !== 'admin') {
-                router.push('/');
-            }
-        }
-    }, [user, userInitialising, currentUserData, currentUserLoading, router]);
+    const [selectedSupervisorForMessage, setSelectedSupervisorForMessage] = useState('');
 
     const handleRoleChange = async (userId: string, role: string) => {
         if (!firestore) return;
@@ -83,34 +73,45 @@ export default function AdminPage() {
     };
     
     const handleSendMessage = async () => {
-        if (!firestore || !selectedSupervisor || !messageTitle || !messageContent) {
+        if (!firestore || !selectedSupervisorForMessage || !messageTitle || !messageContent) {
              toast({ variant: 'destructive', title: 'Erro', description: 'Por favor, preencha todos os campos da mensagem.' });
             return;
         }
-        const messagesCollectionRef = collection(firestore, 'users', selectedSupervisor, 'messages');
+
+        const supervisors = users?.filter(u => u.role === 'supervisor') || [];
+
+        const targetUserIds = selectedSupervisorForMessage === 'all_supervisors' 
+            ? supervisors.map(s => s.id)
+            : [selectedSupervisorForMessage];
+
         try {
-            await addDoc(messagesCollectionRef, {
-                title: messageTitle,
-                content: messageContent,
-                createdAt: serverTimestamp(),
-                read: false,
-                userId: selectedSupervisor
-            });
-            toast({ title: 'Sucesso', description: 'Recado enviado para o supervisor.' });
+            for (const userId of targetUserIds) {
+                const messagesCollectionRef = collection(firestore, 'users', userId, 'messages');
+                await addDoc(messagesCollectionRef, {
+                    title: messageTitle,
+                    content: messageContent,
+                    createdAt: serverTimestamp(),
+                    read: false,
+                    userId: userId
+                });
+            }
+
+            if (selectedSupervisorForMessage === 'all_supervisors') {
+                toast({ title: 'Sucesso', description: 'Recado enviado para todos os supervisores.' });
+            } else {
+                 toast({ title: 'Sucesso', description: 'Recado enviado para o supervisor.' });
+            }
+           
             setMessageTitle('');
             setMessageContent('');
-            setSelectedSupervisor('');
+            setSelectedSupervisorForMessage('');
         } catch (error: any) {
              toast({ variant: 'destructive', title: 'Erro', description: error.message });
         }
     };
 
-    if (userInitialising || currentUserLoading || usersLoading || ocorrenciasLoading) {
+    if (userInitialising || usersLoading || ocorrenciasLoading) {
         return <div className="flex h-screen items-center justify-center">Carregando...</div>;
-    }
-    
-    if (currentUserData?.role !== 'admin') {
-        return null;
     }
     
     const supervisors = users?.filter(u => u.role === 'supervisor') || [];
@@ -224,14 +225,15 @@ export default function AdminPage() {
             <Card>
                 <CardHeader>
                     <CardTitle>Comunicação Institucional</CardTitle>
-                    <CardDescription>Envie recados para todos os supervisores.</CardDescription>
+                    <CardDescription>Envie recados para supervisores.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <Select value={selectedSupervisor} onValueChange={setSelectedSupervisor}>
+                    <Select value={selectedSupervisorForMessage} onValueChange={setSelectedSupervisorForMessage}>
                         <SelectTrigger>
-                            <SelectValue placeholder="Selecione um supervisor" />
+                            <SelectValue placeholder="Selecione um destinatário" />
                         </SelectTrigger>
                         <SelectContent>
+                            <SelectItem value="all_supervisors">Todos os Supervisores</SelectItem>
                             {supervisors.map(s => (
                                 <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
                             ))}
