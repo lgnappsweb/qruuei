@@ -58,23 +58,25 @@ export default function LoginPage() {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
+      
       const userDocRef = doc(firestore, "users", user.uid);
-      const userDoc = await getDoc(userDocRef);
-
       const isAdmin = user.email === 'lgngregorio@icloud.com';
-      const userRole = isAdmin ? 'admin' : 'operator';
 
-      if (!userDoc.exists()) {
+      // Force-set the admin role if the user is the designated admin.
+      // This will create or update the document.
+      try {
         await setDoc(userDocRef, {
             name: user.displayName,
             email: user.email,
             photoURL: user.photoURL,
-            role: userRole,
-        });
-      } else {
-         if (isAdmin) {
-            await setDoc(userDocRef, { role: 'admin' }, { merge: true });
-         }
+            role: isAdmin ? 'admin' : 'operator',
+        }, { merge: true });
+      } catch (dbError: any) {
+          toast({
+              variant: "destructive",
+              title: "Erro ao definir permissão",
+              description: `Falha ao salvar dados de permissão: ${dbError.message}`,
+          });
       }
 
     } catch (error: any) {
@@ -99,9 +101,18 @@ export default function LoginPage() {
       const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
       const user = userCredential.user;
       
-      if (user.email === 'lgngregorio@icloud.com') {
+      const isAdmin = user.email === 'lgngregorio@icloud.com';
+      if (isAdmin) {
           const userDocRef = doc(firestore, "users", user.uid);
-          await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+          try {
+            await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+          } catch (dbError: any) {
+            toast({
+                variant: "destructive",
+                title: "Erro ao definir permissão",
+                description: `Falha ao atualizar para admin: ${dbError.message}`,
+            });
+          }
       }
       
     } catch (error: any) {
