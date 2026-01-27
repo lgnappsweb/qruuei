@@ -2,7 +2,7 @@ import * as React from 'react';
 import { 
   Megaphone, Route, Truck, PawPrint, Car, HardHat, Shield, 
   HeartPulse, Search, Heart, User, Siren, Shovel, Droplet, Anchor, Wrench,
-  Ambulance, Flame, Target, Signpost
+  Ambulance, Flame, Target, Signpost, HelpCircle
 } from 'lucide-react';
 import type { LucideIcon, LucideProps } from 'lucide-react';
 
@@ -68,7 +68,7 @@ export const occurrences: Occurrence[] = [
   { id: '1', title: 'QUD RESGATE', icon: Ambulance, color: 'bg-gradient-to-b from-gray-100 to-gray-400' },
   { id: '2', title: 'QUD OPERAÇÃO', icon: Siren, color: 'bg-gradient-to-b from-gray-100 to-gray-400' },
   { id: '3', title: 'TRAÇADO DE PISTA', icon: Route, color: 'bg-gradient-to-b from-gray-100 to-gray-400' },
-  { id: '4', title: 'TO 01', icon: Truck, color: 'bg-gradient-to-b from-gray-100 to-gray-400' },
+  { id: '4', title: 'TO 01', icon: HelpCircle, color: 'bg-gradient-to-b from-gray-100 to-gray-400' },
   { id: '5', title: 'TO 02', icon: Flame, color: 'bg-gradient-to-b from-gray-100 to-gray-400' },
   { id: '6', title: 'TO 03', icon: PawPrint, color: 'bg-gradient-to-b from-gray-100 to-gray-400' },
   { id: '7', title: 'TO 04', icon: Car, color: 'bg-gradient-to-b from-gray-100 to-gray-400' },
