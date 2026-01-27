@@ -59,19 +59,24 @@ export default function LoginPage() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       const userDocRef = doc(firestore, "users", user.uid);
-      const userDoc = await getDoc(userDocRef);
-      
+
       if (user.email === 'lgngregorio@icloud.com') {
-          await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+          await setDoc(userDocRef, {
+              name: user.displayName,
+              email: user.email,
+              photoURL: user.photoURL,
+              role: 'admin'
+          }, { merge: true });
       } else {
-        if (!userDoc.exists()) {
-            await setDoc(userDocRef, {
-                name: user.displayName,
-                email: user.email,
-                photoURL: user.photoURL,
-                role: 'operator',
-            }, { merge: true });
-        }
+          const userDoc = await getDoc(userDocRef);
+          if (!userDoc.exists()) {
+              await setDoc(userDocRef, {
+                  name: user.displayName,
+                  email: user.email,
+                  photoURL: user.photoURL,
+                  role: 'operator',
+              }, { merge: true });
+          }
       }
     } catch (error: any) {
       toast({
@@ -94,11 +99,12 @@ export default function LoginPage() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
       const user = userCredential.user;
+      const userDocRef = doc(firestore, "users", user.uid);
 
       if (user.email === 'lgngregorio@icloud.com') {
-          const userDocRef = doc(firestore, "users", user.uid);
           await setDoc(userDocRef, { role: 'admin' }, { merge: true });
       }
+      
     } catch (error: any) {
         toast({
           variant: "destructive",
