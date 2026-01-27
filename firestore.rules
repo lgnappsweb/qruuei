@@ -14,5 +14,12 @@ service cloud.firestore {
       // Only the owner can read and write their own notes.
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
+
+    match /users/{userId}/messages/{messageId} {
+      // Only the owner can read and update (e.g., mark as read) their own messages.
+      // Creation and deletion should be handled by a backend/admin process.
+      allow read, update: if request.auth != null && request.auth.uid == userId;
+      allow create, delete: if false;
+    }
   }
 }

@@ -4,18 +4,30 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
-import { useUser, useAuth, useFirestore } from "@/firebase";
+import { useUser, useAuth, useFirestore, useCollection } from "@/firebase";
 import { signOut, updateProfile } from "firebase/auth";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { LogOut, Sun, Moon, Laptop, ArrowLeft, Notebook, BookMarked } from "lucide-react";
+import { LogOut, Sun, Moon, Laptop, ArrowLeft, Notebook, BookMarked, MessageSquare } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+
+
+interface Message {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: Timestamp;
+  read: boolean;
+}
 
 export default function AjustesPage() {
   const { user, initialising } = useUser();
@@ -29,6 +41,14 @@ export default function AjustesPage() {
   const [selectedTheme, setSelectedTheme] = useState<string | undefined>();
   
   const [mounted, setMounted] = useState(false);
+  const { data: messages, loading: messagesLoading } = useCollection<Message>(user ? `users/${user.uid}/messages` : null);
+  const [unreadMessages, setUnreadMessages] = useState(0);
+
+  useEffect(() => {
+    if(messages) {
+        setUnreadMessages(messages.filter(m => !m.read).length);
+    }
+  }, [messages]);
 
   useEffect(() => {
     setMounted(true);
@@ -182,6 +202,42 @@ export default function AjustesPage() {
               Abrir Bloco de Notas
             </Link>
           </Button>
+        </CardContent>
+      </Card>
+      
+      <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <MessageSquare className="mr-2 h-6 w-6" />
+            Recados
+            {unreadMessages > 0 && (
+                <span className="ml-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-bold">
+                    {unreadMessages}
+                </span>
+            )}
+          </CardTitle>
+          <CardDescription>Mensagens importantes para você.</CardDescription>
+        </CardHeader>
+        <CardContent>
+            {messagesLoading ? (
+                <p>Carregando recados...</p>
+            ) : messages && messages.length > 0 ? (
+                <Accordion type="single" collapsible className="w-full">
+                    {messages.sort((a,b) => b.createdAt.toMillis() - a.createdAt.toMillis()).map((message) => (
+                        <AccordionItem value={message.id} key={message.id}>
+                            <AccordionTrigger>{message.title}</AccordionTrigger>
+                            <AccordionContent>
+                                <p className="text-muted-foreground whitespace-pre-wrap">{message.content}</p>
+                                <p className="text-xs text-muted-foreground mt-4">
+                                    {`Recebido em ${format(message.createdAt.toDate(), "dd/MM/yy, HH:mm", { locale: ptBR })}`}
+                                </p>
+                            </AccordionContent>
+                        </AccordionItem>
+                    ))}
+                </Accordion>
+            ) : (
+                <p className="text-muted-foreground">Nenhum recado no momento.</p>
+            )}
         </CardContent>
       </Card>
 

@@ -48,6 +48,40 @@
         "userId",
         "updatedAt"
       ]
+    },
+    "message": {
+      "title": "Message",
+      "description": "A message for a user.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the message."
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the message."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the message was created."
+        },
+        "read": {
+          "type": "boolean",
+          "description": "Whether the user has read the message."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who owns the message."
+        }
+      },
+      "required": [
+        "userId",
+        "createdAt",
+        "title",
+        "content"
+      ]
     }
   },
   "auth": {
@@ -68,6 +102,12 @@
         "$ref": "#/backend/entities/note"
       },
       "description": "Stores notes for each user."
+    },
+    "/users/{userId}/messages/{messageId}": {
+      "schema": {
+        "$ref": "#/backend/entities/message"
+      },
+      "description": "Stores messages for each user."
     }
   }
 }
