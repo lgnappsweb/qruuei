@@ -2,7 +2,7 @@
 import { useUser, useAuth, useFirestore } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Chrome, KeyRound, Mail, Eye, EyeOff } from 'lucide-react';
@@ -60,16 +60,28 @@ export default function LoginPage() {
       const user = result.user;
       
       const userDocRef = doc(firestore, "users", user.uid);
-      const isAdmin = user.email === 'lgngregorio@icloud.com';
+      const userDocSnap = await getDoc(userDocRef);
 
-      // Force-set the admin role if the user is the designated admin.
-      // This will create or update the document.
+      let userRole = 'operator'; // Default role
+
+      if (!userDocSnap.exists()) {
+        // This is a new user via Google Sign-In, check if they are the first
+        const usersCollectionRef = collection(firestore, "users");
+        const usersSnapshot = await getDocs(usersCollectionRef);
+        if (usersSnapshot.empty) {
+          userRole = 'admin';
+        }
+      } else {
+        // Existing user, maintain their role
+        userRole = userDocSnap.data().role;
+      }
+
       try {
         await setDoc(userDocRef, {
             name: user.displayName,
             email: user.email,
             photoURL: user.photoURL,
-            role: isAdmin ? 'admin' : 'operator',
+            role: userRole,
         }, { merge: true });
       } catch (dbError: any) {
           toast({
@@ -98,23 +110,7 @@ export default function LoginPage() {
       return;
     }
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
-      const user = userCredential.user;
-      
-      const isAdmin = user.email === 'lgngregorio@icloud.com';
-      if (isAdmin) {
-          const userDocRef = doc(firestore, "users", user.uid);
-          try {
-            await setDoc(userDocRef, { role: 'admin' }, { merge: true });
-          } catch (dbError: any) {
-            toast({
-                variant: "destructive",
-                title: "Erro ao definir permissão",
-                description: `Falha ao atualizar para admin: ${dbError.message}`,
-            });
-          }
-      }
-      
+      await signInWithEmailAndPassword(auth, values.email, values.password);
     } catch (error: any) {
         toast({
           variant: "destructive",
