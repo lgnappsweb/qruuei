@@ -1,7 +1,7 @@
 'use client';
 import { useUser, useFirestore, useDoc, useCollection } from '@/firebase';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,6 +16,7 @@ interface AppUser {
   name: string;
   email: string;
   role: 'operator' | 'supervisor' | 'admin';
+  supervisorId?: string;
 }
 
 interface Ocorrencia {
@@ -71,6 +72,26 @@ export default function SupervisorPage() {
              toast({ variant: 'destructive', title: 'Erro', description: error.message });
         }
     };
+
+    const { operators, supervisedOccurrences } = useMemo(() => {
+        if (currentUserLoading || usersLoading || ocorrenciasLoading || !users || !ocorrencias || !currentUserData) {
+            return { operators: [], supervisedOccurrences: [] };
+        }
+
+        if (currentUserData.role === 'admin') {
+            const operators = users.filter(u => u.role === 'operator');
+            return { operators, supervisedOccurrences: ocorrencias };
+        }
+
+        if (currentUserData.role === 'supervisor') {
+            const operators = users.filter(u => u.role === 'operator' && u.supervisorId === user?.uid);
+            const operatorIds = operators.map(o => o.id);
+            const supervisedOccurrences = ocorrencias.filter(o => operatorIds.includes(o.userId));
+            return { operators, supervisedOccurrences };
+        }
+
+        return { operators: [], supervisedOccurrences: [] };
+    }, [currentUserData, users, ocorrencias, user?.uid, currentUserLoading, usersLoading, ocorrenciasLoading]);
     
     if (userInitialising || currentUserLoading || usersLoading || ocorrenciasLoading) {
         return <div className="flex h-screen items-center justify-center">Carregando...</div>;
@@ -80,8 +101,6 @@ export default function SupervisorPage() {
         return null;
     }
     
-    const operators = users?.filter(u => u.role === 'operator') || [];
-
     return (
         <div className="space-y-8">
             <h1 className="text-3xl font-bold">Painel do Supervisor</h1>
@@ -89,6 +108,11 @@ export default function SupervisorPage() {
             <Card>
                 <CardHeader>
                     <CardTitle>Enviar Recado para Operador</CardTitle>
+                     <CardDescription>
+                        {currentUserData.role === 'supervisor' 
+                            ? 'Envie recados para os operadores que você supervisiona.' 
+                            : 'Envie recados para qualquer operador.'}
+                    </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                      <Select value={selectedOperator} onValueChange={setSelectedOperator}>
@@ -110,7 +134,11 @@ export default function SupervisorPage() {
             <Card>
                 <CardHeader>
                     <CardTitle>Ocorrências Recentes</CardTitle>
-                    <CardDescription>Visualize as últimas ocorrências registradas pelos operadores.</CardDescription>
+                    <CardDescription>
+                         {currentUserData.role === 'supervisor' 
+                            ? 'Visualize as últimas ocorrências registradas pelos seus operadores.'
+                            : 'Visualize as últimas ocorrências de todos os operadores.'}
+                    </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Table>
@@ -123,7 +151,7 @@ export default function SupervisorPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {ocorrencias?.sort((a,b) => b.createdAt.toDate().getTime() - a.createdAt.toDate().getTime()).slice(0, 10).map(o => (
+                            {supervisedOccurrences?.sort((a,b) => b.createdAt.toDate().getTime() - a.createdAt.toDate().getTime()).slice(0, 10).map(o => (
                                 <TableRow key={o.id}>
                                     <TableCell>{o.type}</TableCell>
                                     <TableCell>{o.rodovia} - {o.km}</TableCell>
