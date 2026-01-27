@@ -23,17 +23,11 @@ export default function ImagensPage() {
   const allImages: ImagePlaceholder[] = PlaceHolderImages;
   const [selectedImage, setSelectedImage] = React.useState<ImagePlaceholder | null>(null);
 
-  const regulamentacaoImages = allImages.filter(img => 
-    img.imageUrl.includes('cursosdetransito.com.br') && !img.imageUrl.includes('placas_adv') && !img.imageUrl.includes('placas_ind')
-  );
+  const regulamentacaoImages = allImages.filter(img => img.category === 'regulamentacao');
   
-  const advertenciaImages = allImages.filter(img => 
-      img.imageUrl.includes('placas_adv')
-  );
+  const advertenciaImages = allImages.filter(img => img.category === 'advertencia');
 
-  const indicacaoImages = allImages.filter(img =>
-    img.imageUrl.includes('placas_ind')
-  );
+  const indicacaoImages = allImages.filter(img => img.category === 'indicacao');
 
   const accordionSections = [
     {
@@ -110,7 +104,7 @@ export default function ImagensPage() {
         <DialogContent className="max-w-[90vw] max-h-[85vh] p-2">
           {selectedImage && (
             <>
-              <DialogHeader>
+               <DialogHeader>
                 <DialogTitle className="sr-only">{selectedImage.description}</DialogTitle>
               </DialogHeader>
               <div className="relative w-full h-[80vh]">

@@ -4,121 +4,127 @@
       "id": "9",
       "description": "Formatos das Placas",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_reg_forma2.png",
-      "imageHint": "traffic signs"
+      "imageHint": "traffic signs",
+      "category": "regulamentacao"
     },
     {
       "id": "1",
       "description": "Placas de Regulamentação",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_reg1-294x300-1.png",
-      "imageHint": "traffic signs"
+      "imageHint": "traffic signs",
+      "category": "regulamentacao"
     },
     {
       "id": "2",
       "description": "Placas de Advertência",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_reg3.png",
-      "imageHint": "warning signs"
+      "imageHint": "warning signs",
+      "category": "regulamentacao"
     },
     {
       "id": "3",
       "description": "Placas de Indicação",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_reg5.png",
-      "imageHint": "traffic signs"
+      "imageHint": "traffic signs",
+      "category": "regulamentacao"
     },
     {
       "id": "4",
       "description": "Placas de Serviços Auxiliares",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_reg6.png",
-      "imageHint": "service signs"
+      "imageHint": "service signs",
+      "category": "regulamentacao"
     },
     {
       "id": "5",
       "description": "Outras Placas de Sinalização",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_reg7.png",
-      "imageHint": "traffic signs"
+      "imageHint": "traffic signs",
+      "category": "regulamentacao"
     },
     {
       "id": "10",
       "description": "Formatos das Placas de Advertência",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_adv_forma2.png",
-      "imageHint": "warning signs"
+      "imageHint": "warning signs",
+      "category": "advertencia"
     },
     {
       "id": "11",
       "description": "Placas de Advertência (Grupo 1)",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_adv1-600x546-1.png",
-      "imageHint": "warning signs"
+      "imageHint": "warning signs",
+      "category": "advertencia"
     },
     {
       "id": "12",
       "description": "Placas de Advertência (Grupo 2)",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_adv8.png",
-      "imageHint": "warning signs"
+      "imageHint": "warning signs",
+      "category": "advertencia"
     },
     {
       "id": "13",
       "description": "Placas de Advertência (Grupo 3)",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_adv7.png",
-      "imageHint": "warning signs"
+      "imageHint": "warning signs",
+      "category": "advertencia"
     },
     {
       "id": "14",
       "description": "Placas de Advertência (Grupo 4)",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_adv6.png",
-      "imageHint": "warning signs"
+      "imageHint": "warning signs",
+      "category": "advertencia"
     },
     {
       "id": "15",
       "description": "Placas de Advertência (Grupo 5)",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_adv5.png",
-      "imageHint": "warning signs"
+      "imageHint": "warning signs",
+      "category": "advertencia"
     },
     {
       "id": "16",
       "description": "Placas de Advertência (Grupo 6)",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_adv4.png",
-      "imageHint": "warning signs"
+      "imageHint": "warning signs",
+      "category": "advertencia"
     },
     {
       "id": "17",
       "description": "Placas de Advertência (Grupo 7)",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_adv3-768x487-1.png",
-      "imageHint": "warning signs"
+      "imageHint": "warning signs",
+      "category": "advertencia"
     },
     {
       "id": "18",
       "description": "Placas de Advertência (Grupo 8)",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_adv2-600x386-1.png",
-      "imageHint": "warning signs"
+      "imageHint": "warning signs",
+      "category": "advertencia"
     },
     {
       "id": "19",
       "description": "Placas de Indicação (Grupo 1)",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_ind1-600x374-1.png",
-      "imageHint": "indication signs"
+      "imageHint": "indication signs",
+      "category": "indicacao"
     },
     {
       "id": "20",
       "description": "Placas de Indicação (Grupo 2)",
       "imageUrl": "https://cursosdetransito.com.br/wp-content/uploads/2025/05/placas_ind2-600x380-1.png",
-      "imageHint": "indication signs"
+      "imageHint": "indication signs",
+      "category": "indicacao"
     },
     {
-      "id": "6",
-      "description": "Equipe de construção trabalhando na rodovia",
-      "imageUrl": "https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxyb2FkJTIwY29uc3RydWN0aW9ufGVufDB8fHx8MTc2OTU0MjQ5NHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "road construction"
-    },
-    {
-      "id": "7",
-      "description": "Rodovia vazia se estendendo até o horizonte",
-      "imageUrl": "https://images.unsplash.com/photo-1478088702736-2de25e682d36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxlbXB0eSUyMGhpZ2h3YXl8ZW58MHx8fHwxNzY5NTQyNTIyfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "empty highway"
-    },
-    {
-      "id": "8",
-      "description": "Congestionamento de trânsito em uma rodovia",
-      "imageUrl": "https://images.unsplash.com/photo-1599423695299-3124a98341d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0cmFmZmljJTIwamFtfGVufDB8fHx8MTc2OTU0MjU1MXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "traffic jam"
+      "id": "21",
+      "description": "Placas de Regulamentação (adicional)",
+      "imageUrl": "https://images.noticiasautomotivas.com.br/img/f/placas-de-regulamentacao-4.jpg",
+      "imageHint": "traffic signs",
+      "category": "regulamentacao"
     }
   ]
 }
