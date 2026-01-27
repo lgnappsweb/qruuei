@@ -157,10 +157,11 @@ export default function OperatorsPage() {
                     </div>
 
                     {/* Mobile View */}
-                    <div className="grid grid-cols-1 gap-4 md:hidden">
+                    <div className="md:hidden">
                          {operators.length > 0 ? (
-                            operators.map(o => (
-                                <Card key={o.id}>
+                            <div className="space-y-4">
+                            {operators.map(o => (
+                                <Card key={o.id} className="max-w-lg mx-auto w-full">
                                     <CardHeader>
                                         <CardTitle>{o.name}</CardTitle>
                                         <CardDescription>{o.email}</CardDescription>
@@ -202,7 +203,8 @@ export default function OperatorsPage() {
                                         </Button>
                                     </CardFooter>
                                 </Card>
-                            ))
+                            ))}
+                            </div>
                         ) : (
                             <p className="text-center text-muted-foreground py-12">Nenhum operador encontrado.</p>
                         )}
