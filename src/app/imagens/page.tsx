@@ -25,11 +25,11 @@ export default function ImagensPage() {
   const [selectedImage, setSelectedImage] = React.useState<ImagePlaceholder | null>(null);
 
   const regulamentacaoImages = allImages.filter(img => 
-    !img.imageUrl.includes('placas_adv_forma2.png') && img.imageUrl.includes('cursosdetransito.com.br')
+    img.imageUrl.includes('cursosdetransito.com.br') && !img.imageUrl.includes('placas_adv')
   );
   
   const advertenciaImages = allImages.filter(img => 
-      img.imageUrl.includes('placas_adv_forma2.png')
+      img.imageUrl.includes('placas_adv')
   );
 
   const otherImages = allImages.filter(img => !img.imageUrl.includes('cursosdetransito.com.br'));
