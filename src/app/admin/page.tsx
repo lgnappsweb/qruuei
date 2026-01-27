@@ -174,7 +174,7 @@ export default function AdminPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {users?.map(u => (
+                            {users?.filter((u) => u.id === user?.uid).map(u => (
                                 <TableRow key={u.id}>
                                     <TableCell>{u.name}</TableCell>
                                     <TableCell>{u.email}</TableCell>
