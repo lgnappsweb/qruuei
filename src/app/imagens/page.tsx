@@ -17,7 +17,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { PlaceHolderImages, type ImagePlaceholder } from '@/lib/placeholder-images';
 import {
   Accordion,
@@ -131,6 +131,127 @@ function PlacasRegulamentacaoTable() {
   );
 }
 
+const placasAdvertenciaData = [
+    { codigo: 'A-1a', nome: 'Curva acentuada à esquerda', significado: 'Alerta para curva pronunciada à esquerda; reduzir velocidade.' },
+    { codigo: 'A-1b', nome: 'Curva acentuada à direita', significado: 'Alerta para curva pronunciada à direita; reduzir velocidade.' },
+    { codigo: 'A-2a', nome: 'Curva à esquerda', significado: 'Alerta para curva suave à esquerda.' },
+    { codigo: 'A-2b', nome: 'Curva à direita', significado: 'Alerta para curva suave à direita.' },
+    { codigo: 'A-3a', nome: 'Pista sinuosa à esquerda', significado: 'Trecho sinuoso com predominância de curvas para a esquerda.' },
+    { codigo: 'A-3b', nome: 'Pista sinuosa à direita', significado: 'Trecho sinuoso com predominância de curvas para a direita.' },
+    { codigo: 'A-4a', nome: 'Curva acentuada em “S” à esquerda', significado: 'Sequência de curvas tipo “S”, primeira para a esquerda; reduzir velocidade.' },
+    { codigo: 'A-4b', nome: 'Curva acentuada em “S” à direita', significado: 'Sequência de curvas tipo “S”, primeira para a direita; reduzir velocidade.' },
+    { codigo: 'A-5a', nome: 'Curva em “S” à esquerda', significado: 'Trecho com duas curvas formando “S”, início à esquerda.' },
+    { codigo: 'A-5b', nome: 'Curva em “S” à direita', significado: 'Trecho com duas curvas formando “S”, início à direita.' },
+    { codigo: 'A-6', nome: 'Cruzamento de vias', significado: 'Aviso de cruzamento; atenção ao tráfego que cruza a via.' },
+    { codigo: 'A-7a', nome: 'Via lateral à esquerda', significado: 'Aviso sobre via lateral entrando pela esquerda.' },
+    { codigo: 'A-7b', nome: 'Via lateral à direita', significado: 'Aviso sobre via lateral entrando pela direita.' },
+    { codigo: 'A-8', nome: 'Interseção em “T”', significado: 'Indica que a via termina num cruzamento em “T”.' },
+    { codigo: 'A-9', nome: 'Bifurcação em “Y”', significado: 'Aviso de divisão da via em duas direções (formato em Y).' },
+    { codigo: 'A-10a', nome: 'Entroncamento oblíquo à esquerda', significado: 'Interseção oblíqua com via à esquerda; atenção ao tráfego.' },
+    { codigo: 'A-10b', nome: 'Entroncamento oblíquo à direita', significado: 'Interseção oblíqua com via à direita; atenção ao tráfego.' },
+    { codigo: 'A-11a', nome: 'Junções sucessivas contrárias (1ª à esquerda)', significado: 'Sequência de junções com a primeira via lateral à esquerda.' },
+    { codigo: 'A-11b', nome: 'Junções sucessivas contrárias (1ª à direita)', significado: 'Sequência de junções com a primeira via lateral à direita.' },
+    { codigo: 'A-12', nome: 'Interseção em círculo', significado: 'Aviso de rotatória ou interseção circular adiante.' },
+    { codigo: 'A-13a', nome: 'Confluência à esquerda', significado: 'Via que se incorpora pela esquerda; cuidado com fluxo que entra.' },
+    { codigo: 'A-13b', nome: 'Confluência à direita', significado: 'Via que se incorpora pela direita; cuidado com fluxo que entra.' },
+    { codigo: 'A-14', nome: 'Semáforo à frente', significado: 'Aviso de semáforo à frente; prepare-se a reduzir e parar se necessário.' },
+    { codigo: 'A-15', nome: 'Parada obrigatória à frente', significado: 'Aviso de placa PARE ou parada obrigatória adiante.' },
+    { codigo: 'A-16', nome: 'Bonde / VLT', significado: 'Presença de bonde/VLT; atenção ao veículo sobre trilhos.' },
+    { codigo: 'A-17', nome: 'Pista irregular', significado: 'Superfície irregular; reduzir velocidade e atenção.' },
+    { codigo: 'A-18', nome: 'Saliência ou lombada', significado: 'Aviso de lombada/saliência para reduzir velocidade.' },
+    { codigo: 'A-19', nome: 'Depressão', significado: 'Rebaixo ou depressão no pavimento adiante; atenção.' },
+    { codigo: 'A-20a', nome: 'Declive acentuado', significado: 'Trecho com descida pronunciada; reduzir e controlar velocidade.' },
+    { codigo: 'A-20b', nome: 'Aclive acentuado', significado: 'Trecho com subida pronunciada; atenção à tração e marchas.' },
+    { codigo: 'A-21a', nome: 'Estreitamento de pista ao centro', significado: 'Pista estreita pelo centro; reduzir velocidade e atenção.' },
+    { codigo: 'A-21b', nome: 'Estreitamento de pista à esquerda', significado: 'Pista estreita no lado esquerdo.' },
+    { codigo: 'A-21c', nome: 'Estreitamento de pista à direita', significado: 'Pista estreita no lado direito.' },
+    { codigo: 'A-21d', nome: 'Alargamento de pista à esquerda', significado: 'Pista alarga-se à esquerda; fim de estreitamento.' },
+    { codigo: 'A-21e', nome: 'Alargamento de pista à direita', significado: 'Pista alarga-se à direita; fim de estreitamento.' },
+    { codigo: 'A-22', nome: 'Ponte estreita', significado: 'Aviso de ponte com largura reduzida; atenção e reduzir velocidade.' },
+    { codigo: 'A-23', nome: 'Ponte móvel', significado: 'Ponte móvel adiante; possível interrupção do tráfego.' },
+    { codigo: 'A-24', nome: 'Obras', significado: 'Serviços na via; reduzir velocidade e atenção a operários/equipamentos.' },
+    { codigo: 'A-25', nome: 'Mão dupla adiante', significado: 'Aviso de trânsito em ambos os sentidos adiante.' },
+    { codigo: 'A-26a', nome: 'Sentido único', significado: 'Indica que à frente é sentido único de circulação.' },
+    { codigo: 'A-26b', nome: 'Sentido duplo', significado: 'Indica que à frente há trânsito nos dois sentidos.' },
+    { codigo: 'A-27', nome: 'Área com desmoronamento', significado: 'Risco de queda de pedras/atoleiro; atenção e reduzir velocidade.' },
+    { codigo: 'A-28', nome: 'Pista escorregadia', significado: 'Superfície escorregadia (óleo, chuva); reduzir velocidade.' },
+    { codigo: 'A-29', nome: 'Projeção de cascalho', significado: 'Pedrisco ou cascalho projetado por veículos; reduzir velocidade.' },
+    { codigo: 'A-30a', nome: 'Trânsito de ciclistas', significado: 'Presença de ciclistas na via; reduzir velocidade e compartilhar espaço.' },
+    { codigo: 'A-30b', nome: 'Passagem sinalizada de ciclistas', significado: 'Indica travessia ou faixa específica para ciclistas.' },
+    { codigo: 'A-30c', nome: 'Trânsito compartilhado (ciclistas/pedestres)', significado: 'Via ou trecho compartilhado entre pedestres e ciclistas.' },
+    { codigo: 'A-31', nome: 'Trânsito de tratores / maquinaria', significado: 'Presença de tratores ou máquinas agrícolas; atenção.' },
+    { codigo: 'A-32a', nome: 'Trânsito de pedestres', significado: 'Zona com maior circulação de pedestres; reduzir velocidade.' },
+    { codigo: 'A-32b', nome: 'Passagem sinalizada de pedestres', significado: 'Indica faixa de travessia ou passagem para pedestres.' },
+    { codigo: 'A-33a', nome: 'Área escolar', significado: 'Aviso de proximidade de escola; reduzir velocidade e atenção.' },
+    { codigo: 'A-33b', nome: 'Passagem sinalizada de escolares', significado: 'Indica passagem usada por estudantes; reforçar cuidado.' },
+    { codigo: 'A-34', nome: 'Crianças', significado: 'Área com presença de crianças (praças, escolas); atenção redobrada.' },
+    { codigo: 'A-35', nome: 'Animais (gado)', significado: 'Possibilidade de animais domésticos na via; reduzir velocidade.' },
+    { codigo: 'A-36', nome: 'Animais selvagens', significado: 'Risco de animais silvestres cruzando a via; atenção.' },
+    { codigo: 'A-37', nome: 'Altura limitada', significado: 'Limitação de altura no obstáculo à frente (ex.: viaduto).' },
+    { codigo: 'A-38', nome: 'Largura limitada', significado: 'Limitação de largura da via/obstáculo adiante.' },
+    { codigo: 'A-39', nome: 'Passagem de nível sem barreira', significado: 'Cruzamento ferroviário sem cancelas; reduzir velocidade e olhar ambos os lados.' },
+    { codigo: 'A-40', nome: 'Passagem de nível com barreira', significado: 'Cruzamento ferroviário com cancelas à frente.' },
+    { codigo: 'A-41', nome: 'Cruz de Santo André', significado: 'Indica o cruzamento com linha férrea; cuidado redobrado.' },
+    { codigo: 'A-42a', nome: 'Início de pista dupla', significado: 'Indica início de pista com duas faixas no mesmo sentido.' },
+    { codigo: 'A-42b', nome: 'Fim de pista dupla', significado: 'Indica fim da pista dupla (volta a pista simples).' },
+    { codigo: 'A-42c', nome: 'Pista dividida', significado: 'Indica que a pista é dividida por canteiro ou divisória.' },
+    { codigo: 'A-43', nome: 'Aeroporto', significado: 'Proximidade de aeroporto; possível presença de aeronaves/ruído.' },
+    { codigo: 'A-44', nome: 'Vento lateral', significado: 'Trecho sujeito a ventos laterais fortes; atenção ao volante.' },
+    { codigo: 'A-45', nome: 'Rua sem saída', significado: 'Indica que a via não tem saída; usar rota alternativa.' },
+    { codigo: 'A-46', nome: 'Peso bruto total limitado', significado: 'Limitação do peso bruto total permitido (valor indicado em placa complementar).' },
+    { codigo: 'A-47', nome: 'Peso limitado por eixo', significado: 'Limitação de peso por eixo; observar placa complementar.' },
+    { codigo: 'A-48', nome: 'Comprimento limitado', significado: 'Limitação de comprimento máximo do veículo (ver placa complementar).' },
+    { codigo: 'A-49a', nome: 'Pedestres à esquerda, VLT à direita', significado: 'Indica separação de fluxos: pedestres usam lado esquerdo e VLT à direita.' },
+    { codigo: 'A-49b', nome: 'Pedestres à direita, VLT à esquerda', significado: 'Indica separação de fluxos: pedestres usam lado direito e VLT à esquerda.' },
+    { codigo: 'A-50a', nome: 'Veículos à esquerda, VLT à direita', significado: 'Indica separação de fluxos: veículos por um lado e VLT pelo outro.' },
+    { codigo: 'A-50b', nome: 'Veículos à direita, VLT à esquerda', significado: 'Indica separação de fluxos: veículos por um lado e VLT pelo outro.' },
+];
+
+function PlacasAdvertenciaTable() {
+  return (
+    <>
+      {/* Desktop View */}
+      <div className="hidden md:block">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">Código</TableHead>
+              <TableHead>Nome (placa)</TableHead>
+              <TableHead>Significado (breve)</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {placasAdvertenciaData.map((item) => (
+              <TableRow key={item.codigo}>
+                <TableCell className="font-medium">{item.codigo}</TableCell>
+                <TableCell>{item.nome}</TableCell>
+                <TableCell>{item.significado}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Mobile View */}
+      <div className="grid grid-cols-1 gap-4 md:hidden">
+        {placasAdvertenciaData.map((item) => (
+          <Card key={item.codigo}>
+            <CardHeader className="p-4">
+              <CardTitle className="flex justify-between items-start text-lg">
+                <span className="flex-1 pr-2">{item.nome}</span>
+                <span className="font-mono text-sm bg-accent text-accent-foreground px-2 py-1 rounded-md">{item.codigo}</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-0">
+              <p className="text-sm text-muted-foreground">{item.significado}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </>
+  );
+}
+
 
 export default function ImagensPage() {
   const allImages: ImagePlaceholder[] = PlaceHolderImages;
@@ -153,7 +274,7 @@ export default function ImagensPage() {
       value: 'item-2',
       title: 'Placas de advertência – Placas amarelas',
       images: advertenciaImages,
-      content: <p className="text-center text-muted-foreground py-12">Nenhum código nesta categoria ainda.</p>,
+      content: <PlacasAdvertenciaTable />,
     },
     {
       value: 'item-3',
