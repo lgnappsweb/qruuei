@@ -151,7 +151,7 @@ export default function ImagensPage() {
     },
     {
       value: 'item-2',
-      title: 'Advertência',
+      title: 'Placas de advertência – Placas amarelas',
       images: advertenciaImages,
       content: <p className="text-center text-muted-foreground py-12">Nenhum código nesta categoria ainda.</p>,
     },
