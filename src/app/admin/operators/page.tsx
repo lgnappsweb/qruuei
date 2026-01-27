@@ -1,7 +1,7 @@
 'use client';
 import { useUser, useFirestore, useCollection } from '@/firebase';
 import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -94,33 +94,91 @@ export default function OperatorsPage() {
                     <CardDescription>Gerencie o status e o supervisor de cada operador.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                     <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Nome</TableHead>
-                                <TableHead>Email</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Supervisor</TableHead>
-                                <TableHead className="text-right">Ações</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {operators.length > 0 ? (
-                                operators.map(o => (
-                                    <TableRow key={o.id}>
-                                        <TableCell>{o.name}</TableCell>
-                                        <TableCell>{o.email}</TableCell>
-                                        <TableCell>
+                    {/* Desktop View */}
+                    <div className="hidden md:block">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Nome</TableHead>
+                                    <TableHead>Email</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead>Supervisor</TableHead>
+                                    <TableHead className="text-right">Ações</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {operators.length > 0 ? (
+                                    operators.map(o => (
+                                        <TableRow key={o.id}>
+                                            <TableCell>{o.name}</TableCell>
+                                            <TableCell>{o.email}</TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center space-x-2">
+                                                    <Switch
+                                                        id={`status-desktop-${o.id}`}
+                                                        checked={o.status === 'active'}
+                                                        onCheckedChange={(checked) => handleStatusChange(o.id, checked)}
+                                                    />
+                                                    <Label htmlFor={`status-desktop-${o.id}`}>{o.status === 'active' ? 'Ativo' : 'Inativo'}</Label>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Select 
+                                                    value={o.supervisorId || 'none'} 
+                                                    onValueChange={(value) => handleSupervisorChange(o.id, value)}
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Selecione um supervisor" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="none">Nenhum</SelectItem>
+                                                        {supervisors.map(s => (
+                                                            <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <Button variant="ghost" size="icon" onClick={() => setOperatorToDelete(o)}>
+                                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="h-24 text-center">
+                                            Nenhum operador encontrado.
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
+
+                    {/* Mobile View */}
+                    <div className="grid grid-cols-1 gap-4 md:hidden">
+                         {operators.length > 0 ? (
+                            operators.map(o => (
+                                <Card key={o.id}>
+                                    <CardHeader>
+                                        <CardTitle>{o.name}</CardTitle>
+                                        <CardDescription>{o.email}</CardDescription>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <div className="flex items-center justify-between">
+                                            <Label htmlFor={`status-mobile-${o.id}`} className="text-base">Status</Label>
                                             <div className="flex items-center space-x-2">
                                                 <Switch
-                                                    id={`status-${o.id}`}
+                                                    id={`status-mobile-${o.id}`}
                                                     checked={o.status === 'active'}
                                                     onCheckedChange={(checked) => handleStatusChange(o.id, checked)}
                                                 />
-                                                <Label htmlFor={`status-${o.id}`}>{o.status === 'active' ? 'Ativo' : 'Inativo'}</Label>
+                                                <Label htmlFor={`status-mobile-${o.id}`} className="text-base">{o.status === 'active' ? 'Ativo' : 'Inativo'}</Label>
                                             </div>
-                                        </TableCell>
-                                        <TableCell>
+                                        </div>
+                                        <div>
+                                            <Label className="text-base">Supervisor</Label>
                                             <Select 
                                                 value={o.supervisorId || 'none'} 
                                                 onValueChange={(value) => handleSupervisorChange(o.id, value)}
@@ -135,23 +193,20 @@ export default function OperatorsPage() {
                                                     ))}
                                                 </SelectContent>
                                             </Select>
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <Button variant="ghost" size="icon" onClick={() => setOperatorToDelete(o)}>
-                                                <Trash2 className="h-4 w-4 text-destructive" />
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell colSpan={5} className="h-24 text-center">
-                                        Nenhum operador encontrado.
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
+                                        </div>
+                                    </CardContent>
+                                    <CardFooter>
+                                        <Button variant="outline" size="sm" className="w-full" onClick={() => setOperatorToDelete(o)}>
+                                            <Trash2 className="mr-2 h-4 w-4 text-destructive" />
+                                            <span className="text-destructive">Excluir Operador</span>
+                                        </Button>
+                                    </CardFooter>
+                                </Card>
+                            ))
+                        ) : (
+                            <p className="text-center text-muted-foreground py-12">Nenhum operador encontrado.</p>
+                        )}
+                    </div>
                 </CardContent>
             </Card>
             <AlertDialog open={!!operatorToDelete} onOpenChange={() => setOperatorToDelete(null)}>
