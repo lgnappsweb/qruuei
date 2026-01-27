@@ -21,12 +21,12 @@ service cloud.firestore {
 
     match /users/{userId} {
       // Admins and supervisors can read any user profile. Users can read their own.
-      allow read: if isSupervisor() || isOwner(userId);
+      allow get: if isSupervisor() || isOwner(userId);
       
-      // TEMPORARY: Allow any logged-in user to update any other user's document.
+      // TEMPORARY: Allow any logged-in user to list all users and update any user's document.
       // This is to allow the user to set their own role to 'admin'.
       // This MUST be reverted after the user confirms they have admin access.
-      allow update: if request.auth != null;
+      allow list, update: if request.auth != null;
 
       // Only allow a user to create their own profile document.
       allow create: if isOwner(userId);
