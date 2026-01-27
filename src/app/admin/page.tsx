@@ -1,6 +1,5 @@
 'use client';
 import { useUser, useFirestore, useCollection } from '@/firebase';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -48,7 +47,7 @@ interface Ocorrencia {
 }
 
 export default function AdminPage() {
-    const { user, initialising: userInitialising } = useUser();
+    const { initialising: userInitialising } = useUser();
     const { data: users, loading: usersLoading } = useCollection<AppUser>('users');
     const { data: ocorrencias, loading: ocorrenciasLoading } = useCollection<Ocorrencia>('occurrences');
     const { toast } = useToast();
@@ -204,15 +203,17 @@ export default function AdminPage() {
             <h1 className="text-3xl font-bold">Painel do Administrador</h1>
 
             <div className="grid gap-4 md:grid-cols-3">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Operadores</CardTitle>
-                        <Users className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{stats.operators}</div>
-                    </CardContent>
-                </Card>
+                <Link href="#">
+                    <Card className="cursor-pointer hover:bg-accent transition-colors">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Operadores</CardTitle>
+                            <Users className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{stats.operators}</div>
+                        </CardContent>
+                    </Card>
+                </Link>
                 <Link href="#supervisors-management">
                     <Card className="cursor-pointer hover:bg-accent transition-colors">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -355,7 +356,7 @@ export default function AdminPage() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Confirmar Ação</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Você tem certeza que deseja rebaixar {supervisorToDelete?.name} para a função de operador? Seus operadores atribuídos ficarão sem supervisor.
+                            Você tem certeza que deseja rebaixar {supervisorToDelete?.name} para a função de operador?
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
