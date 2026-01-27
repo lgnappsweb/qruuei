@@ -17,7 +17,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlaceHolderImages, type ImagePlaceholder } from '@/lib/placeholder-images';
 import {
   Accordion,
@@ -88,24 +88,46 @@ const placasRegulamentacaoData = [
 
 function PlacasRegulamentacaoTable() {
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">Código</TableHead>
-          <TableHead>Nome (placa)</TableHead>
-          <TableHead>Significado (breve)</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
+    <>
+      {/* Desktop View */}
+      <div className="hidden md:block">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">Código</TableHead>
+              <TableHead>Nome (placa)</TableHead>
+              <TableHead>Significado (breve)</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {placasRegulamentacaoData.map((item) => (
+              <TableRow key={item.codigo}>
+                <TableCell className="font-medium">{item.codigo}</TableCell>
+                <TableCell>{item.nome}</TableCell>
+                <TableCell>{item.significado}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Mobile View */}
+      <div className="grid grid-cols-1 gap-4 md:hidden">
         {placasRegulamentacaoData.map((item) => (
-          <TableRow key={item.codigo}>
-            <TableCell className="font-medium">{item.codigo}</TableCell>
-            <TableCell>{item.nome}</TableCell>
-            <TableCell>{item.significado}</TableCell>
-          </TableRow>
+          <Card key={item.codigo}>
+            <CardHeader className="p-4">
+              <CardTitle className="flex justify-between items-start text-lg">
+                <span className="flex-1 pr-2">{item.nome}</span>
+                <span className="font-mono text-sm bg-accent text-accent-foreground px-2 py-1 rounded-md">{item.codigo}</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-0">
+              <p className="text-sm text-muted-foreground">{item.significado}</p>
+            </CardContent>
+          </Card>
         ))}
-      </TableBody>
-    </Table>
+      </div>
+    </>
   );
 }
 
