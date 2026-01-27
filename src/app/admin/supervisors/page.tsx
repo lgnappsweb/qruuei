@@ -130,7 +130,7 @@ export default function SupervisorsPage() {
             </Button>
             
             <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
+                <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div>
                         <CardTitle>Gerenciamento de Supervisores</CardTitle>
                         <CardDescription>Adicione, remova e gerencie os supervisores do sistema.</CardDescription>
@@ -143,7 +143,7 @@ export default function SupervisorsPage() {
                         }
                     }}>
                         <DialogTrigger asChild>
-                            <Button>
+                            <Button className="w-full md:w-auto">
                                 <UserPlus className="mr-2 h-4 w-4" />
                                 Adicionar Supervisor
                             </Button>
