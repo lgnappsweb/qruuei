@@ -1,23 +1,78 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search } from "lucide-react";
+import Link from 'next/link';
+import { Search, Link as LinkIcon, AlertTriangle, TrafficCone, FileText, StickyNote, Map, HelpCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { occurrences } from "@/lib/occurrences";
 import { OccurrenceCard } from "@/components/occurrence-card";
+import { searchableData, type SearchableItem } from "@/lib/search";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+const categoryIcons: { [key: string]: React.ElementType } = {
+  'Ocorrência': AlertTriangle,
+  'Código de Ocorrência': FileText,
+  'Código de Ação/Providência': FileText,
+  'Código de Pane': FileText,
+  'Código de Outras Mensagens': FileText,
+  'Código de Mensagem': FileText,
+  'Código Q (Alfabeto Fonético)': FileText,
+  'Relacionamentos': FileText,
+  'Ponto de Apoio': Map,
+  'Link Útil': LinkIcon,
+  'Placa de Regulamentação': TrafficCone,
+  'Placa de Advertência': TrafficCone,
+  'Placa de Indicação': TrafficCone,
+  'Ocorrência Salva': StickyNote,
+  'Nota': StickyNote,
+};
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchableItem[]>([]);
+  const [localOcorrencias, setLocalOcorrencias] = useState<any[]>([]);
 
   useEffect(() => {
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
+    try {
+        const savedOcorrencias = localStorage.getItem('ocorrencias_v2');
+        if (savedOcorrencias) {
+          setLocalOcorrencias(JSON.parse(savedOcorrencias));
+        }
+    } catch (e) {
+        console.error("Failed to load ocorrencias from localStorage", e);
+    }
   }, []);
 
-  const filteredOccurrences = occurrences.filter((occurrence) =>
-    occurrence.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+    if (!term.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    const lowerCaseTerm = term.toLowerCase();
+    
+    const staticResults = searchableData.filter(item => 
+        item.title.toLowerCase().includes(lowerCaseTerm) ||
+        item.content.toLowerCase().includes(lowerCaseTerm) ||
+        (item.code && item.code.toLowerCase().includes(lowerCaseTerm))
+    );
+    
+    const ocorrenciasResults = localOcorrencias.map(o => ({
+      id: `saved-occ-${o.id}`,
+      category: 'Ocorrência Salva',
+      title: `${o.codOcorrencia} - ${o.rodovia} KM ${o.km}`,
+      content: o.timestamp,
+      link: '/ocorrencias'
+    })).filter(item => item.title.toLowerCase().includes(lowerCaseTerm) || item.content.toLowerCase().includes(lowerCaseTerm));
+
+    setSearchResults([...staticResults, ...ocorrenciasResults]);
+  };
+
 
   return (
     <div className="space-y-8 md:pb-24">
@@ -38,30 +93,61 @@ export default function Home() {
         </div>
       </div>
       <p className="text-muted-foreground -mt-4 text-center">
-        Selecione o tipo de ocorrência para gerar o relatório
+        Selecione o tipo de ocorrência ou busque por qualquer informação.
       </p>
 
       <div className="relative">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
         <Input
           type="search"
-          placeholder="Buscar por ocorrência, código ou PR..."
+          placeholder="Buscar por ocorrência, código, placa, nota..."
           className="pl-12 pr-4 h-12 text-base bg-card focus-visible:ring-primary shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => handleSearch(e.target.value)}
         />
       </div>
 
-      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-        {filteredOccurrences.map((occurrence) => (
-          <OccurrenceCard key={occurrence.id} occurrence={occurrence} />
-        ))}
-        {filteredOccurrences.length === 0 && (
-          <div className="col-span-full text-center text-muted-foreground py-12">
-            Nenhuma ocorrência encontrada.
+      {searchTerm.trim() === "" ? (
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+            {occurrences.map((occurrence) => (
+              <OccurrenceCard key={occurrence.id} occurrence={occurrence} />
+            ))}
           </div>
+        ) : (
+            <Card className="shadow-xl">
+                <CardHeader>
+                    <CardTitle>Resultados da Busca</CardTitle>
+                    <CardDescription>{searchResults.length} resultado(s) encontrado(s) para "{searchTerm}"</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {searchResults.length > 0 ? (
+                    <ScrollArea className="h-[50vh]">
+                        <div className="space-y-4">
+                            {searchResults.map((item) => {
+                                const Icon = categoryIcons[item.category] || HelpCircle;
+                                return (
+                                <Link href={item.link} key={item.id} passHref>
+                                    <div className="p-4 border rounded-lg hover:bg-accent transition-colors cursor-pointer">
+                                        <div className="flex items-center gap-4">
+                                             <Icon className="h-6 w-6 text-muted-foreground" />
+                                            <div className="flex-1">
+                                                <p className="font-semibold">{item.title} {item.code && <span className="font-mono text-sm bg-muted p-1 rounded-md">{item.code}</span>}</p>
+                                                <p className="text-sm text-muted-foreground">{item.category}</p>
+                                                {item.content && <p className="text-sm text-muted-foreground mt-1 truncate">{item.content}</p>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Link>
+                                )
+                            })}
+                        </div>
+                    </ScrollArea>
+                    ) : (
+                        <p className="text-center text-muted-foreground py-12">Nenhum resultado encontrado.</p>
+                    )}
+                </CardContent>
+            </Card>
         )}
-      </div>
     </div>
   );
 }
