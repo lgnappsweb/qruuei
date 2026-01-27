@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -118,7 +119,7 @@ function PlacasRegulamentacaoTable() {
             <CardHeader className="p-4">
               <CardTitle className="flex justify-between items-start text-lg">
                 <span className="flex-1 pr-2">{item.nome}</span>
-                <span className="font-mono text-sm bg-accent text-accent-foreground px-2 py-1 rounded-md">{item.codigo}</span>
+                <span className="font-mono text-sm bg-red-600 text-white px-2 py-1 rounded-md">{item.codigo}</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 pt-0">
@@ -239,7 +240,7 @@ function PlacasAdvertenciaTable() {
             <CardHeader className="p-4">
               <CardTitle className="flex justify-between items-start text-lg">
                 <span className="flex-1 pr-2">{item.nome}</span>
-                <span className="font-mono text-sm bg-accent text-accent-foreground px-2 py-1 rounded-md">{item.codigo}</span>
+                <span className="font-mono text-sm bg-yellow-400 text-black px-2 py-1 rounded-md">{item.codigo}</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 pt-0">
