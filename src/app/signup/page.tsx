@@ -69,7 +69,7 @@ export default function SignupPage() {
           name: values.name,
           email: newUser.email,
           photoURL: newUser.photoURL ?? null,
-          role: 'operator',
+          role: 'admin',
         });
         
         // Force refresh user data
