@@ -77,7 +77,7 @@ export default function OperatorsPage() {
     }
 
     const operators = users?.filter(u => u.role === 'operator') || [];
-    const supervisors = users?.filter(u => u.role === 'supervisor') || [];
+    const supervisors = users?.filter(u => u.role === 'supervisor' && u.status === 'active') || [];
 
     return (
         <div className="space-y-8">
