@@ -263,6 +263,39 @@ export default function ImagensPage() {
 
   const indicacaoImages = allImages.filter(img => img.category === 'indicacao');
 
+  const indicacaoSubCategories = [
+    {
+      title: 'Placas de identificação',
+      images: indicacaoImages.filter(img => img.imageHint.includes('identificacao')),
+      content: <p className="text-center text-muted-foreground py-12">Nenhum código nesta categoria ainda.</p>
+    },
+    {
+      title: 'Placas de orientação de destino',
+      images: indicacaoImages.filter(img => img.imageHint.includes('orientacao')),
+      content: <p className="text-center text-muted-foreground py-12">Nenhum código nesta categoria ainda.</p>
+    },
+    {
+      title: 'Placas educativas',
+      images: indicacaoImages.filter(img => img.imageHint.includes('educativas')),
+      content: <p className="text-center text-muted-foreground py-12">Nenhum código nesta categoria ainda.</p>
+    },
+    {
+      title: 'Placas de serviços auxiliares',
+      images: indicacaoImages.filter(img => img.imageHint.includes('servicos')),
+      content: <p className="text-center text-muted-foreground py-12">Nenhum código nesta categoria ainda.</p>
+    },
+    {
+      title: 'Placas de atrativos turísticos',
+      images: indicacaoImages.filter(img => img.imageHint.includes('atrativos')),
+      content: <p className="text-center text-muted-foreground py-12">Nenhum código nesta categoria ainda.</p>
+    },
+    {
+      title: 'Placas de postos de fiscalização',
+      images: indicacaoImages.filter(img => img.imageHint.includes('fiscalizacao')),
+      content: <p className="text-center text-muted-foreground py-12">Nenhum código nesta categoria ainda.</p>
+    },
+  ];
+
   const accordionSections = [
     {
       value: 'item-1',
@@ -279,8 +312,46 @@ export default function ImagensPage() {
     {
       value: 'item-3',
       title: 'Placas de identificação – Placas Azuis',
-      images: indicacaoImages,
-      content: <p className="text-center text-muted-foreground py-12">Nenhum código nesta categoria ainda.</p>,
+      images: [], // Main category won't display images directly now
+      content: (
+         <div className="space-y-8">
+          {indicacaoSubCategories.map((subCategory) => (
+            <div key={subCategory.title}>
+              <h3 className="text-2xl font-semibold mb-4">{subCategory.title}</h3>
+               {subCategory.images.length > 0 ? (
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 pt-4">
+                  {subCategory.images.map((image) => (
+                    <Card 
+                      key={image.id} 
+                      className="group relative overflow-hidden bg-muted cursor-pointer"
+                      onClick={() => setSelectedImage(image)}
+                    >
+                      <CardContent className="p-0 aspect-video">
+                        <NextImage
+                          src={image.imageUrl}
+                          alt={image.description}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-contain transition-transform duration-300 group-hover:scale-105 p-2"
+                          data-ai-hint={image.imageHint}
+                        />
+                      </CardContent>
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <CardTitle className="text-lg text-white truncate flex justify-between items-center">
+                            <span>{image.description}</span>
+                            {image.code && (
+                                <span className="font-mono bg-black/50 text-sm px-2 py-1 rounded-md">{image.code}</span>
+                            )}
+                        </CardTitle>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              ) : subCategory.content}
+            </div>
+          ))}
+        </div>
+      )
     },
   ];
 

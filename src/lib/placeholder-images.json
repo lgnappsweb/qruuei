@@ -34,6 +34,55 @@
       "imageUrl": "https://blog.deltafiat.com.br/wp-content/uploads/2025/09/placas-de-advertencia-a32-ate-a50.webp",
       "imageHint": "placas advertencia",
       "category": "advertencia"
+    },
+    {
+      "id": "placa-identificacao-1",
+      "description": "Placas de Identificação",
+      "imageUrl": "https://blog.deltafiat.com.br/wp-content/uploads/2025/09/placas-de-identificacao.webp",
+      "imageHint": "placas identificacao",
+      "category": "indicacao"
+    },
+    {
+      "id": "placa-orientacao-1",
+      "description": "Placas de Orientação de Destino",
+      "imageUrl": "https://blog.deltafiat.com.br/wp-content/uploads/2025/09/placas-de-orientacao-ao-destino.webp",
+      "imageHint": "placas orientacao",
+      "category": "indicacao"
+    },
+    {
+      "id": "placa-educativa-1",
+      "description": "Placas Educativas",
+      "imageUrl": "https://blog.deltafiat.com.br/wp-content/uploads/2025/09/placas-educativas.webp",
+      "imageHint": "placas educativas",
+      "category": "indicacao"
+    },
+    {
+      "id": "placa-servicos-auxiliares-1",
+      "description": "Serviços Auxiliares para Condutores",
+      "imageUrl": "https://blog.deltafiat.com.br/wp-content/uploads/2025/09/placas-de-servicos-auxiliares-para-condutores.webp",
+      "imageHint": "placas servicos",
+      "category": "indicacao"
+    },
+    {
+      "id": "placa-servicos-auxiliares-2",
+      "description": "Serviços Auxiliares para Pedestres",
+      "imageUrl": "https://blog.deltafiat.com.br/wp-content/uploads/2025/09/placas-de-servicos-auxiliares-para-pedestres.webp",
+      "imageHint": "placas servicos",
+      "category": "indicacao"
+    },
+    {
+      "id": "placa-atrativos-1",
+      "description": "Placas de Atrativos Turísticos",
+      "imageUrl": "https://blog.deltafiat.com.br/wp-content/uploads/2025/09/placas-de-atrativos-turisticos.webp",
+      "imageHint": "placas atrativos",
+      "category": "indicacao"
+    },
+    {
+      "id": "placa-fiscalizacao-1",
+      "description": "Placas de Postos de Fiscalização",
+      "imageUrl": "https://blog.deltafiat.com.br/wp-content/uploads/2025/09/placas-de-postos-de-fiscalizacao.webp",
+      "imageHint": "placas fiscalizacao",
+      "category": "indicacao"
     }
   ]
 }
