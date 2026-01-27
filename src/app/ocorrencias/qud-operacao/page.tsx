@@ -10,6 +10,8 @@ import { ArrowLeft, PlusCircle, Share2, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useUser, useFirestore } from '@/firebase';
+import { collection, addDoc, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -318,6 +320,8 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
 export default function QudOperacaoPage() {
   const { toast } = useToast();
   const router = useRouter();
+  const { user } = useUser();
+  const firestore = useFirestore();
   const [previewData, setPreviewData] = React.useState<z.infer<typeof formSchema> | null>(null);
   const [editingId, setEditingId] = React.useState<string | null>(null);
   const [openVehicleItems, setOpenVehicleItems] = React.useState<string[]>([]);
@@ -400,44 +404,46 @@ export default function QudOperacaoPage() {
     setPreviewData(processedValues);
   }
 
-  function handleSave(data: any) {
+  async function handleSave(data: any) {
+    if (!firestore || !user) {
+        toast({ variant: 'destructive', title: 'Erro', description: 'Usuário não autenticado ou banco de dados indisponível.' });
+        return;
+    }
+
     try {
-        const savedOcorrencias = JSON.parse(localStorage.getItem('ocorrencias_v2') || '[]');
         const formTitle = "QUD OPERAÇÃO";
 
         const ocorrenciaData = {
-            id: editingId || new Date().toISOString(),
+            userId: user.uid,
             codOcorrencia: data.ocorrencia,
             type: formTitle,
             rodovia: data.rodovia,
             km: data.qth,
-            timestamp: new Date().toLocaleString('pt-BR'),
             status: 'Finalizada' as const,
             fullReport: data,
             numeroOcorrencia: data.numeroOcorrencia,
-            formPath: '/ocorrencias/qud-operacao'
+            formPath: '/ocorrencias/qud-operacao',
+            createdAt: serverTimestamp(),
         };
 
-        let updatedOcorrencias;
         if (editingId) {
-            updatedOcorrencias = savedOcorrencias.map((o: any) => o.id === editingId ? ocorrenciaData : o);
-             toast({ title: 'Ocorrência Atualizada', description: 'Ocorrência atualizada com sucesso!' });
+            const docRef = doc(firestore, 'occurrences', editingId);
+            await updateDoc(docRef, ocorrenciaData);
+            toast({ title: 'Ocorrência Atualizada', description: 'Ocorrência atualizada com sucesso!' });
         } else {
-            updatedOcorrencias = [...savedOcorrencias, ocorrenciaData];
+            await addDoc(collection(firestore, 'occurrences'), ocorrenciaData);
             toast({ title: 'Formulário Enviado', description: 'Ocorrência registrada com sucesso!' });
         }
-        
-        localStorage.setItem('ocorrencias_v2', JSON.stringify(updatedOcorrencias));
         
         setPreviewData(null);
         router.push('/ocorrencias');
 
-    } catch (e) {
-        console.error("Could not save to localStorage", e);
+    } catch (e: any) {
+        console.error("Could not save to Firestore", e);
         toast({
           variant: "destructive",
           title: 'Erro ao Salvar',
-          description: 'Não foi possível salvar a ocorrência.',
+          description: e.message || 'Não foi possível salvar a ocorrência.',
         });
     }
   }

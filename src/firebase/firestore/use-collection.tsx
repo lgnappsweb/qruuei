@@ -15,7 +15,7 @@ import { errorEmitter } from '../error-emitter';
 import { FirestorePermissionError } from '../errors';
 
 export function useCollection<T = DocumentData>(
-  collectionPath: string | null
+  pathOrQuery: string | Query | null
 ) {
   const firestore = useFirestore();
   const [data, setData] = useState<T[] | null>(null);
@@ -23,13 +23,16 @@ export function useCollection<T = DocumentData>(
   const [error, setError] = useState<FirestoreError | null>(null);
 
   const q = useMemo(() => {
-    if (!firestore || !collectionPath) return null;
-    return query(collection(firestore, collectionPath));
-  }, [firestore, collectionPath]);
+    if (!firestore || !pathOrQuery) return null;
+    if (typeof pathOrQuery === 'string') {
+      return query(collection(firestore, pathOrQuery));
+    }
+    return pathOrQuery;
+  }, [firestore, pathOrQuery]);
 
   useEffect(() => {
     if (!q) {
-      if (!firestore || !collectionPath) {
+      if (!firestore || !pathOrQuery) {
         setLoading(false);
       }
       return;
@@ -48,7 +51,7 @@ export function useCollection<T = DocumentData>(
       },
       async (err: FirestoreError) => {
         const permissionError = new FirestorePermissionError({
-            path: collectionPath!,
+            path: typeof pathOrQuery === 'string' ? pathOrQuery : 'collection query',
             operation: 'list',
         });
         errorEmitter.emit('permission-error', permissionError);
@@ -58,7 +61,7 @@ export function useCollection<T = DocumentData>(
     );
 
     return () => unsubscribe();
-  }, [q, collectionPath]);
+  }, [q, pathOrQuery]);
 
   return { data, loading, error };
 }

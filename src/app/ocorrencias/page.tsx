@@ -4,7 +4,6 @@ import * as React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Trash2, ArrowLeft, Edit, Share2, ShieldAlert, Route, MapPin, Calendar, Car } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -17,11 +16,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { tiposPane } from '@/lib/tipos-pane';
-import { cn } from '@/lib/utils';
+import { useUser, useFirestore, useCollection } from '@/firebase';
+import { collection, query, where, deleteDoc, doc, Timestamp } from 'firebase/firestore';
 
 interface Ocorrencia {
   id: string;
@@ -29,11 +27,12 @@ interface Ocorrencia {
   type: string;
   rodovia: string;
   km: string;
-  timestamp: string;
+  createdAt: Timestamp;
   status: 'Em Andamento' | 'Finalizada';
   fullReport: any;
   numeroOcorrencia?: string;
   formPath: string;
+  userId: string;
 }
 
 const formatLabel = (key: string) => {
@@ -99,19 +98,27 @@ const ReportField = ({ fieldKey, value }: { fieldKey: string; value: any; }) => 
 export default function OcorrenciasPage() {
   const { toast } = useToast();
   const router = useRouter();
+  const { user, initialising: userInitialising } = useUser();
+  const firestore = useFirestore();
+
   const [ocorrencias, setOcorrencias] = React.useState<Ocorrencia[]>([]);
   const [expandedCards, setExpandedCards] = React.useState<Set<string>>(new Set());
+  const [ocorrenciaToDelete, setOcorrenciaToDelete] = React.useState<string | null>(null);
+
+  const ocorrenciasQuery = React.useMemo(() => {
+    if (!firestore || !user) return null;
+    return query(collection(firestore, 'occurrences'), where('userId', '==', user.uid));
+  }, [firestore, user]);
+
+  const { data: fetchedOcorrencias, loading: ocorrenciasLoading } = useCollection<Ocorrencia>(ocorrenciasQuery);
 
   React.useEffect(() => {
-    try {
-      const savedOcorrencias = localStorage.getItem('ocorrencias_v2');
-      if (savedOcorrencias) {
-        setOcorrencias(JSON.parse(savedOcorrencias));
-      }
-    } catch (error) {
-      console.error("Failed to parse ocorrencias from localStorage", error);
+    if (fetchedOcorrencias) {
+      const sorted = [...fetchedOcorrencias].sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
+      setOcorrencias(sorted);
     }
-  }, []);
+  }, [fetchedOcorrencias]);
+
 
   const toggleCardExpansion = (id: string) => {
     setExpandedCards(prev => {
@@ -124,19 +131,23 @@ export default function OcorrenciasPage() {
       return newSet;
     });
   };
-  
-  const updateLocalStorage = (updatedOcorrencias: Ocorrencia[]) => {
-      setOcorrencias(updatedOcorrencias);
-      localStorage.setItem('ocorrencias_v2', JSON.stringify(updatedOcorrencias));
-  }
 
-  const handleDelete = (id: string) => {
-    const updatedOcorrencias = ocorrencias.filter(o => o.id !== id);
-    updateLocalStorage(updatedOcorrencias);
-    toast({
-      title: "Ocorrência apagada",
-      description: "A ocorrência foi removida da lista.",
-    });
+  const handleDelete = async () => {
+    if (!firestore || !ocorrenciaToDelete) return;
+    try {
+      await deleteDoc(doc(firestore, 'occurrences', ocorrenciaToDelete));
+      toast({
+        title: "Ocorrência apagada",
+        description: "A ocorrência foi removida da lista.",
+      });
+      setOcorrenciaToDelete(null);
+    } catch(e: any) {
+        toast({
+          variant: "destructive",
+          title: "Erro ao apagar",
+          description: "Não foi possível apagar a ocorrência.",
+        });
+    }
   };
 
   const handleEdit = (ocorrencia: Ocorrencia) => {
@@ -197,6 +208,20 @@ export default function OcorrenciasPage() {
     window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
   };
 
+  if (userInitialising || ocorrenciasLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-24 flex justify-center gap-x-1 overflow-hidden -my-4">
+            <div className="w-[6px] h-full bg-foreground"></div>
+            <div
+                className="w-[6px] h-[calc(100%+40px)] animate-road-dashes"
+            ></div>
+        </div>
+      </div>
+    );
+  }
+
+
   return (
     <div className="space-y-8 pb-24">
       <Button asChild variant="ghost" className="pl-0">
@@ -234,9 +259,9 @@ export default function OcorrenciasPage() {
                     <CardTitle className="text-lg font-bold">{ocorrencia.codOcorrencia}</CardTitle>
                   </div>
                    {!isExpanded && (
-                     <AlertDialog>
+                     <AlertDialog open={ocorrenciaToDelete === ocorrencia.id} onOpenChange={(isOpen) => !isOpen && setOcorrenciaToDelete(null)}>
                       <AlertDialogTrigger asChild>
-                        <Button variant="destructive" size="icon" className="shrink-0" onClick={(e) => e.stopPropagation()}>
+                        <Button variant="destructive" size="icon" className="shrink-0" onClick={(e) => { e.stopPropagation(); setOcorrenciaToDelete(ocorrencia.id); }}>
                           <Trash2 className="h-5 w-5" />
                         </Button>
                       </AlertDialogTrigger>
@@ -249,8 +274,8 @@ export default function OcorrenciasPage() {
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleDelete(ocorrencia.id)}>
+                          <AlertDialogCancel onClick={() => setOcorrenciaToDelete(null)}>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction onClick={handleDelete}>
                             Apagar
                           </AlertDialogAction>
                         </AlertDialogFooter>
@@ -271,7 +296,7 @@ export default function OcorrenciasPage() {
                       </div>
                       <div className="text-sm text-muted-foreground flex items-center gap-2">
                           <Calendar className="h-4 w-4 text-primary" />
-                          <span><span className="font-semibold text-foreground">Data:</span> {ocorrencia.timestamp}</span>
+                          <span><span className="font-semibold text-foreground">Data:</span> {ocorrencia.createdAt.toDate().toLocaleString('pt-BR')}</span>
                       </div>
                   </CardContent>
                 )}
