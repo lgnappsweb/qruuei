@@ -24,22 +24,26 @@ export default function ImagensPage() {
   const allImages: ImagePlaceholder[] = PlaceHolderImages;
   const [selectedImage, setSelectedImage] = React.useState<ImagePlaceholder | null>(null);
 
-  // Filter for the 6 specific sign images
-  const signImages = allImages.filter(img => img.imageUrl.includes('cursosdetransito.com.br'));
+  const regulamentacaoImages = allImages.filter(img => 
+    !img.imageUrl.includes('placas_adv_forma2.png') && img.imageUrl.includes('cursosdetransito.com.br')
+  );
+  
+  const advertenciaImages = allImages.filter(img => 
+      img.imageUrl.includes('placas_adv_forma2.png')
+  );
 
-  // The rest of the images
   const otherImages = allImages.filter(img => !img.imageUrl.includes('cursosdetransito.com.br'));
 
   const accordionSections = [
     {
       value: 'item-1',
       title: 'Placas de Regulamentação',
-      images: signImages, // All 6 images go here as requested
+      images: regulamentacaoImages,
     },
     {
       value: 'item-2',
       title: 'Advertência',
-      images: [],
+      images: advertenciaImages,
     },
     {
       value: 'item-3',
