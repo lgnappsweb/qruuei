@@ -11,9 +11,28 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { doc, updateDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
-import { Briefcase, FileText, Users, ArrowLeft } from 'lucide-react';
+import { Briefcase, FileText, Users, ArrowLeft, Trash2, UserPlus } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface AppUser {
   id: string;
@@ -39,16 +58,9 @@ export default function AdminPage() {
     const [messageContent, setMessageContent] = useState('');
     const [selectedSupervisorForMessage, setSelectedSupervisorForMessage] = useState('');
 
-    const handleRoleChange = async (userId: string, role: string) => {
-        if (!firestore) return;
-        const userDocRef = doc(firestore, 'users', userId);
-        try {
-            await updateDoc(userDocRef, { role });
-            toast({ title: 'Sucesso', description: `Função do usuário atualizada para ${role}.` });
-        } catch (error: any) {
-            toast({ variant: 'destructive', title: 'Erro', description: error.message });
-        }
-    };
+    const [isAddSupervisorDialogOpen, setIsAddSupervisorDialogOpen] = useState(false);
+    const [operatorToPromote, setOperatorToPromote] = useState('');
+    const [supervisorToDelete, setSupervisorToDelete] = useState<AppUser | null>(null);
 
     const handleStatusChange = async (userId: string, status: boolean) => {
         if (!firestore) return;
@@ -61,18 +73,45 @@ export default function AdminPage() {
         }
     };
     
-    const handleSupervisorChange = async (operatorId: string, supervisorId: string) => {
-        if (!firestore) return;
-        const userDocRef = doc(firestore, 'users', operatorId);
+    const handleAddSupervisor = async () => {
+        if (!firestore || !operatorToPromote) {
+            toast({ variant: 'destructive', title: 'Erro', description: 'Selecione um operador para promover.' });
+            return;
+        }
+        const userDocRef = doc(firestore, 'users', operatorToPromote);
         try {
-            const newSupervisorId = supervisorId === 'unassigned' ? null : supervisorId;
-            await updateDoc(userDocRef, { supervisorId: newSupervisorId });
-            toast({ title: 'Sucesso', description: `Supervisor atribuído.` });
+            await updateDoc(userDocRef, { role: 'supervisor' });
+            toast({ title: 'Sucesso', description: 'Operador promovido a supervisor.' });
+            setIsAddSupervisorDialogOpen(false);
+            setOperatorToPromote('');
         } catch (error: any) {
             toast({ variant: 'destructive', title: 'Erro', description: error.message });
         }
     };
-    
+
+    const handleDeleteSupervisor = async () => {
+        if (!firestore || !supervisorToDelete) return;
+        
+        // Unassign operators from this supervisor
+        const operatorsOfSupervisor = users?.filter(u => u.supervisorId === supervisorToDelete.id);
+        if (operatorsOfSupervisor) {
+            for (const operator of operatorsOfSupervisor) {
+                const operatorDocRef = doc(firestore, 'users', operator.id);
+                await updateDoc(operatorDocRef, { supervisorId: null });
+            }
+        }
+
+        // Instead of deleting, demote to operator. It's safer.
+        const userDocRef = doc(firestore, 'users', supervisorToDelete.id);
+        try {
+            await updateDoc(userDocRef, { role: 'operator' });
+            toast({ title: 'Sucesso', description: `Supervisor ${supervisorToDelete.name} rebaixado para operador.` });
+        } catch (error: any) {
+            toast({ variant: 'destructive', title: 'Erro', description: error.message });
+        }
+        setSupervisorToDelete(null);
+    };
+
     const handleSendMessage = async () => {
         if (!firestore || !selectedSupervisorForMessage || !messageTitle || !messageContent) {
              toast({ variant: 'destructive', title: 'Erro', description: 'Por favor, preencha todos os campos da mensagem.' });
@@ -165,9 +204,43 @@ export default function AdminPage() {
             </div>
             
             <Card>
-                <CardHeader>
-                    <CardTitle>Gerenciamento de Usuários</CardTitle>
-                    <CardDescription>Gerencie as funções, status e vínculos dos usuários do sistema.</CardDescription>
+                <CardHeader className="flex flex-row items-center justify-between">
+                    <div>
+                        <CardTitle>Gerenciamento de Supervisores</CardTitle>
+                        <CardDescription>Adicione, remova e gerencie os supervisores do sistema.</CardDescription>
+                    </div>
+                    <Dialog open={isAddSupervisorDialogOpen} onOpenChange={setIsAddSupervisorDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button>
+                                <UserPlus className="mr-2 h-4 w-4" />
+                                Adicionar Supervisor
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Adicionar Novo Supervisor</DialogTitle>
+                                <DialogDescription>
+                                    Selecione um operador para promovê-lo a supervisor.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="py-4">
+                                <Select value={operatorToPromote} onValueChange={setOperatorToPromote}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Selecione um operador" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {operators.map(o => (
+                                            <SelectItem key={o.id} value={o.id}>{o.name} ({o.email})</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <DialogFooter>
+                                <Button variant="outline" onClick={() => setIsAddSupervisorDialogOpen(false)}>Cancelar</Button>
+                                <Button onClick={handleAddSupervisor}>Promover</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                 </CardHeader>
                 <CardContent>
                     <Table>
@@ -175,52 +248,29 @@ export default function AdminPage() {
                             <TableRow>
                                 <TableHead>Nome</TableHead>
                                 <TableHead>Email</TableHead>
-                                <TableHead>Função</TableHead>
                                 <TableHead>Status</TableHead>
-                                <TableHead>Supervisor</TableHead>
+                                <TableHead className="text-right">Ações</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {users?.filter((u) => u.id === user?.uid).map(u => (
-                                <TableRow key={u.id}>
-                                    <TableCell>{u.name}</TableCell>
-                                    <TableCell>{u.email}</TableCell>
-                                    <TableCell>
-                                        <Select value={u.role} onValueChange={(value) => handleRoleChange(u.id, value)}>
-                                            <SelectTrigger className="w-[180px]">
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="operator">Operador</SelectItem>
-                                                <SelectItem value="supervisor">Supervisor</SelectItem>
-                                                <SelectItem value="admin">Admin</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </TableCell>
+                            {supervisors.map(s => (
+                                <TableRow key={s.id}>
+                                    <TableCell>{s.name}</TableCell>
+                                    <TableCell>{s.email}</TableCell>
                                     <TableCell>
                                         <div className="flex items-center space-x-2">
                                             <Switch
-                                                id={`status-${u.id}`}
-                                                checked={u.status === 'active'}
-                                                onCheckedChange={(checked) => handleStatusChange(u.id, checked)}
+                                                id={`status-${s.id}`}
+                                                checked={s.status === 'active'}
+                                                onCheckedChange={(checked) => handleStatusChange(s.id, checked)}
                                             />
-                                            <Label htmlFor={`status-${u.id}`}>{u.status === 'active' ? 'Ativo' : 'Inativo'}</Label>
+                                            <Label htmlFor={`status-${s.id}`}>{s.status === 'active' ? 'Ativo' : 'Inativo'}</Label>
                                         </div>
                                     </TableCell>
-                                     <TableCell>
-                                        {u.role === 'operator' && (
-                                            <Select value={u.supervisorId || 'unassigned'} onValueChange={(value) => handleSupervisorChange(u.id, value)}>
-                                                <SelectTrigger className="w-[180px]">
-                                                    <SelectValue placeholder="Atribuir supervisor" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="unassigned">Nenhum</SelectItem>
-                                                    {supervisors.map(s => (
-                                                        <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        )}
+                                     <TableCell className="text-right">
+                                        <Button variant="ghost" size="icon" onClick={() => setSupervisorToDelete(s)}>
+                                            <Trash2 className="h-4 w-4 text-destructive" />
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -251,6 +301,21 @@ export default function AdminPage() {
                     <Button onClick={handleSendMessage}>Enviar Recado</Button>
                 </CardContent>
             </Card>
+
+            <AlertDialog open={!!supervisorToDelete} onOpenChange={() => setSupervisorToDelete(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Confirmar Ação</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Você tem certeza que deseja rebaixar {supervisorToDelete?.name} para a função de operador? Seus operadores atribuídos ficarão sem supervisor.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel onClick={() => setSupervisorToDelete(null)}>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDeleteSupervisor}>Confirmar</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }
