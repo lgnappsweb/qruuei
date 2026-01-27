@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, FileCode, ShieldAlert, Settings, Image as ImageIcon } from "lucide-react";
+import { Home, FileCode, ShieldAlert, Settings, Signpost } from "lucide-react";
 import { cn } from "@/lib/utils";
 import * as React from "react";
 
@@ -10,7 +10,7 @@ const navItems = [
   { href: "/", label: "Início", icon: Home },
   { href: "/codigos", label: "Códigos", icon: FileCode },
   { href: "/ocorrencias", label: "Ocorrências", icon: ShieldAlert },
-  { href: "/imagens", label: "Placas", icon: ImageIcon },
+  { href: "/imagens", label: "Placas", icon: Signpost },
   { href: "/ajustes", label: "Ajustes", icon: Settings },
 ];
 
