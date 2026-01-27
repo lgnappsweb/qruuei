@@ -224,8 +224,7 @@ export default function ImagensPage() {
   ];
 
   return (
-    <div>
-      <div className="space-y-8 max-w-7xl mx-auto pb-24">
+    <div className="space-y-8 max-w-7xl mx-auto pb-24">
         <Button asChild variant="ghost" className="pl-0">
             <Link href="/">
                 <ArrowLeft className="mr-2 h-4 w-4" />
@@ -241,7 +240,7 @@ export default function ImagensPage() {
           </p>
         </div>
 
-        <Accordion type="single" collapsible className="w-full space-y-4" defaultValue="item-1">
+        <Accordion type="single" collapsible className="w-full space-y-4">
           {accordionSections.map((section) => (
             <AccordionItem key={section.value} value={section.value} className="rounded-lg border bg-card shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
               <AccordionTrigger className="text-lg font-medium font-condensed px-6 hover:no-underline">
@@ -285,7 +284,7 @@ export default function ImagensPage() {
             </AccordionItem>
           ))}
         </Accordion>
-      </div>
+      
       <Dialog open={!!selectedImage} onOpenChange={(isOpen) => !isOpen && setSelectedImage(null)}>
         <DialogContent className="max-w-[90vw] max-h-[85vh] p-2">
           {selectedImage && (
