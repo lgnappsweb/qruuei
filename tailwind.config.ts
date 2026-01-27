@@ -7,20 +7,6 @@ export default {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  safelist: [
-    {
-      pattern: /bg-(red|blue|green|yellow|orange|purple|pink|rose|teal|cyan|amber|sky|indigo|violet|lime|emerald|fuchsia)-(100|200|300)/,
-    },
-    {
-      pattern: /dark:bg-(red|blue|green|yellow|orange|purple|pink|rose|teal|cyan|amber|sky|indigo|violet|lime|emerald|fuchsia)-(800|900|950)/,
-    },
-    {
-      pattern: /bg-(stone|slate|gray|zinc|neutral)-(200|300)/,
-    },
-    {
-      pattern: /dark:bg-(stone|slate|gray|zinc|neutral)-(800|900)/,
-    },
-  ],
   theme: {
     extend: {
       fontFamily: {
