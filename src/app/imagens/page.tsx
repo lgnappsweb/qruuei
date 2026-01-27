@@ -46,7 +46,7 @@ function PlacasRegulamentacaoTable() {
           <TableBody>
             {placasRegulamentacaoData.map((item) => (
               <TableRow key={item.codigo}>
-                <TableCell className="font-medium"><span className="font-mono bg-red-600 text-white px-2 py-1 rounded-md">{item.codigo}</span></TableCell>
+                <TableCell className="font-medium"><span className="font-mono bg-destructive text-destructive-foreground px-2 py-1 rounded-md">{item.codigo}</span></TableCell>
                 <TableCell>{item.nome}</TableCell>
                 <TableCell>{item.significado}</TableCell>
               </TableRow>
@@ -62,7 +62,7 @@ function PlacasRegulamentacaoTable() {
             <CardHeader className="p-4">
               <CardTitle className="flex justify-between items-start text-lg">
                 <span className="flex-1 pr-2">{item.nome}</span>
-                <span className="font-mono text-sm bg-red-600 text-white px-2 py-1 rounded-md">{item.codigo}</span>
+                <span className="font-mono text-sm bg-destructive text-destructive-foreground px-2 py-1 rounded-md">{item.codigo}</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 pt-0">
@@ -224,7 +224,7 @@ export default function ImagensPage() {
   ];
 
   return (
-    <>
+    <div>
       <div className="space-y-8 max-w-7xl mx-auto pb-24">
         <Button asChild variant="ghost" className="pl-0">
             <Link href="/">
@@ -305,6 +305,6 @@ export default function ImagensPage() {
           )}
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }
