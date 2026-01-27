@@ -30,13 +30,13 @@ export default function AdminPage() {
     const [messageContent, setMessageContent] = useState('');
     const [selectedSupervisor, setSelectedSupervisor] = useState('');
 
-    useEffect(() => {
-        if (!userInitialising && !currentUserLoading) {
-            if (!user || currentUserData?.role !== 'admin') {
-                router.push('/');
-            }
-        }
-    }, [user, userInitialising, currentUserData, currentUserLoading, router]);
+    // useEffect(() => {
+    //     if (!userInitialising && !currentUserLoading) {
+    //         if (!user || currentUserData?.role !== 'admin') {
+    //             router.push('/');
+    //         }
+    //     }
+    // }, [user, userInitialising, currentUserData, currentUserLoading, router]);
 
     const handleRoleChange = async (userId: string, role: string) => {
         if (!firestore) return;
@@ -76,9 +76,9 @@ export default function AdminPage() {
         return <div className="flex h-screen items-center justify-center">Carregando...</div>;
     }
     
-    if (currentUserData?.role !== 'admin') {
-        return null;
-    }
+    // if (currentUserData?.role !== 'admin') {
+    //     return null;
+    // }
     
     const supervisors = users?.filter(u => u.role === 'supervisor') || [];
 
