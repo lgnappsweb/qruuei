@@ -5,11 +5,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Trash2 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { useState } from 'react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
 
 interface AppUser {
   id: string;
@@ -25,6 +37,7 @@ export default function OperatorsPage() {
     const { data: users, loading: usersLoading } = useCollection<AppUser>('users');
     const { toast } = useToast();
     const firestore = useFirestore();
+    const [operatorToDelete, setOperatorToDelete] = useState<AppUser | null>(null);
 
     const handleStatusChange = async (userId: string, status: boolean) => {
         if (!firestore) return;
@@ -45,6 +58,17 @@ export default function OperatorsPage() {
             toast({ title: 'Sucesso', description: 'Supervisor do operador atualizado.' });
         } catch (error: any) {
             toast({ variant: 'destructive', title: 'Erro', description: error.message });
+        }
+    };
+
+    const handleDeleteOperator = async () => {
+        if (!firestore || !operatorToDelete) return;
+        try {
+            await deleteDoc(doc(firestore, 'users', operatorToDelete.id));
+            toast({ title: 'Operador Excluído', description: `O operador ${operatorToDelete.name} foi excluído permanentemente.` });
+            setOperatorToDelete(null);
+        } catch (error: any) {
+            toast({ variant: 'destructive', title: 'Erro ao excluir', description: 'Não foi possível excluir o operador.' });
         }
     };
 
@@ -77,6 +101,7 @@ export default function OperatorsPage() {
                                 <TableHead>Email</TableHead>
                                 <TableHead>Status</TableHead>
                                 <TableHead>Supervisor</TableHead>
+                                <TableHead className="text-right">Ações</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -111,11 +136,16 @@ export default function OperatorsPage() {
                                                 </SelectContent>
                                             </Select>
                                         </TableCell>
+                                        <TableCell className="text-right">
+                                            <Button variant="ghost" size="icon" onClick={() => setOperatorToDelete(o)}>
+                                                <Trash2 className="h-4 w-4 text-destructive" />
+                                            </Button>
+                                        </TableCell>
                                     </TableRow>
                                 ))
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={4} className="h-24 text-center">
+                                    <TableCell colSpan={5} className="h-24 text-center">
                                         Nenhum operador encontrado.
                                     </TableCell>
                                 </TableRow>
@@ -124,6 +154,20 @@ export default function OperatorsPage() {
                     </Table>
                 </CardContent>
             </Card>
+            <AlertDialog open={!!operatorToDelete} onOpenChange={() => setOperatorToDelete(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+                        <AlertDialogDescription>
+                           Você tem certeza que deseja excluir o operador {operatorToDelete?.name}? Esta ação é permanente e não pode ser desfeita.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel onClick={() => setOperatorToDelete(null)}>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDeleteOperator}>Confirmar</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }
