@@ -74,7 +74,8 @@ export default function AdminPage() {
         if (!firestore) return;
         const userDocRef = doc(firestore, 'users', operatorId);
         try {
-            await updateDoc(userDocRef, { supervisorId });
+            const newSupervisorId = supervisorId === 'unassigned' ? null : supervisorId;
+            await updateDoc(userDocRef, { supervisorId: newSupervisorId });
             toast({ title: 'Sucesso', description: `Supervisor atribuído.` });
         } catch (error: any) {
             toast({ variant: 'destructive', title: 'Erro', description: error.message });
@@ -200,12 +201,12 @@ export default function AdminPage() {
                                     </TableCell>
                                      <TableCell>
                                         {u.role === 'operator' && (
-                                            <Select value={u.supervisorId || ''} onValueChange={(value) => handleSupervisorChange(u.id, value)}>
+                                            <Select value={u.supervisorId || 'unassigned'} onValueChange={(value) => handleSupervisorChange(u.id, value)}>
                                                 <SelectTrigger className="w-[180px]">
                                                     <SelectValue placeholder="Atribuir supervisor" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="">Nenhum</SelectItem>
+                                                    <SelectItem value="unassigned">Nenhum</SelectItem>
                                                     {supervisors.map(s => (
                                                         <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
                                                     ))}
