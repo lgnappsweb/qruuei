@@ -63,13 +63,16 @@ export default function SignupPage() {
           displayName: values.name,
         });
 
+        const isAdmin = newUser.email === 'lgngregorio@icloud.com';
+        const userRole = isAdmin ? 'admin' : 'operator';
+
         // Create user document in Firestore
         const userDocRef = doc(firestore, "users", newUser.uid);
         await setDoc(userDocRef, {
           name: values.name,
           email: newUser.email,
           photoURL: newUser.photoURL ?? null,
-          role: 'admin',
+          role: userRole,
         });
         
         // Force refresh user data
