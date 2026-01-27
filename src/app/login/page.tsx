@@ -2,7 +2,7 @@
 import { useUser, useAuth, useFirestore } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, getDoc, setDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Chrome, KeyRound, Mail, Eye, EyeOff } from 'lucide-react';
@@ -62,34 +62,21 @@ export default function LoginPage() {
       const userDocRef = doc(firestore, "users", user.uid);
       const userDocSnap = await getDoc(userDocRef);
 
-      let userRole = 'operator'; // Default role
+      const adminEmails = ['lgngregorio@icloud.com', 'lgngregorio92@gmail.com'];
+      let userRole = 'operator';
 
-      if (!userDocSnap.exists()) {
-        // This is a new user via Google Sign-In, check if they are the first
-        const usersCollectionRef = collection(firestore, "users");
-        const usersSnapshot = await getDocs(usersCollectionRef);
-        if (usersSnapshot.empty) {
+      if (user.email && adminEmails.includes(user.email.toLowerCase())) {
           userRole = 'admin';
-        }
-      } else {
-        // Existing user, maintain their role
+      } else if (userDocSnap.exists()) {
         userRole = userDocSnap.data().role;
       }
-
-      try {
-        await setDoc(userDocRef, {
+      
+      await setDoc(userDocRef, {
             name: user.displayName,
             email: user.email,
             photoURL: user.photoURL,
             role: userRole,
         }, { merge: true });
-      } catch (dbError: any) {
-          toast({
-              variant: "destructive",
-              title: "Erro ao definir permissão",
-              description: `Falha ao salvar dados de permissão: ${dbError.message}`,
-          });
-      }
 
     } catch (error: any) {
       toast({
@@ -110,7 +97,28 @@ export default function LoginPage() {
       return;
     }
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
+      const user = userCredential.user;
+
+      const userDocRef = doc(firestore, "users", user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      const adminEmails = ['lgngregorio@icloud.com', 'lgngregorio92@gmail.com'];
+      let userRole = 'operator';
+
+      if (user.email && adminEmails.includes(user.email.toLowerCase())) {
+        userRole = 'admin';
+      } else if (userDocSnap.exists()) {
+        userRole = userDocSnap.data().role;
+      }
+      
+      await setDoc(userDocRef, {
+        name: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        role: userRole,
+      }, { merge: true });
+
     } catch (error: any) {
         toast({
           variant: "destructive",

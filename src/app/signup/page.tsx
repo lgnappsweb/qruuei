@@ -2,7 +2,7 @@
 import { useUser, useAuth, useFirestore } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { doc, setDoc, getDocs, collection } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
@@ -63,11 +63,8 @@ export default function SignupPage() {
           displayName: values.name,
         });
         
-        // Check if this is the first user to determine role
-        const usersCollectionRef = collection(firestore, "users");
-        const usersSnapshot = await getDocs(usersCollectionRef);
-        const isFirstUser = usersSnapshot.empty;
-        const userRole = isFirstUser ? 'admin' : 'operator';
+        const adminEmails = ['lgngregorio@icloud.com', 'lgngregorio92@gmail.com'];
+        const userRole = adminEmails.includes(values.email.toLowerCase()) ? 'admin' : 'operator';
 
         // Create user document in Firestore
         const userDocRef = doc(firestore, "users", newUser.uid);
