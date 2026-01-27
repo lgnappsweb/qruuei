@@ -61,7 +61,7 @@ export default function LoginPage() {
       const userDocRef = doc(firestore, "users", user.uid);
       const userDoc = await getDoc(userDocRef);
 
-      const isAdmin = user.email === 'lgngregorio@icloud.com' || user.email === 'lgngregorio92@gmail.com';
+      const isAdmin = user.email === 'lgngregorio@icloud.com';
       const userRole = isAdmin ? 'admin' : 'operator';
 
       if (!userDoc.exists()) {
@@ -70,9 +70,11 @@ export default function LoginPage() {
             email: user.email,
             photoURL: user.photoURL,
             role: userRole,
-        }, { merge: true });
-      } else if (isAdmin) {
-         await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+        });
+      } else {
+         if (isAdmin) {
+            await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+         }
       }
 
     } catch (error: any) {
@@ -97,8 +99,7 @@ export default function LoginPage() {
       const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
       const user = userCredential.user;
       
-      const isAdmin = user.email === 'lgngregorio@icloud.com' || user.email === 'lgngregorio92@gmail.com';
-      if (isAdmin) {
+      if (user.email === 'lgngregorio@icloud.com') {
           const userDocRef = doc(firestore, "users", user.uid);
           await setDoc(userDocRef, { role: 'admin' }, { merge: true });
       }
