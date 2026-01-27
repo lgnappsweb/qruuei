@@ -15,6 +15,13 @@
       "category": "regulamentacao"
     },
     {
+      "id": "placa-advertencia-2",
+      "description": "Placas de Advertência (A-1a a A-10a)",
+      "imageUrl": "https://blog.deltafiat.com.br/wp-content/uploads/2025/09/placas-de-advertencia-a1-ate-a10.webp",
+      "imageHint": "placas advertencia",
+      "category": "advertencia"
+    },
+    {
       "id": "placa-advertencia-1",
       "description": "Placas de Advertência (A-10b a A-31)",
       "imageUrl": "https://blog.deltafiat.com.br/wp-content/uploads/2025/09/placas-de-advertencia-a10b-ate-a31.webp",
