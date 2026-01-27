@@ -1,8 +1,10 @@
-
 'use client';
 
 import * as React from 'react';
 import NextImage from 'next/image';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -44,7 +46,7 @@ function PlacasRegulamentacaoTable() {
           <TableBody>
             {placasRegulamentacaoData.map((item) => (
               <TableRow key={item.codigo}>
-                <TableCell className="font-medium">{item.codigo}</TableCell>
+                <TableCell className="font-medium"><span className="font-mono bg-red-600 text-white px-2 py-1 rounded-md">{item.codigo}</span></TableCell>
                 <TableCell>{item.nome}</TableCell>
                 <TableCell>{item.significado}</TableCell>
               </TableRow>
@@ -89,7 +91,7 @@ function PlacasAdvertenciaTable() {
           <TableBody>
             {placasAdvertenciaData.map((item) => (
               <TableRow key={item.codigo}>
-                <TableCell className="font-medium">{item.codigo}</TableCell>
+                <TableCell className="font-medium"><span className="font-mono bg-yellow-400 text-black px-2 py-1 rounded-md">{item.codigo}</span></TableCell>
                 <TableCell>{item.nome}</TableCell>
                 <TableCell>{item.significado}</TableCell>
               </TableRow>
@@ -224,6 +226,12 @@ export default function ImagensPage() {
   return (
     <>
       <div className="space-y-8 max-w-7xl mx-auto pb-24">
+        <Button asChild variant="ghost" className="pl-0">
+            <Link href="/">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Voltar para o início
+            </Link>
+        </Button>
         <div className="space-y-2 text-center">
           <h1 className="font-condensed text-3xl font-bold tracking-tight">
             Placas de Sinalização
