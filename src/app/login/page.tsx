@@ -58,22 +58,27 @@ export default function LoginPage() {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-
       const userDocRef = doc(firestore, "users", user.uid);
       const userDoc = await getDoc(userDocRef);
       
       const isAdmin = user.email === 'lgngregorio@icloud.com';
-      const userRole = isAdmin ? 'admin' : 'operator';
 
-      if (!userDoc.exists()) {
-        await setDoc(userDocRef, {
-          name: user.displayName,
-          email: user.email,
-          photoURL: user.photoURL,
-          role: userRole,
-        }, { merge: true });
-      } else if (isAdmin && userDoc.data()?.role !== 'admin') {
-         await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+      if (isAdmin) {
+          // If this is the admin user, ensure their role is 'admin'
+          await setDoc(userDocRef, {
+              name: user.displayName,
+              email: user.email,
+              photoURL: user.photoURL,
+              role: 'admin',
+          }, { merge: true });
+      } else if (!userDoc.exists()) {
+          // For any other new user, create their document as an 'operator'.
+          await setDoc(userDocRef, {
+              name: user.displayName,
+              email: user.email,
+              photoURL: user.photoURL,
+              role: 'operator',
+          }, { merge: true });
       }
     } catch (error: any) {
       toast({
@@ -101,17 +106,23 @@ export default function LoginPage() {
       const userDoc = await getDoc(userDocRef);
 
       const isAdmin = user.email === 'lgngregorio@icloud.com';
-      const userRole = isAdmin ? 'admin' : 'operator';
 
-      if (!userDoc.exists()) {
+      if (isAdmin) {
+        // If this is the admin user, ensure their role is 'admin'
+        await setDoc(userDocRef, {
+            name: user.displayName || user.email,
+            email: user.email,
+            photoURL: user.photoURL,
+            role: 'admin',
+        }, { merge: true });
+      } else if (!userDoc.exists()) {
+        // For any other new user, create their document as an 'operator'.
         await setDoc(userDocRef, {
           name: user.displayName || user.email,
           email: user.email,
           photoURL: user.photoURL,
-          role: userRole,
+          role: 'operator',
         }, { merge: true });
-      } else if (isAdmin && userDoc.data()?.role !== 'admin') {
-        await setDoc(userDocRef, { role: 'admin' }, { merge: true });
       }
     } catch (error: any) {
         toast({
