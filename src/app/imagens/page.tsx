@@ -311,7 +311,7 @@ export default function ImagensPage() {
     },
     {
       value: 'item-3',
-      title: 'Placas de identificação – Placas Azuis',
+      title: 'Placas de identificação',
       images: [], // Main category won't display images directly now
       content: (
          <div className="space-y-8">
