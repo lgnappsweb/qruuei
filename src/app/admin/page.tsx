@@ -60,6 +60,7 @@ export default function AdminPage() {
 
     const [isAddSupervisorDialogOpen, setIsAddSupervisorDialogOpen] = useState(false);
     const [emailToPromote, setEmailToPromote] = useState('');
+    const [newSupervisorName, setNewSupervisorName] = useState('');
     const [supervisorToDelete, setSupervisorToDelete] = useState<AppUser | null>(null);
 
     const handleStatusChange = async (userId: string, status: boolean) => {
@@ -99,11 +100,20 @@ export default function AdminPage() {
             }
 
             const userDocRef = doc(firestore, 'users', userDoc.id);
-            await updateDoc(userDocRef, { role: 'supervisor' });
+            
+            const updateData: { role: string; name?: string } = { role: 'supervisor' };
+            if (newSupervisorName.trim()) {
+                updateData.name = newSupervisorName.trim();
+            }
 
-            toast({ title: 'Sucesso', description: `${userData.name || 'Usuário'} promovido a supervisor.` });
+            await updateDoc(userDocRef, updateData);
+            
+            const finalName = newSupervisorName.trim() || userData.name || 'Usuário';
+
+            toast({ title: 'Sucesso', description: `${finalName} promovido a supervisor.` });
             setIsAddSupervisorDialogOpen(false);
             setEmailToPromote('');
+            setNewSupervisorName('');
 
         } catch (error: any) {
             toast({ variant: 'destructive', title: 'Erro ao promover usuário', description: error.message });
@@ -231,7 +241,13 @@ export default function AdminPage() {
                         <CardTitle>Gerenciamento de Supervisores</CardTitle>
                         <CardDescription>Adicione, remova e gerencie os supervisores do sistema.</CardDescription>
                     </div>
-                    <Dialog open={isAddSupervisorDialogOpen} onOpenChange={setIsAddSupervisorDialogOpen}>
+                    <Dialog open={isAddSupervisorDialogOpen} onOpenChange={(isOpen) => {
+                        setIsAddSupervisorDialogOpen(isOpen);
+                        if (!isOpen) {
+                            setEmailToPromote('');
+                            setNewSupervisorName('');
+                        }
+                    }}>
                         <DialogTrigger asChild>
                             <Button>
                                 <UserPlus className="mr-2 h-4 w-4" />
@@ -242,17 +258,28 @@ export default function AdminPage() {
                             <DialogHeader>
                                 <DialogTitle>Adicionar Novo Supervisor</DialogTitle>
                                 <DialogDescription>
-                                    Digite o e-mail do operador que você deseja promover para supervisor. O usuário já deve estar cadastrado no sistema.
+                                    Digite o e-mail do operador para promovê-lo a supervisor. O nome será atualizado se preenchido.
                                 </DialogDescription>
                             </DialogHeader>
-                            <div className="py-4">
-                                <Label htmlFor="email-promote">Email do usuário</Label>
-                                <Input 
-                                    id="email-promote"
-                                    placeholder="email.do.operador@example.com" 
-                                    value={emailToPromote} 
-                                    onChange={(e) => setEmailToPromote(e.target.value)} 
-                                />
+                            <div className="py-4 space-y-4">
+                                <div>
+                                    <Label htmlFor="name-promote">Nome do usuário (opcional)</Label>
+                                    <Input 
+                                        id="name-promote"
+                                        placeholder="Nome completo do supervisor" 
+                                        value={newSupervisorName} 
+                                        onChange={(e) => setNewSupervisorName(e.target.value)} 
+                                    />
+                                </div>
+                                <div>
+                                    <Label htmlFor="email-promote">Email do usuário</Label>
+                                    <Input 
+                                        id="email-promote"
+                                        placeholder="email.do.operador@example.com" 
+                                        value={emailToPromote} 
+                                        onChange={(e) => setEmailToPromote(e.target.value)} 
+                                    />
+                                </div>
                             </div>
                             <DialogFooter>
                                 <Button variant="outline" onClick={() => setIsAddSupervisorDialogOpen(false)}>Cancelar</Button>
