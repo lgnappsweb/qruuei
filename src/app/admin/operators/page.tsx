@@ -80,38 +80,46 @@ export default function OperatorsPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {operators.map(o => (
-                                <TableRow key={o.id}>
-                                    <TableCell>{o.name}</TableCell>
-                                    <TableCell>{o.email}</TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center space-x-2">
-                                            <Switch
-                                                id={`status-${o.id}`}
-                                                checked={o.status === 'active'}
-                                                onCheckedChange={(checked) => handleStatusChange(o.id, checked)}
-                                            />
-                                            <Label htmlFor={`status-${o.id}`}>{o.status === 'active' ? 'Ativo' : 'Inativo'}</Label>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Select 
-                                            value={o.supervisorId || 'none'} 
-                                            onValueChange={(value) => handleSupervisorChange(o.id, value)}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Selecione um supervisor" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="none">Nenhum</SelectItem>
-                                                {supervisors.map(s => (
-                                                    <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
+                            {operators.length > 0 ? (
+                                operators.map(o => (
+                                    <TableRow key={o.id}>
+                                        <TableCell>{o.name}</TableCell>
+                                        <TableCell>{o.email}</TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center space-x-2">
+                                                <Switch
+                                                    id={`status-${o.id}`}
+                                                    checked={o.status === 'active'}
+                                                    onCheckedChange={(checked) => handleStatusChange(o.id, checked)}
+                                                />
+                                                <Label htmlFor={`status-${o.id}`}>{o.status === 'active' ? 'Ativo' : 'Inativo'}</Label>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Select 
+                                                value={o.supervisorId || 'none'} 
+                                                onValueChange={(value) => handleSupervisorChange(o.id, value)}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Selecione um supervisor" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="none">Nenhum</SelectItem>
+                                                    {supervisors.map(s => (
+                                                        <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={4} className="h-24 text-center">
+                                        Nenhum operador encontrado.
                                     </TableCell>
                                 </TableRow>
-                            ))}
+                            )}
                         </TableBody>
                     </Table>
                 </CardContent>
