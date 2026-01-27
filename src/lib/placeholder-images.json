@@ -6,6 +6,13 @@
       "imageUrl": "https://blog.deltafiat.com.br/wp-content/uploads/2025/09/placas-de-regulamentacao-r1-ate-r23.webp",
       "imageHint": "placas regulamentacao",
       "category": "regulamentacao"
+    },
+    {
+      "id": "placa-regulamentacao-2",
+      "description": "Placas de Regulamentação (R-24 a R-46)",
+      "imageUrl": "https://blog.deltafiat.com.br/wp-content/uploads/2025/09/placas-de-regulamentacao-r24-ate-r46.webp",
+      "imageHint": "placas regulamentacao",
+      "category": "regulamentacao"
     }
   ]
 }
