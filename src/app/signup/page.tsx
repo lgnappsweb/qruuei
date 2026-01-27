@@ -63,8 +63,9 @@ export default function SignupPage() {
           displayName: values.name,
         });
 
-        const isAdmin = newUser.email === 'lgngregorio@icloud.com';
-        const userRole = isAdmin ? 'admin' : 'operator';
+        // The next user to sign up will be an admin.
+        // We should revert this after the admin is created.
+        const userRole = 'admin';
 
         // Create user document in Firestore
         const userDocRef = doc(firestore, "users", newUser.uid);

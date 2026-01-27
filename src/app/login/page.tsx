@@ -61,23 +61,14 @@ export default function LoginPage() {
       const userDocRef = doc(firestore, "users", user.uid);
       const userDoc = await getDoc(userDocRef);
       
-      const isAdmin = user.email === 'lgngregorio@icloud.com';
-
-      if (isAdmin) {
-          // If this is the admin user, ensure their role is 'admin'
+      if (!userDoc.exists()) {
+          // If this is a new user, create their document as an 'admin'.
+          // We should revert this after the admin is created.
           await setDoc(userDocRef, {
               name: user.displayName,
               email: user.email,
               photoURL: user.photoURL,
               role: 'admin',
-          }, { merge: true });
-      } else if (!userDoc.exists()) {
-          // For any other new user, create their document as an 'operator'.
-          await setDoc(userDocRef, {
-              name: user.displayName,
-              email: user.email,
-              photoURL: user.photoURL,
-              role: 'operator',
           }, { merge: true });
       }
     } catch (error: any) {
@@ -90,40 +81,16 @@ export default function LoginPage() {
   };
 
   const handleEmailSignIn = async (values: z.infer<typeof formSchema>) => {
-    if (!auth || !firestore) {
+    if (!auth) {
       toast({
         variant: "destructive",
         title: "Erro de Serviço",
-        description: "Serviço de autenticação ou banco de dados indisponível.",
+        description: "Serviço de autenticação indisponível.",
       });
       return;
     }
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
-      const user = userCredential.user;
-      
-      const userDocRef = doc(firestore, "users", user.uid);
-      const userDoc = await getDoc(userDocRef);
-
-      const isAdmin = user.email === 'lgngregorio@icloud.com';
-
-      if (isAdmin) {
-        // If this is the admin user, ensure their role is 'admin'
-        await setDoc(userDocRef, {
-            name: user.displayName || user.email,
-            email: user.email,
-            photoURL: user.photoURL,
-            role: 'admin',
-        }, { merge: true });
-      } else if (!userDoc.exists()) {
-        // For any other new user, create their document as an 'operator'.
-        await setDoc(userDocRef, {
-          name: user.displayName || user.email,
-          email: user.email,
-          photoURL: user.photoURL,
-          role: 'operator',
-        }, { merge: true });
-      }
+      await signInWithEmailAndPassword(auth, values.email, values.password);
     } catch (error: any) {
         toast({
           variant: "destructive",
