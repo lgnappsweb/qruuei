@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, FileCode, ShieldAlert, Settings, Signpost, UserCog, ShieldCheck } from "lucide-react";
+import { Home, FileCode, ShieldAlert, Settings, Signpost } from "lucide-react";
 import { cn } from "@/lib/utils";
 import * as React from "react";
-import { useUser, useDoc } from "@/firebase";
 
-const baseNavItems = [
+const navItems = [
   { href: "/", label: "Início", icon: Home },
   { href: "/codigos", label: "Códigos", icon: FileCode },
   { href: "/ocorrencias", label: "Ocorrências", icon: ShieldAlert },
@@ -18,27 +17,11 @@ const baseNavItems = [
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isClient, setIsClient] = React.useState(false);
-  const { user } = useUser();
-  const { data: userData } = useDoc<{role: 'admin' | 'supervisor' | 'operator'}>(user ? `users/${user.uid}` : null);
-  const [navItems, setNavItems] = React.useState(baseNavItems);
-
 
   React.useEffect(() => {
     setIsClient(true);
   }, []);
   
-  React.useEffect(() => {
-    const newNavItems = [...baseNavItems];
-    if(userData?.role === 'admin') {
-        newNavItems.push({ href: "/supervisor", label: "Supervisor", icon: UserCog });
-        newNavItems.push({ href: "/admin", label: "Admin", icon: ShieldCheck });
-    } else if (userData?.role === 'supervisor') {
-        newNavItems.push({ href: "/supervisor", label: "Supervisor", icon: UserCog });
-    }
-    setNavItems(newNavItems);
-}, [userData]);
-
-
   const noNavPages = ['/login', '/signup', '/forgot-password'];
   const isAuthPage = isClient ? noNavPages.includes(pathname) : true; // Assume auth page on server to hide nav
 

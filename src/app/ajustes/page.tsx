@@ -4,12 +4,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
-import { useUser, useAuth, useFirestore, useCollection } from "@/firebase";
+import { useUser, useAuth, useFirestore, useCollection, useDoc } from "@/firebase";
 import { signOut, updateProfile } from "firebase/auth";
 import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { LogOut, Sun, Moon, Laptop, ArrowLeft, Notebook, BookMarked, MessageSquare } from "lucide-react";
+import { LogOut, Sun, Moon, Laptop, ArrowLeft, Notebook, BookMarked, MessageSquare, UserCog, ShieldCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "next-themes";
@@ -29,8 +29,13 @@ interface Message {
   read: boolean;
 }
 
+interface AppUser {
+    role: 'admin' | 'supervisor' | 'operator';
+}
+
 export default function AjustesPage() {
   const { user, initialising } = useUser();
+  const { data: userData } = useDoc<AppUser>(user ? `users/${user.uid}` : null);
   const auth = useAuth();
   const firestore = useFirestore();
   const router = useRouter();
@@ -205,6 +210,38 @@ export default function AjustesPage() {
         </CardContent>
       </Card>
       
+      {(userData?.role === 'supervisor' || userData?.role === 'admin') && (
+        <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><UserCog className="h-6 w-6" /> PAINEL DO SUPERVISOR</CardTitle>
+                <CardDescription>Acesse o painel de supervisor.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Button asChild className="w-full sm:w-auto">
+                    <Link href="/supervisor">
+                        Acessar Painel
+                    </Link>
+                </Button>
+            </CardContent>
+        </Card>
+      )}
+      
+      {userData?.role === 'admin' && (
+        <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><ShieldCheck className="h-6 w-6" /> PAINEL DO ADMINISTRADOR</CardTitle>
+                <CardDescription>Acesse o painel de administrador.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Button asChild className="w-full sm:w-auto">
+                    <Link href="/admin">
+                        Acessar Painel
+                    </Link>
+                </Button>
+            </CardContent>
+        </Card>
+      )}
+
       <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
         <CardHeader>
           <CardTitle className="flex items-center">
