@@ -25,11 +25,15 @@ export default function ImagensPage() {
   const [selectedImage, setSelectedImage] = React.useState<ImagePlaceholder | null>(null);
 
   const regulamentacaoImages = allImages.filter(img => 
-    img.imageUrl.includes('cursosdetransito.com.br') && !img.imageUrl.includes('placas_adv')
+    img.imageUrl.includes('cursosdetransito.com.br') && !img.imageUrl.includes('placas_adv') && !img.imageUrl.includes('placas_ind')
   );
   
   const advertenciaImages = allImages.filter(img => 
       img.imageUrl.includes('placas_adv')
+  );
+
+  const indicacaoImages = allImages.filter(img =>
+    img.imageUrl.includes('placas_ind')
   );
 
   const otherImages = allImages.filter(img => !img.imageUrl.includes('cursosdetransito.com.br'));
@@ -48,7 +52,7 @@ export default function ImagensPage() {
     {
       value: 'item-3',
       title: 'Indicação',
-      images: [],
+      images: indicacaoImages,
     },
   ];
 
