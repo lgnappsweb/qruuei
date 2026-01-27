@@ -50,7 +50,7 @@ export default function ImagensPage() {
   return (
     <>
       <div className="space-y-8 max-w-7xl mx-auto pb-24">
-        <div className="space-y-2">
+        <div className="space-y-2 text-center">
           <h1 className="font-condensed text-3xl font-bold tracking-tight">
             Placas de Sinalização
           </h1>
