@@ -449,7 +449,7 @@ export default function QudOperacaoPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-4xl mx-auto pb-24">
+    <div className="space-y-8 max-w-4xl mx-auto">
       <Button asChild variant="ghost" className="pl-0">
         <Link href="/">
           <ArrowLeft className="mr-2 h-4 w-4" />

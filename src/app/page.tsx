@@ -108,7 +108,7 @@ export default function Home() {
 
 
   return (
-    <div className="space-y-8 md:pb-24">
+    <div className="space-y-8">
       <div className="relative flex justify-center items-center h-32 my-4">
         <div className="z-10 bg-background px-2 sm:px-4 flex items-center justify-center gap-x-12">
           <h1 className="font-condensed text-7xl font-black tracking-tighter text-foreground">
