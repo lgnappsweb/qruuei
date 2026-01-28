@@ -1,5 +1,6 @@
 import { occurrences } from './occurrences';
 import { PlaceHolderImages } from './placeholder-images';
+import { kmzLinks } from './kmz-links';
 
 export const tiposDeOcorrenciaData = [
     { codigo: 'ACO1', mensagem: 'Acidente Com Vítima Fatal', grupo: 'Acidentes' },
@@ -262,7 +263,7 @@ export const relacionamentosData = [
    {
     title: 'Providências/Ações Genéricas',
     description: 'Estas são ações que podem ser aplicadas a quase todos os tipos de ocorrência, dependendo da situação.',
-    providencias: ['PR01', 'PR09', 'PR13', 'PR17', 'PR51', 'PR53'],
+    providencias: ['PR01', 'PR09', 'PR13', 'PR17', 'PR53'],
     panes: [],
     outras: ['OU02'],
    }
@@ -529,6 +530,13 @@ export const searchableData: SearchableItem[] = [
     ...linksData.map(item => ({
         id: `link-${item.title.toLowerCase().replace(/\s/g, '-')}`,
         category: 'Link Útil',
+        title: item.title,
+        content: item.href,
+        link: item.href,
+    })),
+    ...kmzLinks.map(item => ({
+        id: `link-kmz-${item.title.toLowerCase().replace(/\s/g, '-')}`,
+        category: 'Link KMZ',
         title: item.title,
         content: item.href,
         link: item.href,

@@ -30,6 +30,7 @@ import {
     relacionamentosData,
     linksData
 } from '@/lib/search';
+import { kmzLinks } from '@/lib/kmz-links';
 
 function TiposDeOcorrenciaTable() {
   return (
@@ -333,6 +334,31 @@ function LinksTable() {
   );
 }
 
+function KmzLinksTable() {
+  return (
+    <div className="space-y-4">
+      {kmzLinks.map(link => (
+        <a
+          key={link.href}
+          href={link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block"
+        >
+          <Card className="hover:bg-accent hover:border-primary/50 transition-colors shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <LinkIcon className="h-5 w-5 text-primary" />
+                {link.title}
+              </CardTitle>
+            </CardHeader>
+          </Card>
+        </a>
+      ))}
+    </div>
+  );
+}
+
 
 export default function CodigosPage() {
   const [openAccordion, setOpenAccordion] = React.useState<string>();
@@ -382,6 +408,11 @@ export default function CodigosPage() {
       value: 'item-9',
       title: 'Links Úteis',
       content: <LinksTable />,
+    },
+    {
+      value: 'item-10',
+      title: 'KMZ Links',
+      content: <KmzLinksTable />,
     },
   ];
 
