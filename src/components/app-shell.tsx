@@ -48,7 +48,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     "flex flex-col items-center justify-center gap-1 w-full h-full rounded-lg transition-colors",
                     isActive
                       ? "text-primary"
-                      : "text-muted-foreground hover:text-foreground"
+                      : "text-foreground/70 hover:text-foreground"
                   )}
                 >
                   <item.icon className="h-5 w-5" />
