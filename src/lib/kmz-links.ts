@@ -9,7 +9,7 @@ export const mapsMeLinks = [
   },
   {
     title: 'MAPS.ME - MS-306',
-    href: 'https://github.com/flavio-dino/maps/raw/main/ms306.kmz',
+    href: 'https://drive.google.com/file/d/1J7QYvnowqK60XWkA6I-XbwaUYABgWezg/view?usp=sharing',
   },
    {
     title: 'MAPS.ME - BR-436',
