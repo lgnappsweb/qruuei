@@ -47,13 +47,63 @@ export default function Home() {
 
     const lowerCaseTerm = term.toLowerCase();
     
-    const staticResults = searchableData.filter(item => 
-        item.title.toLowerCase().includes(lowerCaseTerm) ||
-        item.content.toLowerCase().includes(lowerCaseTerm) ||
-        (item.code && item.code.toLowerCase().includes(lowerCaseTerm))
-    );
-    
-    setSearchResults(staticResults);
+    // Define common Portuguese "stop words" to ignore in search
+    const stopWords = new Set([
+      'a', 'o', 'e', 'é', 'de', 'do', 'da', 'dos', 'das', 'em', 'no', 'na',
+      'nos', 'nas', 'um', 'uma', 'uns', 'umas', 'com', 'por', 'para', 'pra',
+      'sem', 'sob', 'sobre', 'se', 'seu', 'sua', 'seus', 'suas', 'qual', 'quais',
+      'como', 'quando', 'onde', 'quem', 'que', 'quê', 'cujo', 'cuja', 'cujos',
+      'cujas', 'usado', 'tipo', 'tipos', 'de', 'ocorrencia', 'ocorrencias',
+      'codigo', 'codigos', 'sobre', 'fazer'
+    ]);
+
+    // Split search term into individual words (tokens) and filter out stop words
+    const searchTokens = lowerCaseTerm
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove accents
+      .split(/\s+/)
+      .filter(t => t.length > 1 && !stopWords.has(t));
+
+    // If after filtering, there are no valid search tokens, perform a simple "includes" search
+    if (searchTokens.length === 0) {
+      const fallbackResults = searchableData.filter(item => 
+          item.title.toLowerCase().includes(lowerCaseTerm) ||
+          item.content.toLowerCase().includes(lowerCaseTerm) ||
+          (item.code && item.code.toLowerCase().includes(lowerCaseTerm))
+      );
+      setSearchResults(fallbackResults);
+      return;
+    }
+
+    // Score each item in searchableData based on matches
+    const scoredResults = searchableData.map(item => {
+      let score = 0;
+      const title = item.title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const content = item.content.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const code = item.code ? item.code.toLowerCase() : '';
+
+      searchTokens.forEach(token => {
+        // Higher score for exact code match
+        if (code === token) {
+            score += 20;
+        } else if (code.includes(token)) {
+            score += 10;
+        }
+        // Medium score for title match
+        if (title.includes(token)) {
+            score += 5;
+        }
+        // Lower score for content match
+        if (content.includes(token)) {
+            score += 1;
+        }
+      });
+      
+      return { ...item, score };
+    })
+    .filter(item => item.score > 0) // Keep only items that have a score
+    .sort((a, b) => b.score - a.score); // Sort by score descending
+
+    setSearchResults(scoredResults);
   };
 
 
