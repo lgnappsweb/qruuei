@@ -30,7 +30,21 @@ import {
 } from "@/components/ui/accordion";
 import { placasAdvertenciaData, placasRegulamentacaoData } from '@/lib/search';
 
-function PlacasRegulamentacaoTable() {
+function PlacasRegulamentacaoTable({ setSelectedImage, images }: { setSelectedImage: (image: ImagePlaceholder | null) => void, images: ImagePlaceholder[] }) {
+  const handleClick = (codigo: string) => {
+    const codeNum = parseInt(codigo.substring(2));
+    let imageId;
+    if (codeNum <= 23) {
+      imageId = "placa-regulamentacao-1";
+    } else {
+      imageId = "placa-regulamentacao-2";
+    }
+    const image = images.find(img => img.id === imageId);
+    if (image) {
+      setSelectedImage(image);
+    }
+  };
+
   return (
     <>
       {/* Desktop View */}
@@ -45,7 +59,7 @@ function PlacasRegulamentacaoTable() {
           </TableHeader>
           <TableBody>
             {placasRegulamentacaoData.map((item) => (
-              <TableRow key={item.codigo}>
+              <TableRow key={item.codigo} onClick={() => handleClick(item.codigo)} className="cursor-pointer hover:bg-muted">
                 <TableCell className="font-medium"><span className="font-mono bg-destructive text-destructive-foreground px-2 py-1 rounded-md">{item.codigo}</span></TableCell>
                 <TableCell>{item.nome}</TableCell>
                 <TableCell>{item.significado}</TableCell>
@@ -58,7 +72,7 @@ function PlacasRegulamentacaoTable() {
       {/* Mobile View */}
       <div className="grid grid-cols-1 gap-4 md:hidden">
         {placasRegulamentacaoData.map((item) => (
-          <Card key={item.codigo}>
+          <Card key={item.codigo} onClick={() => handleClick(item.codigo)} className="cursor-pointer">
             <CardHeader className="p-4">
               <CardTitle className="flex justify-between items-start text-lg">
                 <span className="flex-1 pr-2">{item.nome}</span>
@@ -75,7 +89,27 @@ function PlacasRegulamentacaoTable() {
   );
 }
 
-function PlacasAdvertenciaTable() {
+function PlacasAdvertenciaTable({ setSelectedImage, images }: { setSelectedImage: (image: ImagePlaceholder | null) => void, images: ImagePlaceholder[] }) {
+  const handleClick = (codigo: string) => {
+    const codeNum = parseInt(codigo.match(/\d+/)?.[0] || '0');
+    let imageId;
+
+    if (codeNum < 10) {
+      imageId = 'placa-advertencia-1';
+    } else if (codeNum === 10) {
+      imageId = codigo.endsWith('a') ? 'placa-advertencia-1' : 'placa-advertencia-2';
+    } else if (codeNum <= 31) {
+      imageId = 'placa-advertencia-2';
+    } else {
+      imageId = 'placa-advertencia-3';
+    }
+    
+    const image = images.find(img => img.id === imageId);
+    if (image) {
+      setSelectedImage(image);
+    }
+  };
+
   return (
     <>
       {/* Desktop View */}
@@ -90,7 +124,7 @@ function PlacasAdvertenciaTable() {
           </TableHeader>
           <TableBody>
             {placasAdvertenciaData.map((item) => (
-              <TableRow key={item.codigo}>
+              <TableRow key={item.codigo} onClick={() => handleClick(item.codigo)} className="cursor-pointer hover:bg-muted">
                 <TableCell className="font-medium"><span className="font-mono bg-yellow-400 text-black px-2 py-1 rounded-md">{item.codigo}</span></TableCell>
                 <TableCell>{item.nome}</TableCell>
                 <TableCell>{item.significado}</TableCell>
@@ -103,7 +137,7 @@ function PlacasAdvertenciaTable() {
       {/* Mobile View */}
       <div className="grid grid-cols-1 gap-4 md:hidden">
         {placasAdvertenciaData.map((item) => (
-          <Card key={item.codigo}>
+          <Card key={item.codigo} onClick={() => handleClick(item.codigo)} className="cursor-pointer">
             <CardHeader className="p-4">
               <CardTitle className="flex justify-between items-start text-lg">
                 <span className="flex-1 pr-2">{item.nome}</span>
@@ -169,13 +203,13 @@ export default function ImagensPage() {
       value: 'item-1',
       title: 'Placas de regulamentação – Placas vermelhas',
       images: regulamentacaoImages,
-      content: <PlacasRegulamentacaoTable />,
+      content: <PlacasRegulamentacaoTable setSelectedImage={setSelectedImage} images={allImages} />,
     },
     {
       value: 'item-2',
       title: 'Placas de advertência – Placas amarelas',
       images: advertenciaImages,
-      content: <PlacasAdvertenciaTable />,
+      content: <PlacasAdvertenciaTable setSelectedImage={setSelectedImage} images={allImages} />,
     },
     {
       value: 'item-3',
