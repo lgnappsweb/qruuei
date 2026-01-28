@@ -31,19 +31,10 @@ const categoryIcons: { [key: string]: React.ElementType } = {
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<SearchableItem[]>([]);
-  const [localOcorrencias, setLocalOcorrencias] = useState<any[]>([]);
 
   useEffect(() => {
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
-    }
-    try {
-        const savedOcorrencias = localStorage.getItem('ocorrencias_v2');
-        if (savedOcorrencias) {
-          setLocalOcorrencias(JSON.parse(savedOcorrencias));
-        }
-    } catch (e) {
-        console.error("Failed to load ocorrencias from localStorage", e);
     }
   }, []);
 
@@ -62,15 +53,7 @@ export default function Home() {
         (item.code && item.code.toLowerCase().includes(lowerCaseTerm))
     );
     
-    const ocorrenciasResults = localOcorrencias.map(o => ({
-      id: `saved-occ-${o.id}`,
-      category: 'Ocorrência Salva',
-      title: `${o.codOcorrencia} - ${o.rodovia} KM ${o.km}`,
-      content: o.timestamp,
-      link: '/ocorrencias'
-    })).filter(item => item.title.toLowerCase().includes(lowerCaseTerm) || item.content.toLowerCase().includes(lowerCaseTerm));
-
-    setSearchResults([...staticResults, ...ocorrenciasResults]);
+    setSearchResults(staticResults);
   };
 
 
