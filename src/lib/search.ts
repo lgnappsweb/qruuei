@@ -1,6 +1,6 @@
 import { occurrences } from './occurrences';
 import { PlaceHolderImages } from './placeholder-images';
-import { kmzLinks } from './kmz-links';
+import { mapsMeLinks } from './kmz-links';
 
 export const tiposDeOcorrenciaData = [
     { codigo: 'ACO1', mensagem: 'Acidente Com Vítima Fatal', grupo: 'Acidentes' },
@@ -534,9 +534,9 @@ export const searchableData: SearchableItem[] = [
         content: item.href,
         link: item.href,
     })),
-    ...kmzLinks.map(item => ({
-        id: `link-kmz-${item.title.toLowerCase().replace(/\s/g, '-')}`,
-        category: 'Link KMZ',
+    ...mapsMeLinks.map(item => ({
+        id: `link-maps-me-${item.title.toLowerCase().replace(/\s/g, '-')}`,
+        category: 'MAPS.ME Link',
         title: item.title,
         content: item.href,
         link: item.href,

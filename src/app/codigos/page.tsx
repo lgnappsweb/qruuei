@@ -30,7 +30,7 @@ import {
     relacionamentosData,
     linksData
 } from '@/lib/search';
-import { kmzLinks } from '@/lib/kmz-links';
+import { mapsMeLinks } from '@/lib/kmz-links';
 
 function TiposDeOcorrenciaTable() {
   return (
@@ -334,10 +334,10 @@ function LinksTable() {
   );
 }
 
-function KmzLinksTable() {
+function MapsMeLinksTable() {
   return (
     <div className="space-y-4">
-      {kmzLinks.map(link => (
+      {mapsMeLinks.map(link => (
         <a
           key={link.href}
           href={link.href}
@@ -411,8 +411,8 @@ export default function CodigosPage() {
     },
     {
       value: 'item-10',
-      title: 'KMZ Links',
-      content: <KmzLinksTable />,
+      title: 'MAPS.ME',
+      content: <MapsMeLinksTable />,
     },
   ];
 

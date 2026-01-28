@@ -1,18 +1,18 @@
-export const kmzLinks = [
+export const mapsMeLinks = [
   {
-    title: 'KMZ - BR-158',
+    title: 'MAPS.ME - BR-158',
     href: 'https://github.com/flavio-dino/maps/raw/main/br158.kmz',
   },
   {
-    title: 'KMZ - MS-306',
+    title: 'MAPS.ME - MS-306',
     href: 'https://github.com/flavio-dino/maps/raw/main/ms306.kmz',
   },
   {
-    title: 'KMZ - MS-112',
+    title: 'MAPS.ME - MS-112',
     href: 'https://github.com/flavio-dino/maps/raw/main/ms112.kmz',
   },
    {
-    title: 'KMZ - BR-436',
+    title: 'MAPS.ME - BR-436',
     href: 'https://github.com/flavio-dino/maps/raw/main/br436.kmz',
   },
 ];
