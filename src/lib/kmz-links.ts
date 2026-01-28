@@ -13,6 +13,6 @@ export const mapsMeLinks = [
   },
    {
     title: 'MAPS.ME - BR-436',
-    href: 'https://github.com/flavio-dino/maps/raw/main/br436.kmz',
+    href: 'https://drive.google.com/file/d/1XxT-gsTMC7hFWo94FBRzKUQaysRTEQrO/view?usp=sharing',
   },
 ];
