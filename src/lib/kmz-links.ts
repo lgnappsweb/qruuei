@@ -1,7 +1,7 @@
 export const mapsMeLinks = [
   {
     title: 'MAPS.ME - MS-112',
-    href: 'https://github.com/flavio-dino/maps/raw/main/ms112.kmz',
+    href: 'https://drive.google.com/file/d/1yVELomsDcrt-mbwbtvDJu9kf_tEaUxdF/view?usp=sharing',
   },
   {
     title: 'MAPS.ME - BR-158',
