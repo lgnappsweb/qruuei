@@ -159,15 +159,13 @@ export default function Home() {
                             {searchResults.map((item) => {
                                 const Icon = categoryIcons[item.category] || HelpCircle;
                                 return (
-                                <Link href={item.link} key={item.id} passHref>
-                                    <div className="p-4 border rounded-lg hover:bg-accent transition-colors cursor-pointer">
-                                        <div className="flex items-center gap-4">
-                                             <Icon className="h-6 w-6 text-muted-foreground" />
-                                            <div className="flex-1">
-                                                <p className="font-semibold">{item.title} {item.code && <span className="font-mono text-sm bg-muted p-1 rounded-md">{item.code}</span>}</p>
-                                                <p className="text-sm text-muted-foreground">{item.category}</p>
-                                                {item.content && <p className="text-sm text-muted-foreground mt-1 truncate">{item.content}</p>}
-                                            </div>
+                                <Link href={item.link} key={item.id} className="block p-4 border rounded-lg hover:bg-accent transition-colors cursor-pointer">
+                                    <div className="flex items-center gap-4">
+                                            <Icon className="h-6 w-6 text-muted-foreground" />
+                                        <div className="flex-1">
+                                            <p className="font-semibold">{item.title} {item.code && <span className="font-mono text-sm bg-muted p-1 rounded-md">{item.code}</span>}</p>
+                                            <p className="text-sm text-muted-foreground">{item.category}</p>
+                                            {item.content && <p className="text-sm text-muted-foreground mt-1 truncate">{item.content}</p>}
                                         </div>
                                     </div>
                                 </Link>
