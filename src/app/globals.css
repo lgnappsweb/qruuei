@@ -96,4 +96,15 @@
     animation: move-dashes 1s linear infinite;
     will-change: background-position;
   }
+
+  @keyframes move-dashes-about {
+    to { background-position: 0 20px; }
+  }
+
+  .animate-road-dashes-about {
+    background: repeating-linear-gradient(to bottom, currentColor, currentColor 10px, transparent 10px, transparent 20px);
+    background-size: 100% 20px;
+    animation: move-dashes-about 0.5s linear infinite;
+    will-change: background-position;
+  }
 }

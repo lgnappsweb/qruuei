@@ -334,11 +334,6 @@ export default function AjustesPage() {
           <CardTitle>Conta</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <style>{`
-              @keyframes move-dashes-about {
-                  to { background-position: 0 20px; }
-              }
-          `}</style>
           <div className="flex justify-start items-center gap-x-4 text-muted-foreground">
               <h1 className="font-condensed text-lg font-black tracking-tighter">
                   QRU
@@ -346,13 +341,7 @@ export default function AjustesPage() {
               <div className="h-6 flex justify-center gap-x-px overflow-hidden -my-1">
                   <div className="w-px h-full bg-current"></div>
                   <div
-                  className="w-px h-[calc(100%+20px)]"
-                  style={{
-                      background: 'repeating-linear-gradient(to bottom, currentColor, currentColor 10px, transparent 10px, transparent 20px)',
-                      backgroundSize: '100% 20px',
-                      animation: 'move-dashes-about 1s linear infinite',
-                      willChange: 'background-position'
-                  }}
+                    className="w-px h-[calc(100%+20px)] animate-road-dashes-about"
                   ></div>
               </div>
               <h1 className="font-condensed text-lg font-black tracking-tighter">
