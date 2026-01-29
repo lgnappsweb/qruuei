@@ -19,6 +19,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { PlaceHolderImages, type ImagePlaceholder } from '@/lib/placeholder-images';
@@ -221,34 +228,41 @@ export default function ImagensPage() {
             <div key={subCategory.title}>
               <h3 className="text-2xl font-semibold mb-4">{subCategory.title}</h3>
                {subCategory.images.length > 0 ? (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 pt-4">
-                  {subCategory.images.map((image) => (
-                    <Card 
-                      key={image.id} 
-                      className="group relative overflow-hidden bg-muted cursor-pointer"
-                      onClick={() => setSelectedImage(image)}
-                    >
-                      <CardContent className="p-0 aspect-video">
-                        <NextImage
-                          src={image.imageUrl}
-                          alt={image.description}
-                          fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          className="object-contain transition-transform duration-300 group-hover:scale-105 p-2"
-                          data-ai-hint={image.imageHint}
-                        />
-                      </CardContent>
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                        <CardTitle className="text-lg text-white truncate flex justify-between items-center">
-                            <span>{image.description}</span>
-                            {image.code && (
-                                <span className="font-mono bg-black/50 text-sm px-2 py-1 rounded-md">{image.code}</span>
-                            )}
-                        </CardTitle>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
+                 <Carousel opts={{ align: "start", loop: true }} className="w-full">
+                   <CarouselContent>
+                     {subCategory.images.map((image) => (
+                       <CarouselItem key={image.id} className="md:basis-1/2 lg:basis-1/3">
+                         <div className="p-1">
+                           <Card
+                             className="group relative overflow-hidden bg-muted cursor-pointer"
+                             onClick={() => setSelectedImage(image)}
+                           >
+                             <CardContent className="p-0 aspect-video">
+                               <NextImage
+                                 src={image.imageUrl}
+                                 alt={image.description}
+                                 fill
+                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                 className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                 data-ai-hint={image.imageHint}
+                               />
+                             </CardContent>
+                             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                               <CardTitle className="text-lg text-white truncate flex justify-between items-center">
+                                 <span>{image.description}</span>
+                                 {image.code && (
+                                   <span className="font-mono bg-black/50 text-sm px-2 py-1 rounded-md">{image.code}</span>
+                                 )}
+                               </CardTitle>
+                             </div>
+                           </Card>
+                         </div>
+                       </CarouselItem>
+                     ))}
+                   </CarouselContent>
+                   <CarouselPrevious className="ml-12" />
+                   <CarouselNext className="mr-12" />
+                 </Carousel>
               ) : subCategory.content}
             </div>
           ))}
@@ -283,34 +297,41 @@ export default function ImagensPage() {
               <AccordionContent className="px-6">
                  <div className="space-y-8">
                     {section.images.length > 0 && (
-                      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 pt-4">
-                        {section.images.map((image) => (
-                          <Card 
-                            key={image.id} 
-                            className="group relative overflow-hidden bg-muted cursor-pointer"
-                            onClick={() => setSelectedImage(image)}
-                          >
-                            <CardContent className="p-0 aspect-video">
-                              <NextImage
-                                src={image.imageUrl}
-                                alt={image.description}
-                                fill
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                className="object-contain transition-transform duration-300 group-hover:scale-105 p-2"
-                                data-ai-hint={image.imageHint}
-                              />
-                            </CardContent>
-                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                              <CardTitle className="text-lg text-white truncate flex justify-between items-center">
-                                  <span>{image.description}</span>
-                                  {image.code && (
-                                      <span className="font-mono bg-black/50 text-sm px-2 py-1 rounded-md">{image.code}</span>
-                                  )}
-                              </CardTitle>
-                            </div>
-                          </Card>
-                        ))}
-                      </div>
+                      <Carousel opts={{ align: "start", loop: true, }} className="w-full">
+                        <CarouselContent>
+                          {section.images.map((image) => (
+                            <CarouselItem key={image.id} className="md:basis-1/2 lg:basis-1/3">
+                              <div className="p-1">
+                                <Card
+                                  className="group relative overflow-hidden bg-muted cursor-pointer"
+                                  onClick={() => setSelectedImage(image)}
+                                >
+                                  <CardContent className="p-0 aspect-video">
+                                    <NextImage
+                                      src={image.imageUrl}
+                                      alt={image.description}
+                                      fill
+                                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                      data-ai-hint={image.imageHint}
+                                    />
+                                  </CardContent>
+                                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                                    <CardTitle className="text-lg text-white truncate flex justify-between items-center">
+                                        <span>{image.description}</span>
+                                        {image.code && (
+                                            <span className="font-mono bg-black/50 text-sm px-2 py-1 rounded-md">{image.code}</span>
+                                        )}
+                                    </CardTitle>
+                                  </div>
+                                </Card>
+                              </div>
+                            </CarouselItem>
+                          ))}
+                        </CarouselContent>
+                        <CarouselPrevious className="ml-12" />
+                        <CarouselNext className="mr-12" />
+                      </Carousel>
                     )}
                     {section.content}
                  </div>
