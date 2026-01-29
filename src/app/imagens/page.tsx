@@ -341,13 +341,13 @@ export default function ImagensPage() {
         </Accordion>
       
       <Dialog open={!!selectedImage} onOpenChange={(isOpen) => !isOpen && setSelectedImage(null)}>
-        <DialogContent className="max-w-[90vw] max-h-[85vh] p-2">
+        <DialogContent className="p-0 max-w-[90vw] sm:max-w-sm w-full">
           {selectedImage && (
             <>
-               <DialogHeader>
-                <DialogTitle className="sr-only">{selectedImage.description}</DialogTitle>
+              <DialogHeader className="p-4 pb-2">
+                <DialogTitle>{selectedImage.description}</DialogTitle>
               </DialogHeader>
-              <div className="relative w-full h-[80vh]">
+              <div className="relative w-full aspect-[9/16]">
                 <NextImage
                   src={selectedImage.imageUrl}
                   alt={selectedImage.description}
