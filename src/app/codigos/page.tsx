@@ -359,6 +359,14 @@ function MapsMeLinksTable() {
   );
 }
 
+function InstrucoesGuinchoLeve() {
+  return (
+    <p className="text-center text-muted-foreground p-4">
+      As imagens de instrução para operar o guincho leve serão adicionadas aqui.
+    </p>
+  );
+}
+
 
 export default function CodigosPage() {
   const [openAccordion, setOpenAccordion] = React.useState<string>();
@@ -405,6 +413,11 @@ export default function CodigosPage() {
       content: <PontosDeApoioTable />,
     },
     {
+      value: 'item-11',
+      title: 'Instruções Para Operar Guincho Leve',
+      content: <InstrucoesGuinchoLeve />,
+    },
+    {
       value: 'item-9',
       title: 'Links Úteis',
       content: <LinksTable />,
@@ -417,7 +430,7 @@ export default function CodigosPage() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-24">
       <Button asChild variant="ghost" className="pl-0">
         <Link href="/">
           <ArrowLeft className="mr-2 h-4 w-4" />
