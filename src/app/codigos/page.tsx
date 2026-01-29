@@ -401,24 +401,19 @@ function InstrucoesGuinchoLeve() {
           ))}
         </div>
       ) : (
-         <a
-          href="https://drive.google.com/drive/folders/1wdrsXCaSBrg9T_WIgcBYPs8RJDc2PeOI"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block"
-        >
-          <Card className="hover:bg-accent hover:border-primary/50 transition-colors shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+         <Card className="bg-muted/50 border-dashed">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-xl">
-                <LinkIcon className="h-5 w-5 text-primary" />
-                Acessar pasta com as instruções
-              </CardTitle>
-              <CardDescription>
-                As imagens de instrução estão disponíveis no Google Drive.
-              </CardDescription>
+                <CardTitle className="flex items-center gap-2 text-xl">
+                    <LinkIcon className="h-5 w-5 text-primary" />
+                    Aguardando links das imagens
+                </CardTitle>
             </CardHeader>
-          </Card>
-        </a>
+            <CardContent>
+                <CardDescription>
+                    Para exibir as imagens diretamente, preciso dos links individuais de cada imagem (com final .jpg, .png, etc.), e não o link da pasta do Google Drive. Assim que você me fornecer os links diretos, eu os adicionarei aqui.
+                </CardDescription>
+            </CardContent>
+         </Card>
       )}
 
       <Dialog open={!!selectedImage} onOpenChange={(isOpen) => !isOpen && setSelectedImage(null)}>
