@@ -223,6 +223,13 @@
       "imageUrl": "https://i.postimg.cc/fLFCcrNC/20.png",
       "imageHint": "guincho leve",
       "category": "guincho-leve"
+    },
+    {
+      "id": "guincho-leve-21",
+      "description": "Instrução 21",
+      "imageUrl": "https://i.postimg.cc/wvP2XGp4/21.png",
+      "imageHint": "guincho leve",
+      "category": "guincho-leve"
     }
   ]
 }
