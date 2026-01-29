@@ -403,7 +403,7 @@ function InstrucoesGuinchoLeve() {
                         alt={image.description}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover transition-transform duration-300 group-hover:scale-105 rotate-90"
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
                         data-ai-hint={image.imageHint}
                       />
                     </CardContent>
@@ -440,7 +440,7 @@ function InstrucoesGuinchoLeve() {
         <DialogContent className="p-0 max-w-[90vw] sm:max-w-sm w-full">
           {selectedImage && (
             <>
-              <DialogHeader className="p-4 pb-2">
+              <DialogHeader className="p-4 pr-12 pb-2">
                 <DialogTitle>{selectedImage.description}</DialogTitle>
               </DialogHeader>
               <div className="relative w-full aspect-[9/16]">

@@ -288,7 +288,7 @@ export default function AjustesPage() {
             </Card>
         </DialogTrigger>
         <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
-          <DialogHeader>
+          <DialogHeader className="pr-12">
             <DialogTitle className="text-2xl">POLÍTICAS DO SISTEMA DE GESTÃO INTEGRADA</DialogTitle>
           </DialogHeader>
           <ScrollArea className="flex-1 pr-6 -mr-6 mt-4">

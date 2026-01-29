@@ -149,7 +149,7 @@ export default function SupervisorsPage() {
                             </Button>
                         </DialogTrigger>
                         <DialogContent>
-                            <DialogHeader>
+                            <DialogHeader className="pr-12">
                                 <DialogTitle>Adicionar Novo Supervisor</DialogTitle>
                                 <DialogDescription>
                                     Selecione um operador para promovê-lo a supervisor. O nome será atualizado se preenchido.

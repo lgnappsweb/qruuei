@@ -129,7 +129,7 @@ export default function OccurrencesPage() {
                                                     </Button>
                                                 </DialogTrigger>
                                                 <DialogContent className="max-w-4xl h-[80vh]">
-                                                    <DialogHeader>
+                                                    <DialogHeader className="pr-12">
                                                         <DialogTitle>{o.type}</DialogTitle>
                                                     </DialogHeader>
                                                     <ScrollArea className="h-full pr-6 -mr-6 mt-4">

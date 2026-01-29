@@ -344,7 +344,7 @@ export default function ImagensPage() {
         <DialogContent className="p-0 max-w-[90vw] sm:max-w-sm w-full">
           {selectedImage && (
             <>
-              <DialogHeader className="p-4 pb-2">
+              <DialogHeader className="p-4 pr-12 pb-2">
                 <DialogTitle>{selectedImage.description}</DialogTitle>
               </DialogHeader>
               <div className="relative w-full aspect-[9/16]">
