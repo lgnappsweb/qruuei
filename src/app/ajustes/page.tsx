@@ -350,7 +350,7 @@ export default function AjustesPage() {
                   style={{
                       background: 'repeating-linear-gradient(to bottom, currentColor, currentColor 10px, transparent 10px, transparent 20px)',
                       backgroundSize: '100% 20px',
-                      animation: 'move-dashes-about 0.5s linear infinite',
+                      animation: 'move-dashes-about 1s linear infinite',
                       willChange: 'background-position'
                   }}
                   ></div>
