@@ -118,6 +118,13 @@
       "imageUrl": "https://images.unsplash.com/photo-1597775199311-02d23b1a30e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Z3VpbmNobyUyMGluc3RydWNhb3xlbnwwfHx8fDE3Njk2Nzc1Mjl8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "guincho instrucao",
       "category": "guincho-leve"
+    },
+    {
+      "id": "guincho-leve-6",
+      "description": "Instrução 6",
+      "imageUrl": "https://images.unsplash.com/photo-1605934079907-5028658e4cab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxndWluY2hvJTIwaW5zdHJ1Y2FvfGVufDB8fHx8MTc2OTY3NzUyOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "guincho instrucao",
+      "category": "guincho-leve"
     }
   ]
 }
