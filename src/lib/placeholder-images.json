@@ -202,6 +202,13 @@
       "imageUrl": "https://lh3.googleusercontent.com/d/1RQ4yh2AAKQpiBz1_Voc1ghDXsEkTDT-U",
       "imageHint": "guincho instrucao",
       "category": "guincho-leve"
+    },
+    {
+      "id": "guincho-leve-18",
+      "description": "Instrução 18",
+      "imageUrl": "https://lh3.googleusercontent.com/d/1UDuZCitApBkGk6mFtDeDAuandyOBSX4r",
+      "imageHint": "guincho instrucao",
+      "category": "guincho-leve"
     }
   ]
 }
