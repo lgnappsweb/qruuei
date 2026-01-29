@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import NextImage from 'next/image';
 import { ArrowLeft, LinkIcon } from 'lucide-react';
 import {
   Accordion,
@@ -31,6 +32,14 @@ import {
     linksData
 } from '@/lib/search';
 import { mapsMeLinks } from '@/lib/kmz-links';
+import { PlaceHolderImages, type ImagePlaceholder } from '@/lib/placeholder-images';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
 
 function TiposDeOcorrenciaTable() {
   return (
@@ -360,26 +369,77 @@ function MapsMeLinksTable() {
 }
 
 function InstrucoesGuinchoLeve() {
+  const [selectedImage, setSelectedImage] = React.useState<ImagePlaceholder | null>(null);
+  const guinchoImages = PlaceHolderImages.filter(img => img.category === 'guincho-leve');
+
   return (
     <div className="space-y-4">
-      <a
-        href="https://drive.google.com/drive/folders/1wdrsXCaSBrg9T_WIgcBYPs8RJDc2PeOI"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block"
-      >
-        <Card className="hover:bg-accent hover:border-primary/50 transition-colors shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <LinkIcon className="h-5 w-5 text-primary" />
-              Acessar pasta com as instruções
-            </CardTitle>
-            <CardDescription>
-              As imagens de instrução estão disponíveis no Google Drive.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </a>
+      {guinchoImages.length > 0 ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 pt-4">
+          {guinchoImages.map((image) => (
+            <Card
+              key={image.id}
+              className="group relative overflow-hidden bg-muted cursor-pointer"
+              onClick={() => setSelectedImage(image)}
+            >
+              <CardContent className="p-0 aspect-video">
+                <NextImage
+                  src={image.imageUrl}
+                  alt={image.description}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-contain transition-transform duration-300 group-hover:scale-105 p-2"
+                  data-ai-hint={image.imageHint}
+                />
+              </CardContent>
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                <CardTitle className="text-lg text-white truncate flex justify-between items-center">
+                  <span>{image.description}</span>
+                </CardTitle>
+              </div>
+            </Card>
+          ))}
+        </div>
+      ) : (
+         <a
+          href="https://drive.google.com/drive/folders/1wdrsXCaSBrg9T_WIgcBYPs8RJDc2PeOI"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block"
+        >
+          <Card className="hover:bg-accent hover:border-primary/50 transition-colors shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <LinkIcon className="h-5 w-5 text-primary" />
+                Acessar pasta com as instruções
+              </CardTitle>
+              <CardDescription>
+                As imagens de instrução estão disponíveis no Google Drive.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </a>
+      )}
+
+      <Dialog open={!!selectedImage} onOpenChange={(isOpen) => !isOpen && setSelectedImage(null)}>
+        <DialogContent className="max-w-[90vw] max-h-[85vh] p-2">
+          {selectedImage && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="sr-only">{selectedImage.description}</DialogTitle>
+              </DialogHeader>
+              <div className="relative w-full h-[80vh]">
+                <NextImage
+                  src={selectedImage.imageUrl}
+                  alt={selectedImage.description}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
