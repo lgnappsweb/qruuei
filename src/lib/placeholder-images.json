@@ -83,48 +83,6 @@
       "imageUrl": "https://blog.deltafiat.com.br/wp-content/uploads/2025/09/placas-de-postos-de-fiscalizacao.webp",
       "imageHint": "placas fiscalizacao",
       "category": "indicacao"
-    },
-    {
-      "id": "guincho-leve-1",
-      "description": "Instrução 1",
-      "imageUrl": "https://images.unsplash.com/photo-1622249504895-5b2e35c5ef85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxndWluY2hvJTIwaW5zdHJ1Y2FvfGVufDB8fHx8MTc2OTY3NzUyOXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "guincho instrucao",
-      "category": "guincho-leve"
-    },
-    {
-      "id": "guincho-leve-2",
-      "description": "Instrução 2",
-      "imageUrl": "https://images.unsplash.com/photo-1753051522936-af0b20b42ee8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxndWluY2hvJTIwaW5zdHJ1Y2FvfGVufDB8fHx8MTc2OTY3NzUyOXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "guincho instrucao",
-      "category": "guincho-leve"
-    },
-    {
-      "id": "guincho-leve-3",
-      "description": "Instrução 3",
-      "imageUrl": "https://images.unsplash.com/photo-1605934079907-5028658e4cab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxndWluY2hvJTIwaW5zdHJ1Y2FvfGVufDB8fHx8MTc2OTY3NzUyOXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "guincho instrucao",
-      "category": "guincho-leve"
-    },
-    {
-      "id": "guincho-leve-4",
-      "description": "Instrução 4",
-      "imageUrl": "https://images.unsplash.com/photo-1605934079907-5028658e4cab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxndWluY2hvJTIwaW5zdHJ1Y2FvfGVufDB8fHx8MTc2OTY3NzUyOXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "guincho instrucao",
-      "category": "guincho-leve"
-    },
-    {
-      "id": "guincho-leve-5",
-      "description": "Instrução 5",
-      "imageUrl": "https://images.unsplash.com/photo-1597775199311-02d23b1a30e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Z3VpbmNobyUyMGluc3RydWNhb3xlbnwwfHx8fDE3Njk2Nzc1Mjl8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "guincho instrucao",
-      "category": "guincho-leve"
-    },
-    {
-      "id": "guincho-leve-6",
-      "description": "Instrução 6",
-      "imageUrl": "https://images.unsplash.com/photo-1605934079907-5028658e4cab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxndWluY2hvJTIwaW5zdHJ1Y2FvfGVufDB8fHx8MTc2OTY3NzUyOXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "guincho instrucao",
-      "category": "guincho-leve"
     }
   ]
 }
