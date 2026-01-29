@@ -83,6 +83,13 @@
       "imageUrl": "https://blog.deltafiat.com.br/wp-content/uploads/2025/09/placas-de-postos-de-fiscalizacao.webp",
       "imageHint": "placas fiscalizacao",
       "category": "indicacao"
+    },
+    {
+      "id": "guincho-leve-1",
+      "description": "Instrução 1",
+      "imageUrl": "https://i.postimg.cc/NGST0tN9/1.png",
+      "imageHint": "guincho leve",
+      "category": "guincho-leve"
     }
   ]
 }
