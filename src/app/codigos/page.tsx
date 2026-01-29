@@ -361,9 +361,26 @@ function MapsMeLinksTable() {
 
 function InstrucoesGuinchoLeve() {
   return (
-    <p className="text-center text-muted-foreground p-4">
-      As imagens de instrução para operar o guincho leve serão adicionadas aqui.
-    </p>
+    <div className="space-y-4">
+      <a
+        href="https://drive.google.com/drive/folders/1wdrsXCaSBrg9T_WIgcBYPs8RJDc2PeOI"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block"
+      >
+        <Card className="hover:bg-accent hover:border-primary/50 transition-colors shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <LinkIcon className="h-5 w-5 text-primary" />
+              Acessar pasta com as instruções
+            </CardTitle>
+            <CardDescription>
+              As imagens de instrução estão disponíveis no Google Drive.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </a>
+    </div>
   );
 }
 
