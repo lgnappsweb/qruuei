@@ -39,6 +39,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 
 function TiposDeOcorrenciaTable() {
@@ -375,31 +382,44 @@ function InstrucoesGuinchoLeve() {
   return (
     <div className="space-y-4">
       {guinchoImages.length > 0 ? (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 pt-4">
-          {guinchoImages.map((image) => (
-            <Card
-              key={image.id}
-              className="group relative overflow-hidden bg-muted cursor-pointer"
-              onClick={() => setSelectedImage(image)}
-            >
-              <CardContent className="p-0 aspect-video">
-                <NextImage
-                  src={image.imageUrl}
-                  alt={image.description}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-contain transition-transform duration-300 group-hover:scale-105 p-2"
-                  data-ai-hint={image.imageHint}
-                />
-              </CardContent>
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                <CardTitle className="text-lg text-white truncate flex justify-between items-center">
-                  <span>{image.description}</span>
-                </CardTitle>
-              </div>
-            </Card>
-          ))}
-        </div>
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+          className="w-full"
+        >
+          <CarouselContent>
+            {guinchoImages.map((image) => (
+              <CarouselItem key={image.id} className="md:basis-1/2 lg:basis-1/3">
+                <div className="p-1">
+                  <Card
+                    className="group relative overflow-hidden bg-muted cursor-pointer"
+                    onClick={() => setSelectedImage(image)}
+                  >
+                    <CardContent className="p-0 aspect-video">
+                      <NextImage
+                        src={image.imageUrl}
+                        alt={image.description}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-contain transition-transform duration-300 group-hover:scale-105 p-2"
+                        data-ai-hint={image.imageHint}
+                      />
+                    </CardContent>
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                      <CardTitle className="text-lg text-white truncate flex justify-between items-center">
+                        <span>{image.description}</span>
+                      </CardTitle>
+                    </div>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="ml-12" />
+          <CarouselNext className="mr-12" />
+        </Carousel>
       ) : (
          <Card className="bg-muted/50 border-dashed">
             <CardHeader>
