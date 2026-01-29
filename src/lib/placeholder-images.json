@@ -111,6 +111,13 @@
       "imageUrl": "https://i.postimg.cc/28WWbtMY/4.png",
       "imageHint": "guincho leve",
       "category": "guincho-leve"
+    },
+    {
+      "id": "guincho-leve-5",
+      "description": "Instrução 5",
+      "imageUrl": "https://i.postimg.cc/zXhhbQMt/5.png",
+      "imageHint": "guincho leve",
+      "category": "guincho-leve"
     }
   ]
 }
