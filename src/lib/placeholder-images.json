@@ -87,9 +87,10 @@
     {
       "id": "guincho-leve-1",
       "description": "Instrução 1",
-      "imageUrl": "https://images.unsplash.com/photo-1753051522936-af0b20b42ee8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxndWluY2hvJTIwaW5zdHJ1Y2FvfGVufDB8fHx8MTc2OTY3NzUyOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1719597410807-8b693b16a37c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxndWluY2hvJTIwaW5zdHJ1Y2FvfGVufDB8fHx8MTc2OTY3NzUyOXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "guincho instrucao",
-      "category": "guincho-leve"
+      "category": "guincho-leve",
+      "rotation": 0
     }
   ]
 }
