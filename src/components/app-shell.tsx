@@ -23,14 +23,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, []);
   
   const noNavPages = ['/login', '/signup', '/forgot-password', '/admin', '/supervisor'];
-  const isSpecialPage = isClient ? noNavPages.some(page => pathname.startsWith(page)) : true;
+  const isSpecialPage = noNavPages.some(page => pathname.startsWith(page));
 
   return (
     <div className="flex flex-col h-svh bg-background overflow-hidden">
       <main
         className={cn(
           "flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto",
-          isClient && !isSpecialPage && "pb-[92px]"
+          !isSpecialPage && "pb-[92px]"
         )}
       >
         {children}
