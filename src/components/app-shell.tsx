@@ -31,7 +31,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-svh bg-background">
       <main
         className={cn(
-          "p-4 sm:p-6 lg:p-8"
+          "p-4 sm:p-6 lg:p-8",
+          !isSpecialPage && "pb-40"
         )}
       >
         {children}
