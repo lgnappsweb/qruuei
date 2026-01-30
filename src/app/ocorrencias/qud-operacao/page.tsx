@@ -448,16 +448,15 @@ export default function QudOperacaoPage() {
   }
 
   return (
-    <div className="h-full flex flex-col max-w-4xl mx-auto">
-       <div className="flex-shrink-0">
+    <div className="max-w-4xl mx-auto pb-24">
+      <div className="sticky top-0 bg-background z-10 py-4">
         <Button asChild variant="ghost" className="pl-0">
           <Link href="/">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Voltar para o início
           </Link>
         </Button>
-
-        <div className="space-y-2 text-center mt-8">
+        <div className="space-y-2 text-center mt-4">
           <h1 className="font-condensed text-3xl font-bold tracking-tight">
             QUD OPERAÇÃO
           </h1>
@@ -467,9 +466,9 @@ export default function QudOperacaoPage() {
         </div>
       </div>
       
-      <div className="flex-1 overflow-y-auto mt-8">
+      <div className="mt-8">
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 pb-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
                 <CardHeader>
                 <CardTitle>Informações Gerais</CardTitle>
