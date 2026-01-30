@@ -406,7 +406,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
                     <Button onClick={handleShare} className="bg-green-600 hover:bg-green-700" disabled={!numeroOcorrencia}>
                         <Share2 className="mr-2 h-5 w-5"/> Compartilhar
                     </Button>
-                    <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
+                    <Button onClick={handleSaveClick}>Salvar</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
@@ -871,7 +871,7 @@ function VictimCard({ index, control, remove, victimCount }: { index: number, co
                                 <FormField control={control} name={`victims.${index}.sinaisVitaisDXT`} render={({ field }) => (<FormItem><FormLabel>DXT (mg/dl)</FormLabel><FormControl><Input placeholder="90" {...field} /></FormControl><FormMessage /></FormItem>)}/>
                             </CardContent>
                         </Card>
-                        <FormField control={control} name={`victims.${index}.avaliacaoCraniocaudal`} render={({ field }) => (<FormItem><FormLabel>Avaliação Crânio-Caudal</FormLabel><FormControl><Textarea placeholder="Nenhuma anormalidade encontrada, vítima consciente e orientada." {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                        <FormField control={control} name={`victims.${index}.avaliacaoCraniocaudal`} render={({ field }) => (<FormItem><FormLabel>Avaliação Crânio-Caudal</FormLabel><FormControl><Textarea placeholder="Ex: Nenhuma anormalidade encontrada." {...field} /></FormControl><FormMessage /></FormItem>)}/>
                     </AccordionContent>
                 </AccordionItem>
                  
