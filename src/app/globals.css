@@ -75,11 +75,16 @@
 }
 
 @layer base {
+  html {
+    @apply scroll-smooth;
+    -webkit-overflow-scrolling: touch;
+  }
   * {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    overscroll-behavior-y: none;
   }
 }
 
