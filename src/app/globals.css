@@ -75,6 +75,11 @@
 }
 
 @layer base {
+  html,
+  body,
+  #__next {
+    @apply h-full;
+  }
   html {
     @apply scroll-smooth;
     -webkit-overflow-scrolling: touch;

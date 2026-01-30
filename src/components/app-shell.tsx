@@ -25,19 +25,25 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const noNavPages = ['/login', '/signup', '/forgot-password', '/admin', '/supervisor'];
   const isSpecialPage = noNavPages.some(page => pathname.startsWith(page));
 
+  // For special pages, the whole page can scroll.
+  if (isSpecialPage) {
+    return (
+        <main className="p-4 sm:p-6 lg:p-8 min-h-svh">
+            {children}
+        </main>
+    );
+  }
+
+  // For pages with the nav bar, we create a fixed layout.
   return (
-    <div className="min-h-svh bg-background">
-      <main
-        className={cn(
-          "p-4 sm:p-6 lg:p-8",
-          !isSpecialPage && "pb-24" 
-        )}
-      >
+    <div className="h-full flex flex-col bg-background">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
         {children}
       </main>
-      {isClient && !isSpecialPage && (
-        <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-10 shadow-[0_-8px_16px_-4px_rgba(0,0,0,0.1)] dark:shadow-[0_-8px_16px_-4px_rgba(255,255,255,0.05)]">
-          <div className="flex justify-around items-center h-20">
+      
+      {isClient && (
+        <nav className="h-20 bg-card border-t border-border z-10 shadow-[0_-8px_16px_-4px_rgba(0,0,0,0.1)] dark:shadow-[0_-8px_16px_-4px_rgba(255,255,255,0.05)]">
+          <div className="flex justify-around items-center h-full">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               return (
