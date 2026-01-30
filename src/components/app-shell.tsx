@@ -38,12 +38,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       {isClient && !isSpecialPage && (
-        <div className="fixed bottom-6 right-6 z-50">
-          <div className="relative flex flex-col items-end gap-3">
-             <div
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+            <div
               className={cn(
                 'flex flex-col-reverse items-end gap-3 transition-all duration-300 ease-in-out',
-                isMenuOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-10 pointer-events-none'
+                isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
               )}
             >
               {navItems.map((item) => {
@@ -82,7 +81,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Grip className={cn('h-8 w-8 absolute transition-all duration-300', isMenuOpen && '-rotate-90 scale-0 opacity-0')} />
               <span className="sr-only">{isMenuOpen ? 'Fechar menu' : 'Abrir menu'}</span>
             </Button>
-          </div>
         </div>
       )}
     </div>
