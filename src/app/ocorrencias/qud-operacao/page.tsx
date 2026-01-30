@@ -309,7 +309,7 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
             <Share2 className="mr-2 h-5 w-5"/>
             Compartilhar
           </Button>
-          <Button onClick={handleSaveClick}>Confirmar e Salvar</Button>
+          <Button onClick={handleSaveClick}>Salvar</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
