@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, FileCode, ShieldAlert, Settings, Signpost, Grip, X } from "lucide-react";
+import { Home, FileCode, ShieldAlert, Settings, Signpost } from "lucide-react";
 import { cn } from "@/lib/utils";
 import * as React from "react";
-import { Button } from "@/components/ui/button";
 
 const navItems = [
   { href: "/", label: "Início", icon: Home },
@@ -18,93 +17,10 @@ const navItems = [
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isClient, setIsClient] = React.useState(false);
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-
-  // New state for menu alignment based on button position
-  const [menuAlign, setMenuAlign] = React.useState({ v: 'bottom', h: 'right' });
-
-  // Draggable state
-  const [position, setPosition] = React.useState({ right: 24, bottom: 24 });
-  const fabRef = React.useRef<HTMLDivElement>(null);
-  const dragInfoRef = React.useRef({
-    isDragging: false,
-    hasDragged: false,
-    startX: 0,
-    startY: 0,
-    initialRight: 24,
-    initialBottom: 24,
-  });
-
 
   React.useEffect(() => {
     setIsClient(true);
-     // Set initial menu alignment
-    if (fabRef.current) {
-        const rect = fabRef.current.getBoundingClientRect();
-        const v = rect.top + rect.height / 2 < window.innerHeight / 2 ? 'top' : 'bottom';
-        const h = rect.left + rect.width / 2 < window.innerWidth / 2 ? 'left' : 'right';
-        setMenuAlign({ v, h });
-    }
   }, []);
-
-  const handlePointerDown = (e: React.PointerEvent) => {
-    if ((e.target as HTMLElement).closest('a')) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    const dragInfo = dragInfoRef.current;
-    dragInfo.isDragging = true;
-    dragInfo.hasDragged = false;
-    dragInfo.startX = e.clientX;
-    dragInfo.startY = e.clientY;
-    
-    if (fabRef.current) {
-        const rect = fabRef.current.getBoundingClientRect();
-        dragInfo.initialRight = window.innerWidth - rect.right;
-        dragInfo.initialBottom = window.innerHeight - rect.bottom;
-    }
-    
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-
-    const handlePointerMove = (moveEvent: PointerEvent) => {
-        if (!dragInfo.isDragging) return;
-
-        const dx = moveEvent.clientX - dragInfo.startX;
-        const dy = moveEvent.clientY - dragInfo.startY;
-
-        if (!dragInfo.hasDragged && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
-            dragInfo.hasDragged = true;
-        }
-
-        let newRight = dragInfo.initialRight - dx;
-        let newBottom = dragInfo.initialBottom - dy;
-
-        setPosition({ right: newRight, bottom: newBottom });
-    };
-
-    const handlePointerUp = (upEvent: PointerEvent) => {
-        (upEvent.target as HTMLElement).releasePointerCapture(upEvent.pointerId);
-        dragInfo.isDragging = false;
-        
-        if (!dragInfo.hasDragged) {
-            setIsMenuOpen((prev) => !prev);
-        } else {
-            if (fabRef.current) {
-                const rect = fabRef.current.getBoundingClientRect();
-                const v = rect.top + rect.height / 2 < window.innerHeight / 2 ? 'top' : 'bottom';
-                const h = rect.left + rect.width / 2 < window.innerWidth / 2 ? 'left' : 'right';
-                setMenuAlign({ v, h });
-            }
-        }
-
-        document.removeEventListener('pointermove', handlePointerMove);
-        document.removeEventListener('pointerup', handlePointerUp);
-    };
-
-    document.addEventListener('pointermove', handlePointerMove);
-    document.addEventListener('pointerup', handlePointerUp);
-  };
   
   const noNavPages = ['/login', '/signup', '/forgot-password', '/admin', '/supervisor'];
   const isSpecialPage = noNavPages.some(page => pathname.startsWith(page));
@@ -114,76 +30,34 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <main
         className={cn(
           "p-4 sm:p-6 lg:p-8",
-          !isSpecialPage && "pb-40"
+          !isSpecialPage && "pb-24" 
         )}
       >
         {children}
       </main>
       {isClient && !isSpecialPage && (
-        <div 
-          ref={fabRef}
-          className="fixed z-50 cursor-grab active:cursor-grabbing"
-          style={{ 
-            right: `${position.right}px`, 
-            bottom: `${position.bottom}px`,
-            touchAction: 'none'
-          }}
-          onPointerDown={handlePointerDown}
-        >
-            <div 
-              className={cn(
-                "relative flex",
-                menuAlign.v === 'bottom' ? 'flex-col' : 'flex-col-reverse', 
-                menuAlign.h === 'right' ? 'items-end' : 'items-start' 
-              )}
-            >
-                <div
+        <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-10 shadow-[0_-8px_16px_-4px_rgba(0,0,0,0.1)] dark:shadow-[0_-8px_16px_-4px_rgba(255,255,255,0.05)]">
+          <div className="flex justify-around items-center h-20">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
                   className={cn(
-                    'flex flex-col gap-3 transition-all duration-300 ease-in-out',
-                    menuAlign.v === 'bottom' ? 'mb-3' : 'mt-3',
-                    isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                    "flex flex-col items-center justify-center gap-1.5 w-full h-full text-center transition-colors",
+                    isActive
+                      ? "text-primary font-bold"
+                      : "text-muted-foreground hover:text-foreground"
                   )}
                 >
-                  {navItems.map((item) => {
-                    const isActive = pathname === item.href;
-                    return (
-                      <div key={item.href} className={cn(
-                        "flex items-center gap-4",
-                        menuAlign.h === 'left' ? 'flex-row-reverse' : ''
-                      )}>
-                        <div className="bg-card text-card-foreground rounded-lg px-4 py-2 shadow-lg border border-primary/50">
-                            <span className="font-semibold text-lg">{item.label}</span>
-                        </div>
-                        <Button
-                            asChild
-                            size="icon"
-                            className={cn(
-                            'h-14 w-14 rounded-full shadow-lg',
-                            isActive ? 'bg-primary text-primary-foreground' : 'bg-card text-foreground border-2 border-primary/50'
-                            )}
-                            onClick={() => setIsMenuOpen(false)}
-                        >
-                            <Link href={item.href} title={item.label}>
-                            <item.icon className="h-6 w-6" />
-                            <span className="sr-only">{item.label}</span>
-                            </Link>
-                        </Button>
-                      </div>
-                    );
-                  })}
-                </div>
-                
-                <Button
-                  size="icon"
-                  className="h-20 w-20 rounded-full shadow-2xl"
-                  aria-expanded={isMenuOpen}
-                >
-                  <X className={cn('h-8 w-8 transition-all duration-300 pointer-events-none', !isMenuOpen && 'rotate-90 scale-0 opacity-0')} />
-                  <Grip className={cn('h-8 w-8 absolute transition-all duration-300 pointer-events-none', isMenuOpen && '-rotate-90 scale-0 opacity-0')} />
-                  <span className="sr-only">{isMenuOpen ? 'Fechar menu' : 'Abrir menu'}</span>
-                </Button>
-            </div>
-        </div>
+                  <item.icon className="h-7 w-7" />
+                  <span className="text-xs">{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
       )}
     </div>
   );
