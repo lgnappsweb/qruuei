@@ -313,6 +313,11 @@ export default function OcorrenciaTO15FaixaDeDominioPage() {
     },
   });
 
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "vehicles",
+  });
+
   React.useEffect(() => {
     try {
         const editDataString = localStorage.getItem('editOcorrenciaData');
@@ -359,10 +364,6 @@ export default function OcorrenciaTO15FaixaDeDominioPage() {
     }
   }, [form]);
 
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "vehicles",
-  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const processedValues = fillEmptyWithNill(values);
