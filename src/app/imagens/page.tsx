@@ -10,6 +10,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   Table,
@@ -37,9 +38,20 @@ import {
 } from "@/components/ui/accordion";
 import { placasAdvertenciaData, placasRegulamentacaoData } from '@/lib/search';
 
-function PlacasRegulamentacaoTable({ setSelectedImage, images }: { setSelectedImage: (image: ImagePlaceholder | null) => void, images: ImagePlaceholder[] }) {
-  const handleClick = (codigo: string) => {
-    const codeNum = parseInt(codigo.substring(2));
+type SignData = {
+    codigo: string;
+    nome: string;
+    significado: string;
+};
+
+type SelectedSign = {
+    image: ImagePlaceholder;
+    sign: SignData;
+}
+
+function PlacasRegulamentacaoTable({ setSelectedSign, images }: { setSelectedSign: (sign: SelectedSign | null) => void, images: ImagePlaceholder[] }) {
+  const handleClick = (item: SignData) => {
+    const codeNum = parseInt(item.codigo.substring(2));
     let imageId;
     if (codeNum <= 23) {
       imageId = "placa-regulamentacao-1";
@@ -48,7 +60,7 @@ function PlacasRegulamentacaoTable({ setSelectedImage, images }: { setSelectedIm
     }
     const image = images.find(img => img.id === imageId);
     if (image) {
-      setSelectedImage(image);
+      setSelectedSign({ image, sign: item });
     }
   };
 
@@ -66,7 +78,7 @@ function PlacasRegulamentacaoTable({ setSelectedImage, images }: { setSelectedIm
           </TableHeader>
           <TableBody>
             {placasRegulamentacaoData.map((item) => (
-              <TableRow key={item.codigo} onClick={() => handleClick(item.codigo)} className="cursor-pointer hover:bg-muted">
+              <TableRow key={item.codigo} onClick={() => handleClick(item)} className="cursor-pointer hover:bg-muted">
                 <TableCell className="font-medium"><span className="font-mono bg-destructive text-destructive-foreground px-2 py-1 rounded-md">{item.codigo}</span></TableCell>
                 <TableCell>{item.nome}</TableCell>
                 <TableCell>{item.significado}</TableCell>
@@ -79,7 +91,7 @@ function PlacasRegulamentacaoTable({ setSelectedImage, images }: { setSelectedIm
       {/* Mobile View */}
       <div className="grid grid-cols-1 gap-4 md:hidden">
         {placasRegulamentacaoData.map((item) => (
-          <Card key={item.codigo} onClick={() => handleClick(item.codigo)} className="cursor-pointer">
+          <Card key={item.codigo} onClick={() => handleClick(item)} className="cursor-pointer">
             <CardHeader className="p-4">
               <CardTitle className="flex justify-between items-start text-lg">
                 <span className="flex-1 pr-2">{item.nome}</span>
@@ -96,15 +108,15 @@ function PlacasRegulamentacaoTable({ setSelectedImage, images }: { setSelectedIm
   );
 }
 
-function PlacasAdvertenciaTable({ setSelectedImage, images }: { setSelectedImage: (image: ImagePlaceholder | null) => void, images: ImagePlaceholder[] }) {
-  const handleClick = (codigo: string) => {
-    const codeNum = parseInt(codigo.match(/\d+/)?.[0] || '0');
+function PlacasAdvertenciaTable({ setSelectedSign, images }: { setSelectedSign: (sign: SelectedSign | null) => void, images: ImagePlaceholder[] }) {
+  const handleClick = (item: SignData) => {
+    const codeNum = parseInt(item.codigo.match(/\d+/)?.[0] || '0');
     let imageId;
 
     if (codeNum < 10) {
       imageId = 'placa-advertencia-1';
     } else if (codeNum === 10) {
-      imageId = codigo.endsWith('a') ? 'placa-advertencia-1' : 'placa-advertencia-2';
+      imageId = item.codigo.endsWith('a') ? 'placa-advertencia-1' : 'placa-advertencia-2';
     } else if (codeNum <= 31) {
       imageId = 'placa-advertencia-2';
     } else {
@@ -113,7 +125,7 @@ function PlacasAdvertenciaTable({ setSelectedImage, images }: { setSelectedImage
     
     const image = images.find(img => img.id === imageId);
     if (image) {
-      setSelectedImage(image);
+      setSelectedSign({ image, sign: item });
     }
   };
 
@@ -131,7 +143,7 @@ function PlacasAdvertenciaTable({ setSelectedImage, images }: { setSelectedImage
           </TableHeader>
           <TableBody>
             {placasAdvertenciaData.map((item) => (
-              <TableRow key={item.codigo} onClick={() => handleClick(item.codigo)} className="cursor-pointer hover:bg-muted">
+              <TableRow key={item.codigo} onClick={() => handleClick(item)} className="cursor-pointer hover:bg-muted">
                 <TableCell className="font-medium"><span className="font-mono bg-yellow-400 text-black px-2 py-1 rounded-md">{item.codigo}</span></TableCell>
                 <TableCell>{item.nome}</TableCell>
                 <TableCell>{item.significado}</TableCell>
@@ -144,7 +156,7 @@ function PlacasAdvertenciaTable({ setSelectedImage, images }: { setSelectedImage
       {/* Mobile View */}
       <div className="grid grid-cols-1 gap-4 md:hidden">
         {placasAdvertenciaData.map((item) => (
-          <Card key={item.codigo} onClick={() => handleClick(item.codigo)} className="cursor-pointer">
+          <Card key={item.codigo} onClick={() => handleClick(item)} className="cursor-pointer">
             <CardHeader className="p-4">
               <CardTitle className="flex justify-between items-start text-lg">
                 <span className="flex-1 pr-2">{item.nome}</span>
@@ -164,6 +176,7 @@ function PlacasAdvertenciaTable({ setSelectedImage, images }: { setSelectedImage
 
 export default function ImagensPage() {
   const allImages: ImagePlaceholder[] = PlaceHolderImages;
+  const [selectedSign, setSelectedSign] = React.useState<SelectedSign | null>(null);
   const [selectedImage, setSelectedImage] = React.useState<ImagePlaceholder | null>(null);
 
   const regulamentacaoImages = allImages.filter(img => img.category === 'regulamentacao');
@@ -210,13 +223,13 @@ export default function ImagensPage() {
       value: 'item-1',
       title: 'Placas de regulamentação – Placas vermelhas',
       images: regulamentacaoImages,
-      content: <PlacasRegulamentacaoTable setSelectedImage={setSelectedImage} images={allImages} />,
+      content: <PlacasRegulamentacaoTable setSelectedSign={setSelectedSign} images={allImages} />,
     },
     {
       value: 'item-2',
       title: 'Placas de advertência – Placas amarelas',
       images: advertenciaImages,
-      content: <PlacasAdvertenciaTable setSelectedImage={setSelectedImage} images={allImages} />,
+      content: <PlacasAdvertenciaTable setSelectedSign={setSelectedSign} images={allImages} />,
     },
     {
       value: 'item-3',
@@ -340,9 +353,29 @@ export default function ImagensPage() {
           ))}
         </Accordion>
       
-      <Dialog open={!!selectedImage} onOpenChange={(isOpen) => !isOpen && setSelectedImage(null)}>
+      <Dialog open={!!selectedImage || !!selectedSign} onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            setSelectedImage(null);
+            setSelectedSign(null);
+          }
+      }}>
         <DialogContent className="p-0 max-w-[90vw] sm:max-w-sm w-full">
-          {selectedImage && (
+          {selectedSign ? (
+             <>
+              <DialogHeader className="p-4 pr-12 pb-2">
+                <DialogTitle>{selectedSign.sign.nome} ({selectedSign.sign.codigo})</DialogTitle>
+                <DialogDescription>{selectedSign.sign.significado}</DialogDescription>
+              </DialogHeader>
+              <div className="relative w-full aspect-[9/16]">
+                <NextImage
+                  src={selectedSign.image.imageUrl}
+                  alt={selectedSign.image.description}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </>
+          ) : selectedImage && (
             <>
               <DialogHeader className="p-4 pr-12 pb-2">
                 <DialogTitle>{selectedImage.description}</DialogTitle>
