@@ -38,49 +38,51 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       {isClient && !isSpecialPage && (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
-            <div
-              className={cn(
-                'flex flex-col-reverse items-end gap-3 transition-all duration-300 ease-in-out',
-                isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
-              )}
-            >
-              {navItems.map((item) => {
-                const isActive = pathname === item.href;
-                return (
-                  <div key={item.href} className="flex items-center gap-4">
-                    <div className="bg-card text-card-foreground rounded-lg px-4 py-2 shadow-lg border border-primary/50">
-                        <span className="font-semibold text-lg">{item.label}</span>
-                    </div>
-                    <Button
-                        asChild
-                        size="icon"
-                        className={cn(
-                        'h-14 w-14 rounded-full shadow-lg',
-                        isActive ? 'bg-primary text-primary-foreground' : 'bg-card text-foreground border-2 border-primary/50'
-                        )}
-                        onClick={() => setIsMenuOpen(false)}
-                    >
-                        <Link href={item.href} title={item.label}>
-                        <item.icon className="h-6 w-6" />
-                        <span className="sr-only">{item.label}</span>
-                        </Link>
-                    </Button>
-                  </div>
-                );
-              })}
+        <div className="fixed bottom-6 right-6 z-50">
+            <div className="relative flex flex-col items-end">
+                <div
+                  className={cn(
+                    'flex flex-col-reverse items-end gap-3 transition-all duration-300 ease-in-out mb-3',
+                    isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                  )}
+                >
+                  {navItems.map((item) => {
+                    const isActive = pathname === item.href;
+                    return (
+                      <div key={item.href} className="flex items-center gap-4">
+                        <div className="bg-card text-card-foreground rounded-lg px-4 py-2 shadow-lg border border-primary/50">
+                            <span className="font-semibold text-lg">{item.label}</span>
+                        </div>
+                        <Button
+                            asChild
+                            size="icon"
+                            className={cn(
+                            'h-14 w-14 rounded-full shadow-lg',
+                            isActive ? 'bg-primary text-primary-foreground' : 'bg-card text-foreground border-2 border-primary/50'
+                            )}
+                            onClick={() => setIsMenuOpen(false)}
+                        >
+                            <Link href={item.href} title={item.label}>
+                            <item.icon className="h-6 w-6" />
+                            <span className="sr-only">{item.label}</span>
+                            </Link>
+                        </Button>
+                      </div>
+                    );
+                  })}
+                </div>
+                
+                <Button
+                  size="icon"
+                  className="h-20 w-20 rounded-full shadow-2xl"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  aria-expanded={isMenuOpen}
+                >
+                  <X className={cn('h-8 w-8 transition-all duration-300', !isMenuOpen && 'rotate-90 scale-0 opacity-0')} />
+                  <Grip className={cn('h-8 w-8 absolute transition-all duration-300', isMenuOpen && '-rotate-90 scale-0 opacity-0')} />
+                  <span className="sr-only">{isMenuOpen ? 'Fechar menu' : 'Abrir menu'}</span>
+                </Button>
             </div>
-            
-            <Button
-              size="icon"
-              className="h-20 w-20 rounded-full shadow-2xl"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-expanded={isMenuOpen}
-            >
-              <X className={cn('h-8 w-8 transition-all duration-300', !isMenuOpen && 'rotate-90 scale-0 opacity-0')} />
-              <Grip className={cn('h-8 w-8 absolute transition-all duration-300', isMenuOpen && '-rotate-90 scale-0 opacity-0')} />
-              <span className="sr-only">{isMenuOpen ? 'Fechar menu' : 'Abrir menu'}</span>
-            </Button>
         </div>
       )}
     </div>
