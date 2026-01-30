@@ -412,8 +412,8 @@ export default function OcorrenciaTO01Page() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto pb-24">
-       <div className="sticky top-0 bg-background z-10 py-4">
+    <div className="space-y-8 max-w-4xl mx-auto pb-24">
+      <div>
         <Button asChild variant="ghost" className="pl-0">
           <Link href="/">
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -430,8 +430,7 @@ export default function OcorrenciaTO01Page() {
         </div>
       </div>
 
-      <div className="mt-8">
-        <Form {...form}>
+      <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
               <CardHeader>
@@ -854,7 +853,6 @@ export default function OcorrenciaTO01Page() {
             <Button type="submit" size="lg" className="w-full">Gerar Relatório</Button>
           </form>
         </Form>
-      </div>
       <PreviewDialog data={previewData} onClose={() => setPreviewData(null)} onSave={handleSave} formTitle="VEÍCULO ABANDONADO (TO01)" />
     </div>
   );
