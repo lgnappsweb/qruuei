@@ -54,7 +54,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     size="icon"
                     className={cn(
                       'h-14 w-14 rounded-full shadow-lg',
-                      isActive ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'
+                      isActive ? 'bg-primary text-primary-foreground' : 'bg-card text-foreground border-2 border-primary/50'
                     )}
                     onClick={() => setIsMenuOpen(false)}
                   >
@@ -69,12 +69,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             
             <Button
               size="icon"
-              className="h-16 w-16 rounded-full shadow-2xl"
+              className="h-20 w-20 rounded-full shadow-2xl"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-expanded={isMenuOpen}
             >
-              <X className={cn('h-7 w-7 transition-all duration-300', !isMenuOpen && 'rotate-90 scale-0 opacity-0')} />
-              <Grip className={cn('h-7 w-7 absolute transition-all duration-300', isMenuOpen && '-rotate-90 scale-0 opacity-0')} />
+              <X className={cn('h-8 w-8 transition-all duration-300', !isMenuOpen && 'rotate-90 scale-0 opacity-0')} />
+              <Grip className={cn('h-8 w-8 absolute transition-all duration-300', isMenuOpen && '-rotate-90 scale-0 opacity-0')} />
               <span className="sr-only">{isMenuOpen ? 'Fechar menu' : 'Abrir menu'}</span>
             </Button>
           </div>
