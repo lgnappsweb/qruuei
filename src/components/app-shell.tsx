@@ -20,6 +20,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [isClient, setIsClient] = React.useState(false);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
+  // New state for menu alignment based on button position
+  const [menuAlign, setMenuAlign] = React.useState({ v: 'bottom', h: 'right' });
+
   // Draggable state
   const [position, setPosition] = React.useState({ right: 24, bottom: 24 });
   const fabRef = React.useRef<HTMLDivElement>(null);
@@ -35,6 +38,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   React.useEffect(() => {
     setIsClient(true);
+     // Set initial menu alignment
+    if (fabRef.current) {
+        const rect = fabRef.current.getBoundingClientRect();
+        const v = rect.top + rect.height / 2 < window.innerHeight / 2 ? 'top' : 'bottom';
+        const h = rect.left + rect.width / 2 < window.innerWidth / 2 ? 'left' : 'right';
+        setMenuAlign({ v, h });
+    }
   }, []);
 
   const handlePointerDown = (e: React.PointerEvent) => {
@@ -70,12 +80,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         let newRight = dragInfo.initialRight - dx;
         let newBottom = dragInfo.initialBottom - dy;
 
-        if (fabRef.current) {
-            const rect = fabRef.current.getBoundingClientRect();
-            newRight = Math.max(0, Math.min(newRight, window.innerWidth - rect.width));
-            newBottom = Math.max(0, Math.min(newBottom, window.innerHeight - rect.height));
-        }
-
         setPosition({ right: newRight, bottom: newBottom });
     };
 
@@ -85,6 +89,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         
         if (!dragInfo.hasDragged) {
             setIsMenuOpen((prev) => !prev);
+        } else {
+            if (fabRef.current) {
+                const rect = fabRef.current.getBoundingClientRect();
+                const v = rect.top + rect.height / 2 < window.innerHeight / 2 ? 'top' : 'bottom';
+                const h = rect.left + rect.width / 2 < window.innerWidth / 2 ? 'left' : 'right';
+                setMenuAlign({ v, h });
+            }
         }
 
         document.removeEventListener('pointermove', handlePointerMove);
@@ -119,17 +130,27 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           }}
           onPointerDown={handlePointerDown}
         >
-            <div className="relative flex flex-col items-end">
+            <div 
+              className={cn(
+                "relative flex",
+                menuAlign.v === 'bottom' ? 'flex-col' : 'flex-col-reverse', 
+                menuAlign.h === 'right' ? 'items-end' : 'items-start' 
+              )}
+            >
                 <div
                   className={cn(
-                    'flex flex-col-reverse items-end gap-3 transition-all duration-300 ease-in-out mb-3',
+                    'flex flex-col gap-3 transition-all duration-300 ease-in-out',
+                    menuAlign.v === 'bottom' ? 'mb-3' : 'mt-3',
                     isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
                   )}
                 >
                   {navItems.map((item) => {
                     const isActive = pathname === item.href;
                     return (
-                      <div key={item.href} className="flex items-center gap-4">
+                      <div key={item.href} className={cn(
+                        "flex items-center gap-4",
+                        menuAlign.h === 'left' ? 'flex-row-reverse' : ''
+                      )}>
                         <div className="bg-card text-card-foreground rounded-lg px-4 py-2 shadow-lg border border-primary/50">
                             <span className="font-semibold text-lg">{item.label}</span>
                         </div>
@@ -154,12 +175,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 
                 <Button
                   size="icon"
-                  className="h-20 w-20 rounded-full shadow-2xl pointer-events-none"
+                  className="h-20 w-20 rounded-full shadow-2xl"
                   aria-expanded={isMenuOpen}
-                  tabIndex={-1}
                 >
-                  <X className={cn('h-8 w-8 transition-all duration-300', !isMenuOpen && 'rotate-90 scale-0 opacity-0')} />
-                  <Grip className={cn('h-8 w-8 absolute transition-all duration-300', isMenuOpen && '-rotate-90 scale-0 opacity-0')} />
+                  <X className={cn('h-8 w-8 transition-all duration-300 pointer-events-none', !isMenuOpen && 'rotate-90 scale-0 opacity-0')} />
+                  <Grip className={cn('h-8 w-8 absolute transition-all duration-300 pointer-events-none', isMenuOpen && '-rotate-90 scale-0 opacity-0')} />
                   <span className="sr-only">{isMenuOpen ? 'Fechar menu' : 'Abrir menu'}</span>
                 </Button>
             </div>
