@@ -39,11 +39,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </main>
       {isClient && !isSpecialPage && (
         <div className="fixed bottom-6 right-6 z-50">
-          <div className="relative flex flex-col items-end gap-3">
+          <div className={cn("relative flex flex-col items-end gap-3", !isMenuOpen && "pointer-events-none")}>
              <div
               className={cn(
-                'flex flex-col-reverse items-end gap-3 transition-all duration-300 ease-in-out',
-                isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
+                'flex flex-col-reverse items-end gap-3 transition-all duration-300 ease-in-out pointer-events-auto',
+                isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
               )}
             >
               {navItems.map((item) => {
@@ -74,7 +74,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             
             <Button
               size="icon"
-              className="h-20 w-20 rounded-full shadow-2xl"
+              className="h-20 w-20 rounded-full shadow-2xl pointer-events-auto"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-expanded={isMenuOpen}
             >
