@@ -20,9 +20,80 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [isClient, setIsClient] = React.useState(false);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
+  // Draggable state
+  const [position, setPosition] = React.useState({ right: 24, bottom: 24 });
+  const fabRef = React.useRef<HTMLDivElement>(null);
+  const dragInfoRef = React.useRef({
+    isDragging: false,
+    hasDragged: false,
+    startX: 0,
+    startY: 0,
+    initialRight: 24,
+    initialBottom: 24,
+  });
+
+
   React.useEffect(() => {
     setIsClient(true);
   }, []);
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if ((e.target as HTMLElement).closest('a')) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const dragInfo = dragInfoRef.current;
+    dragInfo.isDragging = true;
+    dragInfo.hasDragged = false;
+    dragInfo.startX = e.clientX;
+    dragInfo.startY = e.clientY;
+    
+    if (fabRef.current) {
+        const rect = fabRef.current.getBoundingClientRect();
+        dragInfo.initialRight = window.innerWidth - rect.right;
+        dragInfo.initialBottom = window.innerHeight - rect.bottom;
+    }
+    
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+
+    const handlePointerMove = (moveEvent: PointerEvent) => {
+        if (!dragInfo.isDragging) return;
+
+        const dx = moveEvent.clientX - dragInfo.startX;
+        const dy = moveEvent.clientY - dragInfo.startY;
+
+        if (!dragInfo.hasDragged && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+            dragInfo.hasDragged = true;
+        }
+
+        let newRight = dragInfo.initialRight - dx;
+        let newBottom = dragInfo.initialBottom - dy;
+
+        if (fabRef.current) {
+            const rect = fabRef.current.getBoundingClientRect();
+            newRight = Math.max(0, Math.min(newRight, window.innerWidth - rect.width));
+            newBottom = Math.max(0, Math.min(newBottom, window.innerHeight - rect.height));
+        }
+
+        setPosition({ right: newRight, bottom: newBottom });
+    };
+
+    const handlePointerUp = (upEvent: PointerEvent) => {
+        (upEvent.target as HTMLElement).releasePointerCapture(upEvent.pointerId);
+        dragInfo.isDragging = false;
+        
+        if (!dragInfo.hasDragged) {
+            setIsMenuOpen((prev) => !prev);
+        }
+
+        document.removeEventListener('pointermove', handlePointerMove);
+        document.removeEventListener('pointerup', handlePointerUp);
+    };
+
+    document.addEventListener('pointermove', handlePointerMove);
+    document.addEventListener('pointerup', handlePointerUp);
+  };
   
   const noNavPages = ['/login', '/signup', '/forgot-password', '/admin', '/supervisor'];
   const isSpecialPage = noNavPages.some(page => pathname.startsWith(page));
@@ -38,7 +109,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       {isClient && !isSpecialPage && (
-        <div className="fixed bottom-6 right-6 z-50">
+        <div 
+          ref={fabRef}
+          className="fixed z-50 cursor-grab active:cursor-grabbing"
+          style={{ 
+            right: `${position.right}px`, 
+            bottom: `${position.bottom}px`,
+            touchAction: 'none'
+          }}
+          onPointerDown={handlePointerDown}
+        >
             <div className="relative flex flex-col items-end">
                 <div
                   className={cn(
@@ -74,9 +154,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 
                 <Button
                   size="icon"
-                  className="h-20 w-20 rounded-full shadow-2xl"
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="h-20 w-20 rounded-full shadow-2xl pointer-events-none"
                   aria-expanded={isMenuOpen}
+                  tabIndex={-1}
                 >
                   <X className={cn('h-8 w-8 transition-all duration-300', !isMenuOpen && 'rotate-90 scale-0 opacity-0')} />
                   <Grip className={cn('h-8 w-8 absolute transition-all duration-300', isMenuOpen && '-rotate-90 scale-0 opacity-0')} />
