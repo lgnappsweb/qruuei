@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, FileCode, ShieldAlert, Settings, Signpost } from "lucide-react";
+import { Home, FileCode, ShieldAlert, Settings, Signpost, Grip, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import * as React from "react";
+import { Button } from "@/components/ui/button";
 
 const navItems = [
   { href: "/", label: "Início", icon: Home },
@@ -17,6 +18,7 @@ const navItems = [
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isClient, setIsClient] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   React.useEffect(() => {
     setIsClient(true);
@@ -29,37 +31,54 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex flex-col h-svh bg-background overflow-hidden">
       <main
         className={cn(
-          "flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto",
-          !isSpecialPage && "pb-[92px]"
+          "flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto"
         )}
       >
         {children}
       </main>
       {isClient && !isSpecialPage && (
-        <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-10 shadow-[0_-8px_16px_-4px_rgba(0,0,0,0.1)] dark:shadow-[0_-8px_16px_-4px_rgba(255,255,255,0.05)]">
-          <div className="flex justify-around items-center h-[76px] mx-auto">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex flex-col items-center justify-center gap-1 w-full h-full rounded-lg transition-colors",
-                    isActive
-                      ? "text-primary"
-                      : "text-foreground/70 hover:text-foreground"
-                  )}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span className="font-condensed font-bold text-base">
-                    {item.label}
-                  </span>
-                </Link>
-              );
-            })}
+        <div className="fixed bottom-6 right-6 z-50">
+          <div className="relative flex flex-col items-center gap-3">
+             <div
+              className={cn(
+                'flex flex-col-reverse items-center gap-3 transition-all duration-300 ease-in-out',
+                isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
+              )}
+            >
+              {navItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Button
+                    key={item.href}
+                    asChild
+                    size="icon"
+                    className={cn(
+                      'h-14 w-14 rounded-full shadow-lg',
+                      isActive ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'
+                    )}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link href={item.href} title={item.label}>
+                      <item.icon className="h-6 w-6" />
+                      <span className="sr-only">{item.label}</span>
+                    </Link>
+                  </Button>
+                );
+              })}
+            </div>
+            
+            <Button
+              size="icon"
+              className="h-16 w-16 rounded-full shadow-2xl"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-expanded={isMenuOpen}
+            >
+              <X className={cn('h-7 w-7 transition-all duration-300', !isMenuOpen && 'rotate-90 scale-0 opacity-0')} />
+              <Grip className={cn('h-7 w-7 absolute transition-all duration-300', isMenuOpen && '-rotate-90 scale-0 opacity-0')} />
+              <span className="sr-only">{isMenuOpen ? 'Fechar menu' : 'Abrir menu'}</span>
+            </Button>
           </div>
-        </nav>
+        </div>
       )}
     </div>
   );
