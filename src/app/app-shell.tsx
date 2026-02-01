@@ -27,7 +27,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   // For pages with the nav bar
   return (
-    <div className="h-dvh flex flex-col">
+    <div className="h-full flex flex-col bg-background">
       <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
         {children}
       </main>
