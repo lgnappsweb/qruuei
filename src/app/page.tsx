@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from 'next/link';
 import { Search, Link as LinkIcon, AlertTriangle, TrafficCone, FileText, StickyNote, Map, HelpCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -31,6 +31,13 @@ const categoryIcons: { [key: string]: React.ElementType } = {
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<SearchableItem[]>([]);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (searchInputRef.current) {
+      searchInputRef.current.blur();
+    }
+  }, []);
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
@@ -126,6 +133,7 @@ export default function Home() {
       <div className="relative">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
         <Input
+          ref={searchInputRef}
           suppressHydrationWarning
           type="search"
           placeholder="Buscar por ocorrência, código, placa, nota..."
