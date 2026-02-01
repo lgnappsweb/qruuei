@@ -3,10 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  html,
-  body {
-    @apply h-full;
-  }
   html {
     @apply scroll-smooth;
     -webkit-overflow-scrolling: touch;
