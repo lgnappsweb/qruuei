@@ -16,11 +16,6 @@ const navItems = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [isClient, setIsClient] = React.useState(false);
-
-  React.useEffect(() => {
-    setIsClient(true);
-  }, []);
   
   const noNavPages = ['/login', '/signup', '/forgot-password', '/admin', '/supervisor'];
   const isSpecialPage = noNavPages.some(page => pathname.startsWith(page));
@@ -41,30 +36,28 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       
-      {isClient && (
-        <nav className="h-20 bg-card border-t border-border z-10 shadow-[0_-8px_16px_-4px_rgba(0,0,0,0.1)] dark:shadow-[0_-8px_16px_-4px_rgba(255,255,255,0.05)]">
-          <div className="flex justify-around items-center h-full">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex flex-col items-center justify-center gap-1.5 w-full h-full text-center transition-colors",
-                    isActive
-                      ? "text-primary font-bold"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  <item.icon className="h-7 w-7" />
-                  <span className="text-xs">{item.label}</span>
-                </Link>
-              );
-            })}
-          </div>
-        </nav>
-      )}
+      <nav className="h-20 bg-card border-t border-border z-10 shadow-[0_-8px_16px_-4px_rgba(0,0,0,0.1)] dark:shadow-[0_-8px_16px_-4px_rgba(255,255,255,0.05)]">
+        <div className="flex justify-around items-center h-full">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex flex-col items-center justify-center gap-1.5 w-full h-full text-center transition-colors",
+                  isActive
+                    ? "text-primary font-bold"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <item.icon className="h-7 w-7" />
+                <span className="text-xs">{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
     </div>
   );
 }
