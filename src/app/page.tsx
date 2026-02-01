@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from 'next/link';
 import { Search, Link as LinkIcon, AlertTriangle, TrafficCone, FileText, StickyNote, Map, HelpCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
