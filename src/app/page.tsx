@@ -32,12 +32,6 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<SearchableItem[]>([]);
 
-  useEffect(() => {
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
-    }
-  }, []);
-
   const handleSearch = (term: string) => {
     setSearchTerm(term);
     if (!term.trim()) {
