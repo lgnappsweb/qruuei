@@ -303,7 +303,7 @@ export default function ImagensPage() {
 
         <Accordion type="single" collapsible className="w-full space-y-4">
           {accordionSections.map((section) => (
-            <AccordionItem key={section.value} value={section.value} className="rounded-lg border bg-card shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+            <AccordionItem key={section.value} value={section.value} className="rounded-lg bg-card shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
               <AccordionTrigger className="text-lg font-medium font-condensed px-6 hover:no-underline">
                 {section.title}
               </AccordionTrigger>
