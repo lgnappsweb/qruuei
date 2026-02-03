@@ -434,7 +434,7 @@ export default function OcorrenciaTO11Page() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10 dark:border-transparent">
             <CardHeader>
               <CardTitle>Informações Gerais</CardTitle>
             </CardHeader>
@@ -498,7 +498,7 @@ export default function OcorrenciaTO11Page() {
                                       </Button>
                                   </FormControl>
                               </DropdownMenuTrigger>
-                              <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]">
+                              <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width] border-input">
                                   {tiposPane.map(item => (
                                       <DropdownMenuCheckboxItem
                                           key={item.id}
@@ -590,7 +590,7 @@ export default function OcorrenciaTO11Page() {
 
           <div className="space-y-4">
             {fields.map((item, index) => (
-              <Card key={item.id} className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+              <Card key={item.id} className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10 dark:border-transparent">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>Dados do Veículo {index + 1}</CardTitle>
                   <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)}>
@@ -774,7 +774,7 @@ export default function OcorrenciaTO11Page() {
             </Button>
           </div>
           
-          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10 dark:border-transparent">
             <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
             <CardContent className="space-y-6 pt-6">
                 <FormField

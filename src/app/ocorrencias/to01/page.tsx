@@ -432,7 +432,7 @@ export default function OcorrenciaTO01Page() {
 
       <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+            <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10 dark:border-transparent">
               <CardHeader>
                 <CardTitle>Informações Gerais</CardTitle>
               </CardHeader>
@@ -504,7 +504,7 @@ export default function OcorrenciaTO01Page() {
                                         </Button>
                                     </FormControl>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]">
+                                <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width] border-input">
                                     {tiposPane.map(item => (
                                         <DropdownMenuCheckboxItem
                                             key={item.id}
@@ -596,7 +596,7 @@ export default function OcorrenciaTO01Page() {
               <Accordion type="multiple" className="w-full space-y-4" value={openVehicleItems} onValueChange={setOpenVehicleItems}>
                   {fields.map((item, index) => (
                       <AccordionItem value={`vehicle-${index}`} key={item.id} className="border-none">
-                          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+                          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10 dark:border-transparent">
                               <AccordionTrigger className="w-full p-6 text-left hover:no-underline">
                                   <CardTitle>Dados do Veículo {index + 1}</CardTitle>
                               </AccordionTrigger>
@@ -722,7 +722,7 @@ export default function OcorrenciaTO01Page() {
               </Button>
             </div>
             
-            <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+            <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10 dark:border-transparent">
               <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
               <CardContent className="space-y-6 pt-6">
                   <FormField

@@ -57,19 +57,19 @@ const auxilios = [
     { id: 'PR01', label: 'PR01 - Atendimento inicial' },
     { id: 'PR09', label: 'PR09 - Outros' },
     { id: 'PR13', label: 'PR13 - Canalização/Sinalização' },
-    { id: 'PR17', label: 'PR17 - Orientação/Informação ao usuário' },
-    { id: 'PR18', label: 'PR18 - Recusa de dados' },
     { id: 'PR22', label: 'PR22 - Limpeza de pista' },
     { id: 'PR24', label: 'PR24 - Troca de pneu' },
     { id: 'PR25', label: 'PR25 - Pane solucionada' },
     { id: 'PR26', label: 'PR26 - Transferência de carga' },
     { id: 'PR27', label: 'PR27 - Remoção de veículo' },
     { id: 'PR30', label: 'PR30 - Auxílio no transporte do usuário' },
+    { id: 'PR37', label: 'PR37 - Implantação de Pare e Siga/ Interdição total' },
     { id: 'PR45', label: 'PR45 - Auxílio a usuário p/comprar combustível' },
     { id: 'PR51', label: 'PR51 - Efetuado Registro Fotográfico' },
     { id: 'PR53', label: 'PR53 - Meios próprios' },
     { id: 'PR54', label: 'PR54 - Aux. com ferram./ Empréstimo ferram.' },
     { id: 'PR55', label: 'PR55 - Desbloqueio de veículo' },
+    { id: 'PR62', label: 'PR62 - Acionamento da Conservação' },
     { id: 'PR63', label: 'PR63 - Desatolamento de Veículos' },
 ] as const;
 
@@ -433,7 +433,7 @@ export default function OcorrenciaTO33Page() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10 dark:border-transparent">
             <CardHeader>
               <CardTitle>Informações Gerais</CardTitle>
             </CardHeader>
@@ -497,7 +497,7 @@ export default function OcorrenciaTO33Page() {
                                       </Button>
                                   </FormControl>
                               </DropdownMenuTrigger>
-                              <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]">
+                              <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width] border-input">
                                   {tiposPane.map(item => (
                                       <DropdownMenuCheckboxItem
                                           key={item.id}
@@ -586,7 +586,7 @@ export default function OcorrenciaTO33Page() {
 
           <div className="space-y-4">
             {fields.map((item, index) => (
-              <Card key={item.id} className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+              <Card key={item.id} className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10 dark:border-transparent">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>Dados do Veículo {index + 1}</CardTitle>
                   <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)}>
@@ -704,7 +704,7 @@ export default function OcorrenciaTO33Page() {
             </Button>
           </div>
           
-          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+          <Card className="shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10 dark:border-transparent">
             <CardHeader><CardTitle>Outras Informações</CardTitle></CardHeader>
             <CardContent className="space-y-6 pt-6">
                 <FormField
