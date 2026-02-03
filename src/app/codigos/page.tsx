@@ -261,7 +261,7 @@ function RelacionamentosContent({ setOpenAccordion }: { setOpenAccordion: (value
   return (
     <div className="space-y-4">
       {relacionamentosData.map(rel => (
-        <Card key={rel.title} className="bg-card/50 border-border shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+        <Card key={rel.title} className="bg-card/50 shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
           <CardHeader>
             <CardTitle className="text-xl">{rel.title}</CardTitle>
             <DescriptionWithLinks text={rel.description} />
@@ -336,7 +336,7 @@ function LinksTable() {
           rel="noopener noreferrer"
           className="block"
         >
-          <Card className="hover:bg-accent hover:border-primary/50 transition-colors shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+          <Card className="hover:bg-accent transition-colors shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-xl">
                 <LinkIcon className="h-5 w-5 text-primary" />
@@ -361,7 +361,7 @@ function MapsMeLinksTable() {
           rel="noopener noreferrer"
           className="block"
         >
-          <Card className="hover:bg-accent hover:border-primary/50 transition-colors shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+          <Card className="hover:bg-accent transition-colors shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-xl">
                 <LinkIcon className="h-5 w-5 text-primary" />
@@ -421,7 +421,7 @@ function InstrucoesGuinchoLeve() {
           <CarouselNext className="mr-12" />
         </Carousel>
       ) : (
-         <Card className="bg-muted/50 border-dashed">
+         <Card className="bg-muted/50">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl">
                     <LinkIcon className="h-5 w-5 text-primary" />
@@ -541,7 +541,7 @@ export default function CodigosPage() {
 
       <Accordion type="single" collapsible className="w-full space-y-4" value={openAccordion} onValueChange={setOpenAccordion}>
         {codeSections.map((section) => (
-          <AccordionItem key={section.value} value={section.value} className="rounded-lg border bg-card shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
+          <AccordionItem key={section.value} value={section.value} className="rounded-lg bg-card shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10">
             <AccordionTrigger className="text-lg font-medium font-condensed px-6 hover:no-underline">
               {section.title}
             </AccordionTrigger>
