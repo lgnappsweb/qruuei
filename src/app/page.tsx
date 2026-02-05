@@ -9,6 +9,7 @@ import { OccurrenceCard } from "@/components/occurrence-card";
 import { searchableData, type SearchableItem } from "@/lib/search";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
 const categoryIcons: { [key: string]: React.ElementType } = {
   'Ocorrência': AlertTriangle,
@@ -163,7 +164,7 @@ export default function Home() {
                                 const Icon = categoryIcons[item.category] || HelpCircle;
                                 return (
                                 <Link href={item.link} key={`${item.id}-${index}`} className="block h-full">
-                                    <Card className="h-full hover:bg-accent/50 dark:hover:bg-accent/20 transition-colors cursor-pointer p-4 flex flex-col justify-between">
+                                    <Card className="h-full hover:bg-accent/50 dark:hover:bg-accent/20 transition-colors cursor-pointer p-4 flex flex-col justify-between dark:border-input">
                                       <div>
                                         <div className="flex items-start gap-4">
                                             <Icon className="h-7 w-7 text-primary mt-1 flex-shrink-0" />
