@@ -48,7 +48,7 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
+    --border: 240 10% 3.9%;
     --input: 240 3.7% 30%;
     --ring: 217 91% 60%;
     --radius: 1.5rem;
@@ -94,5 +94,12 @@
     background-size: 100% 20px;
     animation: move-dashes-about 0.5s linear infinite;
     will-change: background-position;
+  }
+
+  input[type="search"]::-webkit-search-decoration,
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-results-button,
+  input[type="search"]::-webkit-search-results-decoration {
+    -webkit-appearance: none;
   }
 }
