@@ -23,7 +23,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   // For special pages, the whole page can scroll.
   if (isSpecialPage) {
     return (
-        <main className="p-4 sm:p-6 lg:p-8 min-h-dvh">
+        <main className="p-4 sm:p-6 lg:p-8 min-h-screen">
             {children}
         </main>
     );
