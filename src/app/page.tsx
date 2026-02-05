@@ -34,12 +34,6 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState<SearchableItem[]>([]);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (searchInputRef.current) {
-      searchInputRef.current.blur();
-    }
-  }, []);
-
   const handleSearch = (term: string) => {
     setSearchTerm(term);
     if (!term.trim()) {
