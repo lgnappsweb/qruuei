@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from 'next/link';
-import { Search, Link as LinkIcon, AlertTriangle, TrafficCone, FileText, StickyNote, Map, HelpCircle } from "lucide-react";
+import { Search, X, Link as LinkIcon, AlertTriangle, TrafficCone, FileText, StickyNote, Map, HelpCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { occurrences } from "@/lib/occurrences";
 import { OccurrenceCard } from "@/components/occurrence-card";
@@ -138,10 +138,19 @@ export default function Home() {
           suppressHydrationWarning
           type="search"
           placeholder="Buscar por ocorrência, código, placa, nota..."
-          className="pl-12 pr-4 h-12 text-base bg-card focus-visible:ring-primary dark:border-transparent shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10"
+          className="pl-12 pr-12 h-12 text-base bg-card focus-visible:ring-primary dark:border-transparent shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10"
           value={searchTerm}
           onChange={(e) => handleSearch(e.target.value)}
         />
+        {searchTerm && (
+          <button
+            onClick={() => handleSearch('')}
+            className="absolute right-4 top-1/2 -translate-y-1/2"
+            aria-label="Limpar busca"
+          >
+            <X className="h-5 w-5 text-muted-foreground hover:text-foreground" />
+          </button>
+        )}
       </div>
 
       {searchTerm.trim() === "" ? (
