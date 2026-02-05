@@ -292,7 +292,6 @@ const PreviewDialog = ({ data, onClose, onSave, formTitle }: { data: any | null;
   );
 };
 
-
 export default function OcorrenciaTO19Page() {
   const { toast } = useToast();
   const router = useRouter();

@@ -492,7 +492,7 @@ export default function OcorrenciaTO01Page() {
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <FormControl>
-                                        <Button variant="outline" className="w-full justify-start text-left font-normal h-14 text-xl px-4 py-2 border-input">
+                                        <Button variant="outline" className="w-full justify-start text-left font-normal h-14 text-xl px-4 py-2">
                                             <div className="truncate">
                                                 {field.value?.length
                                                     ? tiposPane
