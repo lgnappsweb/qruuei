@@ -29,15 +29,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // For pages with the nav bar, we create a fixed layout.
+  // For pages with the nav bar
   return (
-    <div className="h-full flex flex-col bg-background">
-      <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+    <div className="bg-background">
+      <main className="pb-24 p-4 sm:p-6 lg:p-8">
         {children}
       </main>
       
-      <nav className="h-20 bg-card border-t border-border z-10 shadow-[0_-8px_16px_-4px_rgba(0,0,0,0.1)] dark:shadow-[0_-8px_16px_-4px_rgba(255,255,255,0.05)]">
-        <div className="flex justify-around items-center h-full">
+      <nav className="fixed bottom-0 left-0 right-0 h-20 bg-card border-t border-border z-10 shadow-[0_-8px_16px_-4px_rgba(0,0,0,0.1)] dark:shadow-[0_-8px_16px_-4px_rgba(255,255,255,0.05)]">
+        <div className="flex justify-around items-center h-full max-w-5xl mx-auto">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             return (
