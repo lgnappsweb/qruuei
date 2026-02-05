@@ -520,8 +520,8 @@ export const searchableData: SearchableItem[] = [
         content: item.description,
         link: '/codigos'
     })),
-    ...pontosDeApoioData.map(item => ({
-        id: `apoio-${item.ponto.toLowerCase().replace(/\s/g, '-')}`,
+    ...pontosDeApoioData.map((item, index) => ({
+        id: `apoio-${item.ponto.toLowerCase().replace(/[\s/]/g, '-')}-${index}`,
         category: 'Ponto de Apoio',
         title: item.ponto,
         content: `Rodovia ${item.rodovia}, KM ${item.km}, Sentido ${item.sentido}`,
