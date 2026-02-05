@@ -137,7 +137,7 @@ export default function Home() {
           suppressHydrationWarning
           type="search"
           placeholder="Buscar por ocorrência, código, placa, nota..."
-          className="pl-12 pr-4 h-12 text-base bg-card focus-visible:ring-primary shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10"
+          className="pl-12 pr-4 h-12 text-base bg-card focus-visible:ring-primary dark:border-transparent shadow-xl hover:shadow-2xl shadow-black/20 dark:shadow-lg dark:hover:shadow-xl dark:shadow-white/10"
           value={searchTerm}
           onChange={(e) => handleSearch(e.target.value)}
         />
@@ -157,20 +157,25 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                     {searchResults.length > 0 ? (
-                    <ScrollArea className="h-[50vh]">
-                        <div className="space-y-4">
-                            {searchResults.map((item) => {
+                    <ScrollArea className="h-auto max-h-[60vh]">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {searchResults.map((item, index) => {
                                 const Icon = categoryIcons[item.category] || HelpCircle;
                                 return (
-                                <Link href={item.link} key={item.id} className="block p-4 border rounded-lg hover:bg-accent transition-colors cursor-pointer">
-                                    <div className="flex items-center gap-4">
-                                            <Icon className="h-6 w-6 text-muted-foreground" />
-                                        <div className="flex-1">
-                                            <p className="font-semibold">{item.title} {item.code && <span className="font-mono text-sm bg-muted p-1 rounded-md">{item.code}</span>}</p>
-                                            <p className="text-sm text-muted-foreground">{item.category}</p>
-                                            {item.content && <p className="text-sm text-muted-foreground mt-1 truncate">{item.content}</p>}
+                                <Link href={item.link} key={`${item.id}-${index}`} className="block h-full">
+                                    <Card className="h-full hover:bg-accent/50 dark:hover:bg-accent/20 transition-colors cursor-pointer p-4 flex flex-col justify-between">
+                                      <div>
+                                        <div className="flex items-start gap-4">
+                                            <Icon className="h-7 w-7 text-primary mt-1 flex-shrink-0" />
+                                            <div className="flex-1">
+                                                <p className="font-bold leading-tight">{item.title}</p>
+                                                <p className="text-xs text-muted-foreground">{item.category}</p>
+                                            </div>
+                                            {item.code && <span className="font-mono text-sm bg-muted px-2 py-1 rounded-md self-start">{item.code}</span>}
                                         </div>
-                                    </div>
+                                        {item.content && <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{item.content}</p>}
+                                      </div>
+                                    </Card>
                                 </Link>
                                 )
                             })}
